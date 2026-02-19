@@ -7,6 +7,12 @@ public class BossActiveData : BaseActiveData
         IDLE = 0,
         KNIFE_ATTACK,
         HANDSWIPE_ATTACK,
+        TRIPLEKNIFE_ATTACK,
+        HANDSLAM_ATTACK,
+        FLYSWATTER_ATTACK,
+        CLAWGRAB_ATTACK,
+        SUGARCANEMISSILES_ATTACK,
+        FRUITAIRSTRICK_ATTACK,
     }
 
     public BossAnimStates BAnimState;
