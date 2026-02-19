@@ -32,5 +32,10 @@ public class DataHolder : MonoBehaviour
             //Debug.Log("ENEMY DATA");
             //activeData = new GroundEnemyActiveData();
         }
+        else if (dataType == DATATYPE.BOSS_ENEMY)
+        {
+            Debug.Log("BOSS DATA");
+            activeData = new BossActiveData();
+        }
     }
 }

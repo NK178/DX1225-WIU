@@ -1,0 +1,13 @@
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "BossAttacks", menuName = "Bossing/BossAttacks")]
+
+public class BossAttacks : BAttacks
+{
+    [SerializeField] private BossActiveData.BossAnimStates _attack;
+    public override void ExecuteAttack(BossActiveData activeData)
+    {
+        activeData.BAnimState = _attack;
+        activeData.isAttacking = true;
+    }
+}
