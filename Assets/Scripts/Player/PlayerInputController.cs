@@ -36,7 +36,7 @@ public class PlayerInputController : MonoBehaviour
     void HandleMove()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
-        Debug.Log("MOVE: " +  direction.magnitude);
+        //Debug.Log("MOVE: " +  direction.magnitude);
         if (direction.magnitude > 0)
         {
             activeData.moveDirection = direction;
