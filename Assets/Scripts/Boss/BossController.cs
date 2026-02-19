@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ public class BossController : MonoBehaviour
     [SerializeField] private List<AttackPhaseData> attackPhaseData;
     private BossActiveData activeData;
 
+
+    [SerializeField] private BossAttacks DEBUGattackData; 
+
     public float HP;
     public float ATK;
 
@@ -34,12 +38,25 @@ public class BossController : MonoBehaviour
 
         activeData = (BossActiveData)dataHolder.activeData;
 
-        if (activeData ==  null)
+        if (activeData == null)
         {
             Debug.Log("NO BOSS ACTIVE DATA FOUND");
             return;
         }
+
+
+        StartCoroutine(TestAttackFunction());
     }
+
+
+    //FOR MY TESTING - AINS: 
+    public IEnumerator TestAttackFunction()
+    {
+        yield return new WaitForSeconds(2f);
+
+        DEBUGattackData.ExecuteAttack(activeData);
+    }
+
 
     public void HandleMove()
     {
@@ -51,4 +68,7 @@ public class BossController : MonoBehaviour
     {
 
     }
+
+
+
 }
