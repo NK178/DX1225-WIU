@@ -5,6 +5,7 @@ public class BaseActiveData
 {
 
     public event Action onStateChanged;
+    public float currentMoveSpeed;
 
     //need to do this for derrived classes so just use this one
     protected void TriggerStateChanged()
