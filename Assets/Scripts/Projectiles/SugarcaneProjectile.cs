@@ -10,6 +10,7 @@ public class SugarcaneProjectile : GenericProjectile
     [SerializeField] private float delayTimeBeforeFiring = 2f;
     [SerializeField] private float projectileSpeed = 10f;
 
+    private BossActiveData bossActive; 
 
 
     bool isActive = false;
@@ -31,6 +32,22 @@ public class SugarcaneProjectile : GenericProjectile
         StartCoroutine(ActivateProjectileCoroutine());
 
     }
+
+
+    override public void Initialize(BaseActiveData activeData, float damageAmount)
+    {
+
+        isActive = false;
+        referenceData = activeData;
+        spawnerType = activeData.dataType;
+        projectileDamage = damageAmount;
+
+        bossActive = (BossActiveData)activeData;
+
+        StopAllCoroutines();
+        StartCoroutine(ActivateProjectileCoroutine());
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -60,9 +77,34 @@ public class SugarcaneProjectile : GenericProjectile
     }
 
 
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("HIT GROUND");
+        //bool hitEnemy = other.CompareTag("Enemy");
+        bool hitEnvironment = other.CompareTag("Environment");
+        bool hitPlayer = other.CompareTag("Player");
+
+        Vector3 hitPoint = transform.position;
+        Vector3 hitNormal = Vector3.up;
+        if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
+        {
+            hitPoint = hit.point;
+            hitNormal = hit.normal;
+        }
+
+        if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
+        {
+            Debug.Log($"Hit player for {projectileDamage} damage!");
+            ReturnToPool();
+        }
+
+
+        if (hitEnvironment)
+        {
+            //spawn particles
+            bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
+            bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+            bossActive.isObjectPoolTriggered = true;
+            ReturnToPool();
+        }
     }
 }

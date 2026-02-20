@@ -14,7 +14,8 @@ public class PlayerActiveData : BaseActiveData
     {
         Debug.Log("INITALIZED PLAYER DATA");
         moveDirection = Vector2.zero;
-        currentClassType = CLASSTYPE.MELEE; 
+        currentClassType = CLASSTYPE.MELEE;
+        dataType = DataHolder.DATATYPE.PLAYER;
     }
 
 }

@@ -72,6 +72,22 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
     }
 
 
+    //TESTING NEW WAY 
+    public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, BaseActiveData refData, float damage)
+    {
+        GameObject obj = projectilePool.Get();
+        obj.transform.position = position;
+        obj.transform.rotation = Quaternion.LookRotation(forward);
+
+        GenericProjectile proj = obj.GetComponent<GenericProjectile>();
+        if (proj != null)
+        {
+            proj.Initialize(refData, damage);
+        }
+    }
+
+
+
     // Spawn kinematic projectiles, movement handled elsewhere
     public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage)
     {

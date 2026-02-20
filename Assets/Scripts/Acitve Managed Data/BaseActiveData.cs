@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using UnityEngine;
+using static DataHolder;
 
 public class ObjectPoolSpawnData
 {
@@ -26,6 +28,10 @@ public class BaseActiveData
 {
     public event Action onStateChanged;
     public float currentMoveSpeed;
+
+   
+    //New stuff 
+    public DATATYPE dataType;
 
     public ObjectPoolManager.SPAWNABLE_TYPES spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
 

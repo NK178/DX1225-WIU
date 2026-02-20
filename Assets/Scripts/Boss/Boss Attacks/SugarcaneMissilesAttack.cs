@@ -13,7 +13,7 @@ public class SugarcaneMissilesAttack : BossAttacks
 
     public override void ExecuteAttack(BossActiveData activeData)
     {
-        Debug.Log("SUGARCANE ATTACK");
+        //Debug.Log("SUGARCANE ATTACK");
 
         //Get reference to player position, bad method but it ok 
         GameObject playerRef = GameObject.FindWithTag("Player");

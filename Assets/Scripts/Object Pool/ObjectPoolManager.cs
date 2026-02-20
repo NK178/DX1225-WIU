@@ -4,9 +4,30 @@ using UnityEngine;
 public interface IObjectPool
 {
     GameObject Get();
-    public void SpawnImpactEffect(Vector3 position, Vector3 normal);
-    public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce);
-    public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage);
+
+    //Testing to make the method not required to implement
+    public void SpawnImpactEffect(Vector3 position, Vector3 normal) {
+        Debug.Log("NO IMPACT EFECT FUNCTION");
+        return; 
+    }
+    public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce)
+    {
+        Debug.Log("NO SPAWN PROJECTILE FUNCTION");
+        return;
+    }
+    public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage)
+    {
+        Debug.Log("NO KINEMACTIC SPAWN PROJECTILE FUNCTION");
+        return;
+    }
+
+    public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, BaseActiveData refData, float damage)
+    {
+        Debug.Log("NO KINEMACTIC SPAWN PROJECTILE FUNCTION");
+        return;
+    }
+
+
 }
 
 public class ObjectPoolManager : MonoBehaviour
@@ -15,12 +36,14 @@ public class ObjectPoolManager : MonoBehaviour
     {
         SUGARCANE_MISSILES,
         RANGER_SEED,
+        PARTICLE_SUGARCANESPLASH,
         NUM_TYPES
     }
 
     [Header("Particle Spawners")]
     [SerializeField] private ProjectileObjectPool sugarCaneSpawner;
     [SerializeField] private ProjectileObjectPool rangerSeedSpawner;
+    [SerializeField] private ParticleObjectPool sugarcaneSplashEffectSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
     private List<BaseActiveData> entityDataList;
@@ -34,6 +57,14 @@ public class ObjectPoolManager : MonoBehaviour
 
         if (sugarCaneSpawner != null) particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES] = sugarCaneSpawner;
         if (rangerSeedSpawner != null) particleMap[SPAWNABLE_TYPES.RANGER_SEED] = rangerSeedSpawner;
+        //if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
+
+        if (sugarcaneSplashEffectSpawner != null)
+        {
+            Debug.Log("SPLASH SPAWNER");
+            particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
+        }
+
 
         foreach (DataHolder dataHolder in dataHolders)
         {
@@ -42,7 +73,7 @@ public class ObjectPoolManager : MonoBehaviour
 
         foreach (BaseActiveData data in entityDataList)
         {
-            data.onObjectPoolTriggered += HandleParticleRequests;
+            data.onObjectPoolTriggered += HandleSpawnRequest;
         }
     }
 
@@ -50,11 +81,11 @@ public class ObjectPoolManager : MonoBehaviour
     {
         foreach (BaseActiveData data in entityDataList)
         {
-            data.onObjectPoolTriggered -= HandleParticleRequests;
+            data.onObjectPoolTriggered -= HandleSpawnRequest;
         }
     }
 
-    private void HandleParticleRequests(BaseActiveData baseActiveData)
+    private void HandleSpawnRequest(BaseActiveData baseActiveData)
     {
         if (baseActiveData.isObjectPoolTriggered)
         {
@@ -71,7 +102,14 @@ public class ObjectPoolManager : MonoBehaviour
                 }
                 else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.SUGARCANE_MISSILES)
                 {
-                    particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage);
+                    //particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage);
+                    particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
+                }
+                //PARTICLES PART
+                else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH)
+                {
+                    Debug.Log("SPAWN EFFECT");
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
                 }
             }
 

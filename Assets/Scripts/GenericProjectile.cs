@@ -11,6 +11,10 @@ public class GenericProjectile : MonoBehaviour
     protected float projectileDamage;
     protected ProjectileObjectPool myPool;
 
+
+    ///////TESTING 
+    protected BaseActiveData referenceData;
+
     public void SetPool(ProjectileObjectPool pool)
     {
         myPool = pool;
@@ -25,13 +29,24 @@ public class GenericProjectile : MonoBehaviour
         StartCoroutine(LifetimeRoutine());
     }
 
+
+    virtual public void Initialize(BaseActiveData activeData, float damageAmount)
+    {
+        referenceData = activeData;
+        spawnerType = activeData.dataType;
+        projectileDamage = damageAmount;
+
+        // Ensures the projectile doesn't last forever if shot into the void
+        StartCoroutine(LifetimeRoutine());
+    }
+
     private IEnumerator LifetimeRoutine()
     {
         yield return new WaitForSeconds(lifetime);
         ReturnToPool();
     }
 
-    private void ReturnToPool()
+    protected void ReturnToPool()
     {
         if (myPool != null && gameObject.activeSelf)
         {
