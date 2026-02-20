@@ -1,40 +1,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-interface IObjectPool
+public interface IObjectPool
 {
     GameObject Get();
     public void SpawnImpactEffect(Vector3 position, Vector3 normal);
+    public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce);
 }
 
 public class ObjectPoolManager : MonoBehaviour
 {
-
-    //to store all particle types 
-
     public enum SPAWNABLE_TYPES
     {
-        SUGARCANE_MISSILES, 
+        SUGARCANE_MISSILES,
+        RANGER_SEED,
         NUM_TYPES
     }
 
     [Header("Particle Spawners")]
     [SerializeField] private ProjectileObjectPool sugarCaneSpawner;
-
+    [SerializeField] private ProjectileObjectPool rangerSeedSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
     private List<BaseActiveData> entityDataList;
 
     Dictionary<SPAWNABLE_TYPES, IObjectPool> particleMap;
 
-
-
     private void Start()
     {
-
         entityDataList = new List<BaseActiveData>();
         particleMap = new Dictionary<SPAWNABLE_TYPES, IObjectPool>();
-        particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES] = sugarCaneSpawner;
+
+        if (sugarCaneSpawner != null) particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES] = sugarCaneSpawner;
+        if (rangerSeedSpawner != null) particleMap[SPAWNABLE_TYPES.RANGER_SEED] = rangerSeedSpawner;
 
         foreach (DataHolder dataHolder in dataHolders)
         {
@@ -47,7 +45,6 @@ public class ObjectPoolManager : MonoBehaviour
         }
     }
 
-
     private void OnDisable()
     {
         foreach (BaseActiveData data in entityDataList)
@@ -58,26 +55,26 @@ public class ObjectPoolManager : MonoBehaviour
 
     private void HandleParticleRequests(BaseActiveData baseActiveData)
     {
-
-
         if (baseActiveData.isObjectPoolTriggered)
         {
-            Debug.Log("SPAWN SOMETHING");
-
             Vector3 spawnPos = baseActiveData.objectPoolSpawnData.spawnPos;
             Vector3 spawnNormal = baseActiveData.objectPoolSpawnData.spawnNormal;
+            float damage = baseActiveData.objectPoolSpawnData.damage;
+            float launchForce = baseActiveData.objectPoolSpawnData.launchForce;
 
-
-            if (baseActiveData.spawnableType == SPAWNABLE_TYPES.SUGARCANE_MISSILES && particleMap.ContainsKey(SPAWNABLE_TYPES.SUGARCANE_MISSILES))
+            if (particleMap.ContainsKey(baseActiveData.spawnableType))
             {
-                Debug.Log("SUGARCANE");
-                particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnImpactEffect(spawnPos, spawnNormal);
+                if (baseActiveData.spawnableType == SPAWNABLE_TYPES.RANGER_SEED)
+                {
+                    particleMap[SPAWNABLE_TYPES.RANGER_SEED].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.PLAYER, damage, launchForce);
+                }
+                else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.SUGARCANE_MISSILES)
+                {
+                    particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnImpactEffect(spawnPos, spawnNormal);
+                }
             }
 
             baseActiveData.isObjectPoolTriggered = false;
         }
-
-
     }
-
 }

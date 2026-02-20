@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 //can be reused with player as well
 [System.Serializable]
 public enum CLASSTYPE
@@ -10,31 +9,15 @@ public enum CLASSTYPE
     NUM_TYPES
 }
 
-
 public class PlayerController : MonoBehaviour
 {
-
-    
-
     [SerializeField] private DataHolder dataHolder;
 
-    //for now, i leave it like this , might be bad implentation if need switch between data, see how 
-    [SerializeField] private FighterClassData fighterData; 
-    [SerializeField] private RangerClassData rangerData;
-
-
-
-    [SerializeField] private CLASSTYPE startClass;
-
-
     private PlayerActiveData activeData;
-
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
         activeData = (PlayerActiveData)dataHolder.activeData;
 
         if (activeData == null)
@@ -42,40 +25,22 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PLAYER DATA NOT FOUND");
             return;
         }
-
-
-        activeData.currentClassType = startClass;
-
     }
-
 
     void Update()
     {
-
-        //example code 
-
-        activeData.currentClassType = startClass;
-
-        if (activeData.currentClassType == CLASSTYPE.MELEE)
-        {
-            activeData.currentMoveSpeed = fighterData.moveSpeed;
-        }
-        else if (activeData.currentClassType == CLASSTYPE.RANGED)
-        {
-            activeData.currentMoveSpeed = rangerData.moveSpeed;
-        }
-
+        // PlayerController no longer forces the speed variable every frame,
+        // It just executes the movement based on whatever the active data currently says
         DebugHandleMove();
     }
-        
 
     //Testing function since no animation move
     void DebugHandleMove()
     {
-
-        if (!activeData.isMoving)
+        if (activeData == null || !activeData.isMoving)
             return;
 
+        // reads whatever speed the active class (or a dodge roll) has set
         float moveSpeed = activeData.currentMoveSpeed;
 
         Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
