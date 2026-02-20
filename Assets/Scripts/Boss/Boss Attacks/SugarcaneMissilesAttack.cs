@@ -5,7 +5,6 @@ using UnityEngine;
 public class SugarcaneMissilesAttack : BossAttacks
 {
 
-    [SerializeField] private GameObject sugarcanePrefab;
     [SerializeField] private float delayTimeBeforeFiring = 2f;
 
     public override void ExecuteAttack(BossActiveData activeData)
