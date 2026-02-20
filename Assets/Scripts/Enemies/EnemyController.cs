@@ -31,6 +31,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
 
     [Header("Combat Settings")]
+    [SerializeField] private Transform firePoint;
     private float stopDistance;
 
     private EnemyActiveData activeData;
@@ -64,8 +65,6 @@ public class EnemyController : MonoBehaviour
     {
         HandleMove();
         HandleAttack();
-
-        OnDrawGizmosSelected();
     }
 
     private void HandleMove()
@@ -94,8 +93,10 @@ public class EnemyController : MonoBehaviour
             activeData.currentState = EnemyActiveData.AIState.CHASING;
         }
         else
+        {
             //If player is out of range/gone return back to wandering 
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
+        }
 
         switch (activeData.currentState)
         {
@@ -203,6 +204,11 @@ public class EnemyController : MonoBehaviour
             currentVelocity = Vector3.MoveTowards(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
 
             Debug.Log("ATTACK TRIGGERED");
+
+            if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
+            {
+                ShootRubberBand();
+            }
         }
 
         //Always rotate to face the player while chasing
@@ -217,6 +223,11 @@ public class EnemyController : MonoBehaviour
     }
 
     private void HandleAttack()
+    {
+
+    }
+
+    private void ShootRubberBand()
     {
 
     }
