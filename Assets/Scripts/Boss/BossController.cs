@@ -53,7 +53,7 @@ public class BossController : MonoBehaviour
     {
         for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
         {
-            Debug.Log(attackPhaseData[0]._atks[i]);
+            //Debug.Log(attackPhaseData[0]._atks[i]);
         }
     }
 
