@@ -1,31 +1,31 @@
 using System;
 using UnityEngine;
 
-
-public class ObjectPoolSpawnData {
+public class ObjectPoolSpawnData
+{
     public Vector3 spawnPos;
     public Vector3 spawnNormal;
+    public float damage;
+    public float launchForce;
 
     public ObjectPoolSpawnData()
     {
 
     }
 
-    public ObjectPoolSpawnData(Vector3 pos, Vector3 normal)
+    public ObjectPoolSpawnData(Vector3 pos, Vector3 normal, float dmg = 0f, float force = 0f)
     {
         spawnPos = pos;
-        spawnNormal = normal; 
+        spawnNormal = normal;
+        damage = dmg;
+        launchForce = force;
     }
 }
 
-
 public class BaseActiveData
 {
-
     public event Action onStateChanged;
     public float currentMoveSpeed;
-
-
 
     public ObjectPoolManager.SPAWNABLE_TYPES spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
 
@@ -45,7 +45,6 @@ public class BaseActiveData
             }
         }
     }
-
 
     //need to do this for derrived classes so just use this one
     protected void TriggerStateChanged()
@@ -67,7 +66,6 @@ public class BaseActiveData
             }
         }
     }
-
 
     public BaseActiveData()
     {

@@ -11,6 +11,8 @@ public abstract class BaseClassMechanics : MonoBehaviour
     }
 
     // override based on player classes
+
+    public abstract void EquipClass();
     public abstract void HandleAttack();
     public abstract void HandleDefense();
     public abstract void HandleAbility();
