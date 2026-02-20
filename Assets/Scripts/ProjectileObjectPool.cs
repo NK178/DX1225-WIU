@@ -26,8 +26,6 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
     private GameObject CreatePooledItem()
     {
         GameObject obj = Instantiate(projectilePrefab);
-
-        // If it's a projectile, link it. If it's just a particle, this is harmlessly skipped.
         GenericProjectile proj = obj.GetComponent<GenericProjectile>();
         if (proj != null)
         {
@@ -51,8 +49,6 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
     {
         return projectilePool.Get();
     }
-
-    // --- For Visual Particles (Restored your Coroutine logic) ---
     public void SpawnImpactEffect(Vector3 position, Vector3 normal)
     {
         GameObject effect = projectilePool.Get();
