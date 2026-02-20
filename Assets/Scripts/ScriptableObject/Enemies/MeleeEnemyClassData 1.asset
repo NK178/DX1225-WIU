@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29e65576e9eeae740ab28d62b8ae977f, type: 3}
-  m_Name: RangedEnemyClassData
-  m_EditorClassIdentifier: Assembly-CSharp::RangedEnemyClassData
-  maxHealth: 0
-  damage: 0
+  m_Script: {fileID: 11500000, guid: 995491c2d581f0d4ab57e5ee490dfa61, type: 3}
+  m_Name: MeleeEnemyClassData 1
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemyClassData
+  maxHealth: 80
+  damage: 20
+  attackSpeed: 0
+  enemyClassType: 0

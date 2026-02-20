@@ -11,8 +11,10 @@ public class BossActiveData : BaseActiveData
         HANDSLAM_ATTACK,
         FLYSWATTER_ATTACK,
         CLAWGRAB_ATTACK,
+        GRABBING_SUGARCANE,
         SUGARCANEMISSILES_ATTACK,
         FRUITAIRSTRICK_ATTACK,
+        THROWING_SUGARCANE_ATTACK,
     }
 
     public BossAnimStates BAnimState;
