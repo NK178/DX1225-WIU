@@ -6,7 +6,7 @@ public class RangerMechanics : BaseClassMechanics
     [Header("References")]
     [SerializeField] private RangerClassData rangerData;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private LineRenderer laserLine; // For Laser Eyes visual
+    [SerializeField] private LineRenderer laserLine;
 
     private float nextAttackTime;
     private bool isRolling;
@@ -15,14 +15,25 @@ public class RangerMechanics : BaseClassMechanics
 
     private void Start()
     {
-        currentLaserAmmo = rangerData.maxLaserAmmo;
+        if (rangerData != null)
+        {
+            currentLaserAmmo = rangerData.maxLaserAmmo;
+        }
         if (laserLine != null) laserLine.enabled = false;
+    }
+
+    public override void EquipClass()
+    {
+        if (activeData != null && rangerData != null)
+        {
+            activeData.currentMoveSpeed = rangerData.moveSpeed;
+            activeData.currentClassType = rangerData.classType;
+        }
     }
 
     public override void HandleAttack()
     {
-        // Semi-automatic seed gun
-        if (Time.time >= nextAttackTime && !isRolling)
+        if (Time.time >= nextAttackTime && !isRolling && rangerData != null)
         {
             ShootSeed();
             nextAttackTime = Time.time + rangerData.attackCooldown;
@@ -31,22 +42,24 @@ public class RangerMechanics : BaseClassMechanics
 
     private void ShootSeed()
     {
-        if (rangerData.seedProjectilePrefab == null || firePoint == null) return;
+        if (rangerData == null || firePoint == null) return;
 
-        GameObject seed = Instantiate(rangerData.seedProjectilePrefab, firePoint.position, firePoint.rotation);
-        Rigidbody rb = seed.GetComponent<Rigidbody>();
+        // Package the data for the Object Pool Manager
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
+            firePoint.position,
+            firePoint.forward,
+            rangerData.damage,
+            rangerData.seedLaunchForce
+        );
 
-        if (rb != null)
-        {
-            rb.useGravity = true;
-            rb.AddForce(firePoint.forward * rangerData.seedLaunchForce, ForceMode.Impulse);
-        }
+        // Tell the manager what to spawn and pull the trigger
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RANGER_SEED;
+        activeData.isObjectPoolTriggered = true;
     }
 
     public override void HandleDefense()
     {
-        // Dodge / Evade Roll
-        if (!isRolling && activeData != null && activeData.isMoving)
+        if (!isRolling && activeData != null && activeData.isMoving && rangerData != null)
         {
             StartCoroutine(RollRoutine());
         }
@@ -55,22 +68,18 @@ public class RangerMechanics : BaseClassMechanics
     private IEnumerator RollRoutine()
     {
         isRolling = true;
-        float originalSpeed = activeData.currentMoveSpeed;
+        float originalSpeed = rangerData.moveSpeed;
 
-        // Temporarily boost speed for the dodge
         activeData.currentMoveSpeed = originalSpeed * rangerData.rollSpeedMultiplier;
-
         yield return new WaitForSeconds(rangerData.rollDuration);
 
-        // Reset speed
         activeData.currentMoveSpeed = originalSpeed;
         isRolling = false;
     }
 
     public override void HandleAbility()
     {
-        // Laser Eyes - Superman pose beam
-        if (currentLaserAmmo > 0 && !isFiringLaser && !isRolling)
+        if (currentLaserAmmo > 0 && !isFiringLaser && !isRolling && rangerData != null)
         {
             StartCoroutine(LaserRoutine());
         }
@@ -84,8 +93,8 @@ public class RangerMechanics : BaseClassMechanics
         while (currentLaserAmmo > 0)
         {
             currentLaserAmmo--;
-
             Ray ray = new Ray(firePoint.position, firePoint.forward);
+
             if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
             {
                 if (laserLine != null)
@@ -93,7 +102,6 @@ public class RangerMechanics : BaseClassMechanics
                     laserLine.SetPosition(0, firePoint.position);
                     laserLine.SetPosition(1, hit.point);
                 }
-                // Deal damage to hit.collider.gameObject here
             }
             else
             {
@@ -104,7 +112,7 @@ public class RangerMechanics : BaseClassMechanics
                 }
             }
 
-            yield return new WaitForSeconds(0.1f); // Ammo drain rate
+            yield return new WaitForSeconds(0.1f);
         }
 
         if (laserLine != null) laserLine.enabled = false;
