@@ -25,7 +25,7 @@ public class BossController : MonoBehaviour
     private BossActiveData activeData;
 
     [Header("Debugging")]
-    [SerializeField] private BossAttacks DEBUGAttackData;
+    [SerializeField] private BossAttacks DEBUGattackData;
     [SerializeField] private AttackHandler DEBUGAttackHandler;
 
     public float HP;
@@ -79,11 +79,8 @@ public class BossController : MonoBehaviour
         //Debug.Log((BossActiveData.BossAnimStates)animator.GetAnimState()); // Check what Anim it is at
     }
 
-    public void HandleAttack(BossActiveData.BossAnimStates atk)
+    public void HandleAttack()
     {
         
     }
-
-
-
 }

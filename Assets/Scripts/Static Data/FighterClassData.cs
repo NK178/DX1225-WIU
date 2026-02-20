@@ -11,10 +11,12 @@ public class FighterClassData : BaseClassData
 
     [Header("Main Attack: Sword")]
     public Collider swordCollider;
+    public float AtkCD;
 
     [Header("Defensive: Riposte")]
     public float parryTiming;
     public float blockDamageReduction;
+    public float parryCD;
 
     [Header("Special Ability: Dragon Flaming Slash")]
     public float damageMultiplier;
