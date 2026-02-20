@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using UnityEngine;
 using static DataHolder;
 
@@ -9,6 +8,19 @@ public class ObjectPoolSpawnData
     public Vector3 spawnNormal;
     public float damage;
     public float launchForce;
+
+
+    //TESING 
+    public Vector3 impluseForce; 
+
+    public ObjectPoolSpawnData(Vector3 pos, Vector3 normal, Vector3 force, float dmg = 0f)
+    {
+        spawnPos = pos;
+        spawnNormal = normal;
+        impluseForce = force;
+        damage = dmg;
+
+    }
 
     public ObjectPoolSpawnData()
     {

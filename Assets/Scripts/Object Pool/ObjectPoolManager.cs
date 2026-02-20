@@ -16,6 +16,13 @@ public interface IObjectPool
         return;
     }
 
+    //TESTING 
+    public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, Vector3 impluse)
+    {
+        Debug.Log("NO SPAWN PROJECTILE WITH FORCE IMPLUSE FUNCTION");
+        return;
+    }
+
     public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage)
     {
         Debug.Log("NO KINEMACTIC SPAWN PROJECTILE FUNCTION");
@@ -102,7 +109,10 @@ public class ObjectPoolManager : MonoBehaviour
                     particleMap[SPAWNABLE_TYPES.RANGER_SEED].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.PLAYER, damage, launchForce);
                     break;
                 case SPAWNABLE_TYPES.FRUIT_CHUNKS:
-                    particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, launchForce);
+
+                    particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
+
+                    //particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, launchForce);
                     break;
                 case SPAWNABLE_TYPES.SUGARCANE_MISSILES:
                     particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
