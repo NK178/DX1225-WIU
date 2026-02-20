@@ -25,5 +25,6 @@ public class BossActiveData : BaseActiveData
     {
         Debug.Log("Boss Initalizing");
         BAnimState = BossAnimStates.IDLE;
+        dataType = DataHolder.DATATYPE.BOSS_ENEMY;
     }
 }
