@@ -5,17 +5,31 @@ using UnityEngine;
 public class SugarcaneMissilesAttack : BossAttacks
 {
 
-    [SerializeField] private GameObject sugarcanePrefab;
+    [SerializeField] private float debugStartHeight = 3f; 
+    //Rnow not workign
     [SerializeField] private float delayTimeBeforeFiring = 2f;
+    [SerializeField] private float ringRadius = 3f; 
+
 
     public override void ExecuteAttack(BossActiveData activeData)
     {
-        Debug.Log("SUGARCANE ATTACK");
+        //Debug.Log("SUGARCANE ATTACK");
 
+        //Get reference to player position, bad method but it ok 
+        GameObject playerRef = GameObject.FindWithTag("Player");
 
-        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.SUGARCANE_MISSILES;
-        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(Vector3.zero, Vector3.zero);
-        activeData.isObjectPoolTriggered = true;
+        if (playerRef != null)
+        {
+            float ringAngle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+            Vector3 offset = new Vector3(Mathf.Cos(ringAngle) * ringRadius, debugStartHeight, Mathf.Sin(ringAngle) * ringRadius);
+            Vector3 spawnPos = playerRef.transform.position + offset;
+
+            Vector3 directionToPlayer = (playerRef.transform.position - spawnPos).normalized;
+
+            activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.SUGARCANE_MISSILES;
+            activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPos, -directionToPlayer);
+            activeData.isObjectPoolTriggered = true;
+        }
 
 
 
