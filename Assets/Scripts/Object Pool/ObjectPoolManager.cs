@@ -37,12 +37,14 @@ public class ObjectPoolManager : MonoBehaviour
         SUGARCANE_MISSILES,
         RANGER_SEED,
         PARTICLE_SUGARCANESPLASH,
+        RUBBERBAND_BULLETS,
         NUM_TYPES
     }
 
     [Header("Particle Spawners")]
     [SerializeField] private ProjectileObjectPool sugarCaneSpawner;
     [SerializeField] private ProjectileObjectPool rangerSeedSpawner;
+    [SerializeField] private ProjectileObjectPool rubberBandSpawner;
     [SerializeField] private ParticleObjectPool sugarcaneSplashEffectSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
@@ -57,6 +59,7 @@ public class ObjectPoolManager : MonoBehaviour
 
         if (sugarCaneSpawner != null) particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES] = sugarCaneSpawner;
         if (rangerSeedSpawner != null) particleMap[SPAWNABLE_TYPES.RANGER_SEED] = rangerSeedSpawner;
+        if (rubberBandSpawner != null) particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS] = rubberBandSpawner;
         //if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
 
         if (sugarcaneSplashEffectSpawner != null)
@@ -105,6 +108,11 @@ public class ObjectPoolManager : MonoBehaviour
                     //particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage);
                     particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
                 }
+                else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.RANGER_SEED)
+                {
+                    //particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile
+                }
+
                 //PARTICLES PART
                 else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH)
                 {
