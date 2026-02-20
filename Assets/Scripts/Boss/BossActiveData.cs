@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Klaus & Ainsley
+
 public class BossActiveData : BaseActiveData
 {
     public enum BossAnimStates
@@ -7,6 +9,14 @@ public class BossActiveData : BaseActiveData
         IDLE = 0,
         KNIFE_ATTACK,
         HANDSWIPE_ATTACK,
+        TRIPLEKNIFE_ATTACK,
+        HANDSLAM_ATTACK,
+        FLYSWATTER_ATTACK,
+        CLAWGRAB_ATTACK,
+        GRABBING_SUGARCANE,
+        SUGARCANEMISSILES_ATTACK,
+        FRUITAIRSTRICK_ATTACK,
+        THROWING_SUGARCANE_ATTACK,
     }
 
     public BossAnimStates BAnimState;
@@ -15,5 +25,6 @@ public class BossActiveData : BaseActiveData
     {
         Debug.Log("Boss Initalizing");
         BAnimState = BossAnimStates.IDLE;
+        dataType = DataHolder.DATATYPE.BOSS_ENEMY;
     }
 }

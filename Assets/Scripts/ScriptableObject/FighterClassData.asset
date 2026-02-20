@@ -15,4 +15,8 @@ MonoBehaviour:
   maxHealth: 0
   damage: 0
   classType: 0
-  moveSpeed: 5
+  moveSpeed: 40
+  swordCollider: {fileID: 0}
+  parryTiming: 0
+  blockDamageReduction: 0
+  damageMultiplier: 0
