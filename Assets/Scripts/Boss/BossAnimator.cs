@@ -1,16 +1,45 @@
 using UnityEngine;
 
+// Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
+// Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
+
+// Klaus
+
 public class BossAnimator : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private Animator animator;
+
+    [SerializeField] private DataHolder dataHolder;
+
+    private BossActiveData activeData;
+
+
+    private void Start()
     {
-        
+        if (animator == null)
+            Debug.Log("ANIMATOR NOT FOUND!");
+
+        activeData = (BossActiveData)dataHolder.activeData;
+
+        activeData.onStateChanged += OnStateChanged;
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public int GetAnimState()
     {
-        
+        return (int)activeData.BAnimState;
+    }
+
+    public void OnStateChanged()
+    {
+        string targetAnimation = ((BossActiveData.BossAnimStates)GetAnimState()).ToString();
+        if (activeData.isAttacking)
+        {
+            if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
+            {
+                //playanim
+
+            }
+        }
     }
 }

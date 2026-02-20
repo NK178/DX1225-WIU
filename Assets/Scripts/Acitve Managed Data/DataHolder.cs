@@ -24,13 +24,18 @@ public class DataHolder : MonoBehaviour
         }
         else if (dataType == DATATYPE.MELEE_ENEMY)
         {
-            //Debug.Log("ENEMY DATA");
-            //activeData = new GroundEnemyActiveData();
+            Debug.Log("ENEMY DATA");
+            activeData = new EnemyActiveData();
         }
         else if (dataType == DATATYPE.RANGED_ENEMY)
         {
-            //Debug.Log("ENEMY DATA");
-            //activeData = new GroundEnemyActiveData();
+            Debug.Log("ENEMY DATA");
+            activeData = new EnemyActiveData();
+        }
+        else if (dataType == DATATYPE.BOSS_ENEMY)
+        {
+            Debug.Log("BOSS DATA");
+            activeData = new BossActiveData();
         }
     }
 }

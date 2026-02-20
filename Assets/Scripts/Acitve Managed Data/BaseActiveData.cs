@@ -1,11 +1,51 @@
 using System;
 using UnityEngine;
 
+
+public class ObjectPoolSpawnData {
+    public Vector3 spawnPos;
+    public Vector3 spawnNormal;
+
+    public ObjectPoolSpawnData()
+    {
+
+    }
+
+    public ObjectPoolSpawnData(Vector3 pos, Vector3 normal)
+    {
+        spawnPos = pos;
+        spawnNormal = normal; 
+    }
+}
+
+
 public class BaseActiveData
 {
 
     public event Action onStateChanged;
     public float currentMoveSpeed;
+
+
+
+    public ObjectPoolManager.SPAWNABLE_TYPES spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
+
+    public ObjectPoolSpawnData objectPoolSpawnData;
+    public event Action<BaseActiveData> onObjectPoolTriggered;
+
+    private bool _isObjectPoolTriggered;
+    public bool isObjectPoolTriggered
+    {
+        get => _isObjectPoolTriggered;
+        set
+        {
+            if (_isObjectPoolTriggered != value)
+            {
+                _isObjectPoolTriggered = value;
+                onObjectPoolTriggered?.Invoke(this);
+            }
+        }
+    }
+
 
     //need to do this for derrived classes so just use this one
     protected void TriggerStateChanged()
@@ -31,6 +71,8 @@ public class BaseActiveData
 
     public BaseActiveData()
     {
-        isMoving = false; 
+        isMoving = false;
+        isObjectPoolTriggered = false;
+        spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
     }
 }
