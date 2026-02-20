@@ -11,14 +11,15 @@ using UnityEngine;
 [System.Serializable]
 public struct NamingCollider
 {
-    public GameObject obj;
-    //public Collider obj;
+    //public GameObject obj;
+    public Collider obj;
     public string name;
 }
 
 public class AttackHandler : MonoBehaviour
 {
-    [SerializeField] private List<NamingCollider> attackColliders; // For now just set to GameObject. CHANGE TO COLLIDERS WHEN MODEL ARE HERE
+    //[SerializeField] private List<NamingCollider> attackColliders; // For now just set to GameObject. CHANGE TO COLLIDERS WHEN MODEL ARE HERE
+    public List<NamingCollider> attackColliders; // For now just set to GameObject. CHANGE TO COLLIDERS WHEN MODEL ARE HERE
 
     private enum ColliderType
     {
@@ -28,6 +29,7 @@ public class AttackHandler : MonoBehaviour
     }
     [SerializeField] private ColliderType colliderType;
 
+    [Header("Debugging")]
     private bool DebugEnableAttack = false;
     private Transform DebugColliders;
 
@@ -42,7 +44,8 @@ public class AttackHandler : MonoBehaviour
         {
             if (attackColliders[i].name == atkName)
             {
-                attackColliders[i].obj.SetActive(true);
+                //attackColliders[i].obj.SetActive(true);
+                attackColliders[i].obj.enabled = true;
                 return;
             }
         }
@@ -54,7 +57,8 @@ public class AttackHandler : MonoBehaviour
         {
             if (attackColliders[i].name == atkName)
             {
-                attackColliders[i].obj.SetActive(false);
+                //attackColliders[i].obj.SetActive(false);
+                attackColliders[i].obj.enabled = false;
                 return;
             }
         }
@@ -68,15 +72,16 @@ public class AttackHandler : MonoBehaviour
     //}
     private void Update()
     {
-        if (!DebugEnableAttack)
-            StartCoroutine(DebugEnableCollider());
+        // For Testing if the attacks can be enabled
+        //if (!DebugEnableAttack)
+        //    StartCoroutine(DebugEnableCollider());
         for (int i = 0; i < attackColliders.Count; i++)
         {
-            GameObject detectors = attackColliders[i].obj;
-            //Collider detectors = attackColliders[i].obj;
+            //GameObject detectors = attackColliders[i].obj;
+            Collider detectors = attackColliders[i].obj;
 
-            if (!detectors.activeSelf) continue;
-            //if (!detectors.enabled) return;
+            //if (!detectors.activeSelf) continue;
+            if (!detectors.enabled) return;
 
             //Collider[] hitColliders = Physics.OverlapSphere(detector.transform.position, detector.radius, targetLayer);
             DebugColliders = detectors.transform;
@@ -106,7 +111,8 @@ public class AttackHandler : MonoBehaviour
     private IEnumerator DebugEnableCollider()
     {
         DebugEnableAttack = true;
-        GameObject obj = attackColliders[Random.Range(0,attackColliders.Count)].obj;
+        //GameObject obj = attackColliders[Random.Range(0,attackColliders.Count)].obj;
+        Collider obj = attackColliders[Random.Range(0,attackColliders.Count)].obj;
         EnableCollider(obj.name);
         yield return new WaitForSeconds(3.0f);
         DisableCollider(obj.name);
