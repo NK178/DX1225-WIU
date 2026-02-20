@@ -11,9 +11,12 @@ public class SugarcaneMissilesAttack : BossAttacks
     [SerializeField] private float ringRadius = 3f; 
 
 
+    //would be nice to loop this or something 
+
     public override void ExecuteAttack(BossActiveData activeData)
     {
         //Debug.Log("SUGARCANE ATTACK");
+
 
         //Get reference to player position, bad method but it ok 
         GameObject playerRef = GameObject.FindWithTag("Player");
@@ -32,7 +35,6 @@ public class SugarcaneMissilesAttack : BossAttacks
         }
 
 
-
         //SpawnProjectile(); 
 
         //need run projectile here 
@@ -47,12 +49,6 @@ public class SugarcaneMissilesAttack : BossAttacks
         //    //Debug.Log("TIME: " + timer);
         //    timer += Time.deltaTime;
         //}
-
-
-
-        //workaround nvm didnt work
-        //sugarcanePrefab.GetComponent<MonoBehaviour>().StartCoroutine(HandleFiring());
-
 
     }
 

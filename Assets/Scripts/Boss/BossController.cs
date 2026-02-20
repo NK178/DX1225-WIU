@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
@@ -32,6 +31,9 @@ public class BossController : MonoBehaviour
     public float ATK;
 
 
+    public bool debugRunning = false;
+
+
     private void Start()
     {
         if (dataHolder.activeData == null)
@@ -49,7 +51,7 @@ public class BossController : MonoBehaviour
         }
 
 
-        //StartCoroutine(TestAttackFunction());
+       StartCoroutine(TestAttackFunction());
     }
 
     private void Update()
@@ -58,19 +60,37 @@ public class BossController : MonoBehaviour
         //{
         //    //Debug.Log(attackPhaseData[0]._atks[i]);
         //}
-    }
 
+        if (debugRunning) {
 
-    //FOR MY TESTING - AINS: 
-    public IEnumerator TestAttackFunction()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            DEBUGattackData.ExecuteAttack(activeData);
+            DEBUGAttackData.UpdateAttack(activeData);
         }
     }
+
+
+
+
+    ////FOR MY TESTING - AINS: 
+    public IEnumerator TestAttackFunction()
+    {
+
+        yield return null;
+        DEBUGAttackData.ExecuteAttack(activeData);
+        debugRunning = true;
+    }
+
+
+    ////FOR MY TESTING - AINS: 
+    //public IEnumerator TestAttackFunction()
+    //{
+    //    while (true)
+    //    {
+    //        Debug.Log("HELLO");
+    //        yield return new WaitForSeconds(0.1f);
+
+    //        DEBUGAttackData.ExecuteAttack(activeData);
+    //    }
+    //}
 
 
     public void HandleMove()

@@ -103,7 +103,7 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
     }
 
     // for seeds and rubber bands
-    public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce)
+    void IObjectPool.SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce)
     {
         GameObject obj = projectilePool.Get();
         obj.transform.position = position;

@@ -78,5 +78,6 @@ public class BaseActiveData
         isMoving = false;
         isObjectPoolTriggered = false;
         spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
+        objectPoolSpawnData = new ObjectPoolSpawnData();
     }
 }

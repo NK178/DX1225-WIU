@@ -10,4 +10,10 @@ public class BossAttacks : BAttacks
         activeData.BAnimState = _attack;
         activeData.isAttacking = true;
     }
+
+    public override void UpdateAttack(BossActiveData activeData)
+    {
+        //activeData.BAnimState = _attack;
+        //activeData.isAttacking = true;
+    }
 }

@@ -15,6 +15,7 @@ public class BossActiveData : BaseActiveData
         CLAWGRAB_ATTACK,
         GRABBING_SUGARCANE,
         SUGARCANEMISSILES_ATTACK,
+        FRUITRAIN_ATTACK,
         FRUITAIRSTRICK_ATTACK,
         THROWING_SUGARCANE_ATTACK,
     }
