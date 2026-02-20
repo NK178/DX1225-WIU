@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
+// Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
 
 [System.Serializable]
 struct AttackPhaseData
@@ -23,7 +24,7 @@ public class BossController : MonoBehaviour
     private BossActiveData activeData;
 
 
-    [SerializeField] private BossAttacks DEBUGattackData; 
+    [SerializeField] private BossAttacks DEBUGAttackData; 
 
     public float HP;
     public float ATK;
@@ -46,14 +47,14 @@ public class BossController : MonoBehaviour
         }
 
 
-        StartCoroutine(TestAttackFunction());
+        //StartCoroutine(TestAttackFunction());
     }
 
     private void Update()
     {
         for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
         {
-            Debug.Log(attackPhaseData[0]._atks[i]);
+            //Debug.Log(attackPhaseData[0]._atks[i]);
         }
     }
 
@@ -63,7 +64,7 @@ public class BossController : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
 
-        DEBUGattackData.ExecuteAttack(activeData);
+        //DEBUGAttackData.ExecuteAttack(activeData);
     }
 
 
