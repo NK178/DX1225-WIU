@@ -68,7 +68,7 @@ public class BossController : MonoBehaviour
         {
             yield return new WaitForSeconds(0.5f);
 
-            DEBUGattackData.ExecuteAttack(activeData);
+            DEBUGAttackData.ExecuteAttack(activeData);
         }
     }
 
