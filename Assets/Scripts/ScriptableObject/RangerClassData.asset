@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangerClassData
   maxHealth: 0
   damage: 0
-  classType: 0
+  classType: 1
   moveSpeed: 20
   seedProjectilePrefab: {fileID: 0}
   seedLaunchForce: 15

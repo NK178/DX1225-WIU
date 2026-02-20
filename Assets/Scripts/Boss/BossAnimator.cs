@@ -33,12 +33,45 @@ public class BossAnimator : MonoBehaviour
     public void OnStateChanged()
     {
         string targetAnimation = ((BossActiveData.BossAnimStates)GetAnimState()).ToString();
-        if (activeData.isAttacking)
+        if (activeData.BAnimState == BossActiveData.BossAnimStates.IDLE && activeData.isAttacking)
         {
-            if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
-            {
-                //playanim
+            activeData.isAttacking = false;
+            //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+            //currentAnimation = targetAnimation;
+        }
+        else if (activeData.isAttacking)
+        {
+            //if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
+            //{
+            //    //playanim
 
+            //}
+            switch (activeData.BAnimState)
+            {
+                case BossActiveData.BossAnimStates.KNIFE_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.HANDSWIPE_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.TRIPLEKNIFE_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.HANDSLAM_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.CLAWGRAB_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.SUGARCANEMISSILES_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
+                case BossActiveData.BossAnimStates.FRUITAIRSTRICK_ATTACK:
+                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    break;
             }
         }
     }

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
+// Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
 
 [System.Serializable]
 struct AttackPhaseData
@@ -22,8 +24,9 @@ public class BossController : MonoBehaviour
     [SerializeField] private List<AttackPhaseData> attackPhaseData;
     private BossActiveData activeData;
 
-
-    [SerializeField] private BossAttacks DEBUGattackData; 
+    [Header("Debugging")]
+    [SerializeField] private BossAttacks DEBUGAttackData;
+    [SerializeField] private AttackHandler DEBUGAttackHandler;
 
     public float HP;
     public float ATK;
@@ -33,7 +36,7 @@ public class BossController : MonoBehaviour
     {
         if (dataHolder.activeData == null)
         {
-            Debug.Log("NO ACTIVE DATA HELD");
+            Debug.LogError("NO ACTIVE DATA HELD");
             return;
         }
 
@@ -41,20 +44,20 @@ public class BossController : MonoBehaviour
 
         if (activeData == null)
         {
-            Debug.Log("NO BOSS ACTIVE DATA FOUND");
+            Debug.LogError("NO BOSS ACTIVE DATA FOUND");
             return;
         }
 
 
-        StartCoroutine(TestAttackFunction());
+        //StartCoroutine(TestAttackFunction());
     }
 
     private void Update()
     {
-        for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
-        {
-            Debug.Log(attackPhaseData[0]._atks[i]);
-        }
+        //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
+        //{
+        //    //Debug.Log(attackPhaseData[0]._atks[i]);
+        //}
     }
 
 
@@ -63,7 +66,7 @@ public class BossController : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
 
-        DEBUGattackData.ExecuteAttack(activeData);
+        DEBUGAttackData.ExecuteAttack(activeData);
     }
 
 
@@ -75,33 +78,7 @@ public class BossController : MonoBehaviour
 
     public void HandleAttack(BossActiveData.BossAnimStates atk)
     {
-        //switch (atk)
-        //{
-        //    case BossActiveData.BossAnimStates.KNIFE_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.HANDSWIPE_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.TRIPLEKNIFE_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.HANDSLAM_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.CLAWGRAB_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.SUGARCANEMISSILES_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //    case BossActiveData.BossAnimStates.FRUITAIRSTRICK_ATTACK:
-        //        attackColliders[0].SetActive(true);
-        //        break;
-        //}
+        
     }
 
 

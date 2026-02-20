@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Klaus & Ainsley
+
 public class BossActiveData : BaseActiveData
 {
     public enum BossAnimStates

@@ -30,7 +30,8 @@ public class PlayerInputController : MonoBehaviour
     {
         activeData = (PlayerActiveData)dataHolder.activeData;
 
-        if (fighterMechanics != null) fighterMechanics.Initialize(activeData);
+        if (fighterMechanics != null) 
+            fighterMechanics.Initialize(activeData);
         if (rangerMechanics != null) rangerMechanics.Initialize(activeData);
 
         // default to melee class
@@ -90,15 +91,18 @@ public class PlayerInputController : MonoBehaviour
         if (newClass == CLASSTYPE.MELEE)
         {
             currentMechanics = fighterMechanics;
+            currentMechanics.EquipClass();
             Debug.Log("Swapped to DragonFruit (Fighter)!");
             // Toggle visual models (fighterModel.SetActive(true))
         }
         else if (newClass == CLASSTYPE.RANGED)
         {
             currentMechanics = rangerMechanics;
+            currentMechanics.EquipClass();
             Debug.Log("Swapped to Mandarin (Ranger)!");
             // Toggle visual models (rangerModel.SetActive(true))
         }
+
     }
 
     void HandleMove()
