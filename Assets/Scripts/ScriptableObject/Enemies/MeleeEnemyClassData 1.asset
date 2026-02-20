@@ -15,4 +15,7 @@ MonoBehaviour:
   maxHealth: 80
   damage: 20
   attackSpeed: 0
+  moveSpeed: 0
+  detectionRadius: 0
+  stopDistance: 0
   enemyClassType: 0

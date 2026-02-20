@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemyClassData
   maxHealth: 70
   damage: 10
+  attackSpeed: 0
+  moveSpeed: 20
+  detectionRadius: 10
+  stopDistance: 7
   enemyClassType: 1
