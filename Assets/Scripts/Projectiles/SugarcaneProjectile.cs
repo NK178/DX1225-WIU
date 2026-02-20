@@ -23,8 +23,12 @@ public class SugarcaneProjectile : GenericProjectile
 
     override public void Initialize(DataHolder.DATATYPE spawner, float damageAmount)
     {
+        isActive = false;
         spawnerType = spawner;
         projectileDamage = damageAmount;
+
+        StopAllCoroutines();
+        StartCoroutine(ActivateProjectileCoroutine());
 
     }
 
@@ -35,7 +39,7 @@ public class SugarcaneProjectile : GenericProjectile
         if (isActive)
         {
             float velocity = projectileSpeed * Time.deltaTime;
-            transform.position += -transform.up * velocity; 
+            transform.position += -transform.forward * velocity; 
         }
         
     }
@@ -49,8 +53,10 @@ public class SugarcaneProjectile : GenericProjectile
 
 
     public void ActivateProjectile()
-    {
-        StartCoroutine(ActivateProjectileCoroutine());
+    {   
+        isActive = true;
+
+        //StartCoroutine(ActivateProjectileCoroutine());
     }
 
 

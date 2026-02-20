@@ -67,4 +67,25 @@ public class GenericProjectile : MonoBehaviour
             ReturnToPool();
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //bool hitEnemy = other.CompareTag("Enemy");
+        //bool hitEnvironment = other.CompareTag("Environment");
+
+
+        bool hitPlayer = other.CompareTag("Player");
+
+        if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
+        {
+            Debug.Log($"Hit player for {projectileDamage} damage!");
+            ReturnToPool();
+        }
+
+        //if (hitEnvironment)
+        //{
+        //    ReturnToPool();
+        //}
+    }
+
 }
