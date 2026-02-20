@@ -6,6 +6,7 @@ public interface IObjectPool
     GameObject Get();
     public void SpawnImpactEffect(Vector3 position, Vector3 normal);
     public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce);
+    public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage);
 }
 
 public class ObjectPoolManager : MonoBehaviour
@@ -70,7 +71,7 @@ public class ObjectPoolManager : MonoBehaviour
                 }
                 else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.SUGARCANE_MISSILES)
                 {
-                    particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnImpactEffect(spawnPos, spawnNormal);
+                    particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage);
                 }
             }
 

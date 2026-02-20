@@ -5,18 +5,18 @@ using UnityEngine;
 public class GenericProjectile : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float lifetime = 5f;
+    [SerializeField] protected float lifetime = 5f;
 
-    private DataHolder.DATATYPE spawnerType;
-    private float projectileDamage;
-    private ProjectileObjectPool myPool;
+    protected DataHolder.DATATYPE spawnerType;
+    protected float projectileDamage;
+    protected ProjectileObjectPool myPool;
 
     public void SetPool(ProjectileObjectPool pool)
     {
         myPool = pool;
     }
 
-    public void Initialize(DataHolder.DATATYPE spawner, float damageAmount)
+    virtual public void Initialize(DataHolder.DATATYPE spawner, float damageAmount)
     {
         spawnerType = spawner;
         projectileDamage = damageAmount;

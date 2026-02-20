@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: SUGARCANE_MISSILE
   m_EditorClassIdentifier: Assembly-CSharp::SugarcaneMissilesAttack
   _attack: 4
-  sugarcanePrefab: {fileID: 696445380054544256, guid: 564bbed15defe8d48b26c3ea02d46c8b, type: 3}
+  debugStartHeight: 5
   delayTimeBeforeFiring: 20
+  ringSpawnCount: 15
+  ringRadius: 4

@@ -49,6 +49,8 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
     {
         return projectilePool.Get();
     }
+
+    ///////////////  TO REMOVE 
     public void SpawnImpactEffect(Vector3 position, Vector3 normal)
     {
         GameObject effect = projectilePool.Get();
@@ -66,6 +68,21 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
         if (objectRef.activeSelf)
         {
             projectilePool.Release(objectRef);
+        }
+    }
+
+
+    // Spawn kinematic projectiles, movement handled elsewhere
+    public void SpawnKinematicProjectiles(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage)
+    {
+        GameObject obj = projectilePool.Get();
+        obj.transform.position = position;
+        obj.transform.rotation = Quaternion.LookRotation(forward);
+
+        GenericProjectile proj = obj.GetComponent<GenericProjectile>();
+        if (proj != null)
+        {
+            proj.Initialize(spawner, damage);
         }
     }
 

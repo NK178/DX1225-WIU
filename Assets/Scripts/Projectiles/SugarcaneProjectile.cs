@@ -20,6 +20,14 @@ public class SugarcaneProjectile : GenericProjectile
         
     }
 
+
+    override public void Initialize(DataHolder.DATATYPE spawner, float damageAmount)
+    {
+        spawnerType = spawner;
+        projectileDamage = damageAmount;
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -46,4 +54,9 @@ public class SugarcaneProjectile : GenericProjectile
     }
 
 
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("HIT GROUND");
+    }
 }

@@ -61,9 +61,12 @@ public class BossController : MonoBehaviour
     //FOR MY TESTING - AINS: 
     public IEnumerator TestAttackFunction()
     {
-        yield return new WaitForSeconds(2f);
+        while (true)
+        {
+            yield return new WaitForSeconds(2f);
 
-        DEBUGattackData.ExecuteAttack(activeData);
+            DEBUGattackData.ExecuteAttack(activeData);
+        }
     }
 
 
