@@ -24,7 +24,7 @@ public class BossController : MonoBehaviour
     private BossActiveData activeData;
 
     [Header("Debugging")]
-    [SerializeField] private BossAttacks DEBUGattackData;
+    [SerializeField] private BossAttacks DEBUGAttackData;
     [SerializeField] private AttackHandler DEBUGAttackHandler;
 
     public float HP;
