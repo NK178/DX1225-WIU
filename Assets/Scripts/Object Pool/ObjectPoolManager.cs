@@ -108,9 +108,9 @@ public class ObjectPoolManager : MonoBehaviour
                     //particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage);
                     particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
                 }
-                else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.RANGER_SEED)
+                else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.RUBBERBAND_BULLETS)
                 {
-                    //particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile
+                    particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, launchForce);
                 }
 
                 //PARTICLES PART

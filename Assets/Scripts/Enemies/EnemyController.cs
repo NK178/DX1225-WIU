@@ -30,8 +30,15 @@ public class EnemyController : MonoBehaviour
     [Header("Detection Settings")]
     [SerializeField] private LayerMask playerLayer;
 
-    [Header("Combat Settings")]
+    [Header("Ranger Settings")]
+    //[SerializeField] private float attackCooldown = 2f;
+    [SerializeField] private float minAttackCooldown = 0.5f;
+    [SerializeField] private float maxAttackCooldown = 5f;
+    [SerializeField] private float minDistance = 2f;
+    [SerializeField] private float maxDistance = 15f;
     [SerializeField] private Transform firePoint;
+
+    private float lastAttackTime;
     private float stopDistance;
 
     private EnemyActiveData activeData;
@@ -41,8 +48,8 @@ public class EnemyController : MonoBehaviour
     {
         activeData = (EnemyActiveData)dataHolder.activeData;
 
-        if (activeData == null)
-            return;
+        if (activeData == null) return;
+        if (firePoint == null) return;
 
         activeData.enemyClassType = enemyType;
     }
@@ -64,7 +71,6 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         HandleMove();
-        HandleAttack();
     }
 
     private void HandleMove()
@@ -204,11 +210,7 @@ public class EnemyController : MonoBehaviour
             currentVelocity = Vector3.MoveTowards(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
 
             Debug.Log("ATTACK TRIGGERED");
-
-            if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
-            {
-                ShootRubberBand();
-            }
+            HandleAttack();
         }
 
         //Always rotate to face the player while chasing
@@ -224,12 +226,47 @@ public class EnemyController : MonoBehaviour
 
     private void HandleAttack()
     {
-
+        if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
+        {
+            Debug.Log("RANGER ATTACK!");
+            ShootRubberBand();
+        }
+        else if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
+        {
+            //MELEE ATTACK
+            Debug.Log("MELEE ATTACK!");
+        }
     }
 
     private void ShootRubberBand()
     {
+        if (firePoint == null || activeData.targetPlayer == null)
+        {
+            return;
+        }
 
+        float distance = Vector3.Distance(transform.position, activeData.targetPlayer.position);
+        float distanceFactor = Mathf.InverseLerp(minDistance, maxDistance, distance);
+        float dynamicCooldown = Mathf.Lerp(minAttackCooldown, maxAttackCooldown, distanceFactor);
+
+        //Check cooldown
+        if (Time.time < lastAttackTime + dynamicCooldown) return;
+
+        Vector3 aimDirection = (activeData.targetPlayer.position - firePoint.position).normalized;
+        firePoint.rotation = Quaternion.LookRotation(aimDirection);
+
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
+            firePoint.position,
+            firePoint.forward,
+            rangerData.damage,
+            20f // Launch Force
+        );
+
+        //Calling the type of object it will spawn
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RUBBERBAND_BULLETS;
+
+        activeData.isObjectPoolTriggered = true;
+        lastAttackTime = Time.time;
     }
 
     private void TakeDamage(int damage)
@@ -243,15 +280,56 @@ public class EnemyController : MonoBehaviour
     }
 
     #region Testing Functions
+    //private void OnDrawGizmosSelected()
+    //{
+    //    // Detection Radius
+    //    Gizmos.color = Color.yellow;
+    //    Gizmos.DrawWireSphere(transform.position, detectionRadius);
+
+    //    // Attack/Stop Radius
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(transform.position, stopDistance);
+    //}
+
     private void OnDrawGizmosSelected()
     {
-        // Detection Radius
+        // 1. Detection Radius (Yellow)
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-        // Attack/Stop Radius
+        // 2. Stop/Attack Radius (Red)
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, stopDistance);
+
+        // --- New Distance-Based Combat Visualization ---
+
+        // 3. Min Distance (Cyan) - Fastest Fire Rate starts here
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, minDistance);
+
+        // 4. Max Distance (Blue) - Slowest Fire Rate starts here
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, maxDistance);
+
+        // 5. Visual line to Player + Dynamic Data Label
+        if (activeData != null && activeData.targetPlayer != null)
+        {
+            float dist = Vector3.Distance(transform.position, activeData.targetPlayer.position);
+
+            // Calculate what the cooldown WOULD be right now
+            float factor = Mathf.InverseLerp(minDistance, maxDistance, dist);
+            float currentCD = Mathf.Lerp(minAttackCooldown, maxAttackCooldown, factor);
+
+            // Draw a line to the player
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(transform.position, activeData.targetPlayer.position);
+
+            // Draw a label in the Scene View (Requires UnityEditor namespace)
+            #if UNITY_EDITOR
+            string info = $"Distance: {dist:F1}m\nNext CD: {currentCD:F2}s";
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 2f, info);
+            #endif
+        }
     }
 
     #endregion

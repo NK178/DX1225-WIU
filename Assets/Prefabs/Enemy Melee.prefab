@@ -235,7 +235,8 @@ MonoBehaviour:
   arrivalRadius: 1.5
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+  firePoint: {fileID: 0}
 --- !u!114 &8011402919438380869
 MonoBehaviour:
   m_ObjectHideFlags: 0
