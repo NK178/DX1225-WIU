@@ -10,6 +10,7 @@ public interface IObjectPool
         Debug.Log("NO IMPACT EFECT FUNCTION");
         return; 
     }
+
     public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce)
     {
         Debug.Log("NO SPAWN PROJECTILE FUNCTION");
@@ -20,6 +21,13 @@ public interface IObjectPool
     public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, Vector3 impluse)
     {
         Debug.Log("NO SPAWN PROJECTILE WITH FORCE IMPLUSE FUNCTION");
+        return;
+    }
+
+    //PROBABLY THE BETTER VERSION
+    public void SpawnProjectile(Vector3 position, Vector3 forward, BaseActiveData baseData, float damage, Vector3 impluse)
+    {
+        Debug.Log("NO SPAWN PROJECTILE BASEDATA WITH FORCE IMPLUSE FUNCTION");
         return;
     }
 
@@ -44,6 +52,7 @@ public class ObjectPoolManager : MonoBehaviour
         FRUIT_CHUNKS,
         RANGER_SEED,
         PARTICLE_SUGARCANESPLASH,
+        PARTICLE_FRUITSPLASH,
         RUBBERBAND_BULLETS,
         NUM_TYPES
     }
@@ -54,6 +63,7 @@ public class ObjectPoolManager : MonoBehaviour
     [SerializeField] private ProjectileObjectPool fruitChunkSpawner;
     [SerializeField] private ProjectileObjectPool rubberBandSpawner;
     [SerializeField] private ParticleObjectPool sugarcaneSplashEffectSpawner;
+    [SerializeField] private ParticleObjectPool fruitSplashEffectSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
     private List<BaseActiveData> entityDataList;
@@ -68,16 +78,9 @@ public class ObjectPoolManager : MonoBehaviour
         if (sugarCaneSpawner != null) particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES] = sugarCaneSpawner;
         if (rangerSeedSpawner != null) particleMap[SPAWNABLE_TYPES.RANGER_SEED] = rangerSeedSpawner;
         if (fruitChunkSpawner != null) particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS] = fruitChunkSpawner;
-        if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
         if (rubberBandSpawner != null) particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS] = rubberBandSpawner;
-        //if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
-
-        if (sugarcaneSplashEffectSpawner != null)
-        {
-            Debug.Log("SPLASH SPAWNER");
-            particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
-        }
-
+        if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
+        if (fruitSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH] = fruitSplashEffectSpawner;
 
         foreach (DataHolder dataHolder in dataHolders)
         {
@@ -120,33 +123,24 @@ public class ObjectPoolManager : MonoBehaviour
                     break;
                 case SPAWNABLE_TYPES.FRUIT_CHUNKS:
 
-                    particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
 
-                    //particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, launchForce);
+                    particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, baseActiveData, damage, baseActiveData.objectPoolSpawnData.impluseForce);
+
+                    //particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
                     break;
                 case SPAWNABLE_TYPES.SUGARCANE_MISSILES:
                     particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH:
-                    Debug.Log("SPAWN EFFECT");
                     particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
-                    break; 
+                    break;
+                case SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH:
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
+                    break;
                 case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:     
                     particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, launchForce);
                     break; 
                 
-//                 }
-//                 else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.RUBBERBAND_BULLETS)
-//                 {
-//                     particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, launchForce);
-//                 }
-
-//                 //PARTICLES PART
-//                 else if (baseActiveData.spawnableType == SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH)
-//                 {
-//                     Debug.Log("SPAWN EFFECT");
-//                     particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
-//                     break;
 
             }
             baseActiveData.isObjectPoolTriggered = false;

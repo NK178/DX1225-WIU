@@ -133,13 +133,13 @@ public class FruitChunksProjectile : GenericProjectile
         bool hitPlayer = collision.gameObject.CompareTag("Player");
         bool hitEnvironment = collision.gameObject.CompareTag("Environment");
 
-        //Vector3 hitPoint = transform.position;
-        //Vector3 hitNormal = Vector3.up;
-        //if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
-        //{
-        //    hitPoint = hit.point;
-        //    hitNormal = hit.normal;
-        //}
+        Vector3 hitPoint = transform.position;
+        Vector3 hitNormal = Vector3.up;
+        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 1.5f))
+        {
+            hitPoint = hit.point;
+            hitNormal = hit.normal;
+        }
 
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
@@ -154,10 +154,10 @@ public class FruitChunksProjectile : GenericProjectile
             thisCollider.excludeLayers = ignoreLayerAfterCollision;
 
             isActive = true;
-            ////spawn particles
-            //bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
-            //bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
-            //bossActive.isObjectPoolTriggered = true;
+            //spawn particles
+            bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH;
+            bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+            bossActive.isObjectPoolTriggered = true;
         }
     }
 
