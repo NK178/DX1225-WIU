@@ -102,6 +102,32 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
         }
     }
 
+    // TESTING
+    public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, Vector3 impluse)
+    {
+        GameObject obj = projectilePool.Get();
+        obj.transform.position = position;
+        obj.transform.rotation = Quaternion.LookRotation(forward);
+
+        GenericProjectile proj = obj.GetComponent<GenericProjectile>();
+        if (proj != null)
+        {
+            proj.Initialize(spawner, damage);
+        }
+
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.useGravity = true;
+
+            Debug.Log("FORCE GO: " + impluse);
+            rb.AddForce(impluse, ForceMode.Impulse);
+        }
+    }
+
+
     // for seeds and rubber bands
     public void SpawnProjectile(Vector3 position, Vector3 forward, DataHolder.DATATYPE spawner, float damage, float launchForce)
     {
@@ -121,6 +147,8 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.useGravity = true;
+
+            Debug.Log("FORCE GO: " + forward * launchForce);
             rb.AddForce(forward * launchForce, ForceMode.Impulse);
         }
     }
