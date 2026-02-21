@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy Melee
   - Enemy Range
+  - Enemy
   - Environment
   layers:
   - Default
@@ -14,8 +15,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Enemy
+  - Player
   - 
   - 
   - 

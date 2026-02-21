@@ -90,11 +90,21 @@ public class AttackHandler : MonoBehaviour
             {
                 if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss || colliderType == ColliderType.NPC))
                 {
-                    Debug.Log(detectors.name + "HIT PLAYER");
+                    Debug.Log(detectors.name + " HIT PLAYER");
+                    DisableCollider(hitColliders[j].name);
+                    continue;
                 }
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
                 {
-                    Debug.Log(detectors.name + "HIT BOSS");
+                    Debug.Log(detectors.name + " HIT BOSS");
+                    DisableCollider(hitColliders[j].name);
+                    continue;
+                }
+                else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)
+                {
+                    Debug.Log(detectors.name + " HIT ENEMY");
+                    DisableCollider(hitColliders[j].name);
+                    continue;
                 }
             }
 

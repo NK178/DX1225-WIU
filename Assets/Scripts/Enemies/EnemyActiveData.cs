@@ -24,6 +24,12 @@ public class EnemyActiveData : BaseActiveData
     public bool canAttack;
     public float attackCooldownTimer;
 
+    //Smoother Feel
+    public Vector3 currentVelocity;
+
+    //Target Player
+    public Transform targetPlayer;
+
     public EnemyActiveData() : base()
     {
         Debug.Log("ENEMY DATA INITIALIZED!");

@@ -7,6 +7,7 @@ public class RangerMechanics : BaseClassMechanics
     [SerializeField] private RangerClassData rangerData;
     [SerializeField] private Transform firePoint;
     [SerializeField] private LineRenderer laserLine;
+    [SerializeField] private TargetingSystem targetingSystem;
 
     private float nextAttackTime;
     private bool isRolling;
@@ -43,6 +44,18 @@ public class RangerMechanics : BaseClassMechanics
     private void ShootSeed()
     {
         if (rangerData == null || firePoint == null) return;
+
+        // AUTO-AIM LOGIC: Look at the target if we have one
+        if (targetingSystem != null && targetingSystem.currentTarget != null)
+        {
+            Vector3 aimDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
+            firePoint.rotation = Quaternion.LookRotation(aimDirection);
+        }
+        else
+        {
+            // Reset to shoot straight forward based on player rotation
+            firePoint.localRotation = Quaternion.identity;
+        }
 
         // Package the data for the Object Pool Manager
         activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
@@ -93,6 +106,12 @@ public class RangerMechanics : BaseClassMechanics
         while (currentLaserAmmo > 0)
         {
             currentLaserAmmo--;
+            Vector3 fireDirection = firePoint.forward;
+            if (targetingSystem != null && targetingSystem.currentTarget != null)
+            {
+                // Constantly calculate direction to the target so the laser "bends" to track them
+                fireDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
+            }
             Ray ray = new Ray(firePoint.position, firePoint.forward);
 
             if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))

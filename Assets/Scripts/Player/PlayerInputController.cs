@@ -14,6 +14,9 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private DataHolder dataHolder;
 
+    [Header("Targeting")]
+    [SerializeField] private TargetingSystem targetingSystem;
+
     private PlayerActiveData activeData;
 
     // Movement & Combat Actions
@@ -25,6 +28,11 @@ public class PlayerInputController : MonoBehaviour
     // Switching Actions
     private InputAction switchFighterAction;
     private InputAction switchRangerAction;
+
+    // Targeting Actions
+    private InputAction lockOnAction;
+    private InputAction switchTargetRightAction;
+    private InputAction switchTargetLeftAction;
 
     void Start()
     {
@@ -59,6 +67,15 @@ public class PlayerInputController : MonoBehaviour
 
         switchRangerAction = playerInput.actions.FindAction("SwitchRanger");
         switchRangerAction?.Enable();
+
+        lockOnAction = playerInput.actions.FindAction("LockOn");
+        lockOnAction?.Enable();
+
+        switchTargetRightAction = playerInput.actions.FindAction("SwitchRight");
+        switchTargetRightAction?.Enable();
+
+        switchTargetLeftAction = playerInput.actions.FindAction("SwitchLeft");
+        switchTargetLeftAction?.Enable();
     }
 
     void Update()
@@ -83,24 +100,24 @@ public class PlayerInputController : MonoBehaviour
 
     private void SwitchCharacter(CLASSTYPE newClass)
     {
-        // Don't switch if we are already that class
-        if (activeData.currentClassType == newClass && currentMechanics != null) return;
+        if (activeData != null && activeData.currentClassType == newClass && currentMechanics != null) return;
 
-        activeData.currentClassType = newClass;
+        if (activeData != null)
+        {
+            activeData.currentClassType = newClass;
+        }
 
         if (newClass == CLASSTYPE.MELEE)
         {
             currentMechanics = fighterMechanics;
             currentMechanics.EquipClass();
             Debug.Log("Swapped to DragonFruit (Fighter)!");
-            // Toggle visual models (fighterModel.SetActive(true))
         }
         else if (newClass == CLASSTYPE.RANGED)
         {
             currentMechanics = rangerMechanics;
             currentMechanics.EquipClass();
             Debug.Log("Swapped to Mandarin (Ranger)!");
-            // Toggle visual models (rangerModel.SetActive(true))
         }
 
     }
@@ -140,6 +157,24 @@ public class PlayerInputController : MonoBehaviour
         if (abilityAction != null && abilityAction.WasPressedThisFrame())
         {
             currentMechanics.HandleAbility();
+        }
+
+        if (targetingSystem != null)
+        {
+            if (lockOnAction != null && lockOnAction.WasPressedThisFrame())
+            {
+                targetingSystem.ToggleLockOn();
+            }
+
+            if (switchTargetRightAction != null && switchTargetRightAction.WasPressedThisFrame())
+            {
+                targetingSystem.SwitchTarget(1);
+            }
+
+            if (switchTargetLeftAction != null && switchTargetLeftAction.WasPressedThisFrame())
+            {
+                targetingSystem.SwitchTarget(-1);
+            }
         }
     }
 }

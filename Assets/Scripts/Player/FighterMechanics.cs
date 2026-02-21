@@ -4,6 +4,10 @@ public class FighterMechanics : BaseClassMechanics
 {
 
     [SerializeField] private FighterClassData fighterClassData;
+    [SerializeField] private AttackHandler SwordHandler;
+
+    private float AtkCDTimer;
+    private float ParryCDTimer;
 
     public override void EquipClass()
     {
@@ -32,6 +36,10 @@ public class FighterMechanics : BaseClassMechanics
 
     public override void HandleAttack()
     {
+        if (Time.time < AtkCDTimer)
+            return;
+        AtkCDTimer = Time.time + fighterClassData.AtkCD;
+        SwordHandler.EnableCollider("Sword");
     }
 
     public override void HandleDefense()
