@@ -122,7 +122,6 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
             rb.angularVelocity = Vector3.zero;
             rb.useGravity = true;
 
-            Debug.Log("FORCE GO: " + impluse);
             rb.AddForce(impluse, ForceMode.Impulse);
         }
     }

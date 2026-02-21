@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2729747656138547151}
   - component: {fileID: 8502473450527353660}
   - component: {fileID: 1698048769201631937}
-  m_Layer: 0
-  m_Name: Sprite
+  m_Layer: 8
+  m_Name: Fruit Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,7 +103,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 7373698121235047861}
   - component: {fileID: 1389453432403511315}
   - component: {fileID: 4419934336095705934}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Fruit Chunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,5 +185,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FruitChunksProjectile
   lifetime: 5
-  delayTimeBeforeFiring: 2
-  projectileSpeed: 10
+  disintergateSpeed: 0.5
+  rb: {fileID: 1389453432403511315}
+  thisCollider: {fileID: 1698048769201631937}
+  ignoreLayerAfterCollision:
+    serializedVersion: 2
+    m_Bits: 832
+  raycastTargetLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  raycastDistance: 2
+  raycastOffset: {x: 0, y: -1, z: 0}

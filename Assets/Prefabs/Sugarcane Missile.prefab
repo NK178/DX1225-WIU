@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8422512712202187019}
   - component: {fileID: 4840352709165251121}
   - component: {fileID: 1458759368500649405}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sugarcane Missile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 8190923767510115459}
   - component: {fileID: 3624161102935594198}
   - component: {fileID: 1044276316980787354}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

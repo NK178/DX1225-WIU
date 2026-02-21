@@ -1,15 +1,17 @@
-using System.Collections;
 using UnityEngine;
 
 
 public class FruitChunksProjectile : GenericProjectile
 {
 
+    [SerializeField] private float disintergateSpeed = 2f;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Collider thisCollider;
+    [SerializeField] private LayerMask ignoreLayerAfterCollision; 
+    [SerializeField] private LayerMask raycastTargetLayer;
 
-    //For now I will leave it like this , will take from the base class later 
-
-    [SerializeField] private float delayTimeBeforeFiring = 2f;
-    [SerializeField] private float projectileSpeed = 10f;
+    [SerializeField] private float raycastDistance;
+    [SerializeField] private Vector3 raycastOffset;
 
     private BossActiveData bossActive;
 
@@ -29,8 +31,8 @@ public class FruitChunksProjectile : GenericProjectile
         spawnerType = spawner;
         projectileDamage = damageAmount;
 
-        StopAllCoroutines();
-        StartCoroutine(ActivateProjectileCoroutine());
+        //StopAllCoroutines();
+        //StartCoroutine(ActivateProjectileCoroutine());
 
     }
 
@@ -45,67 +47,161 @@ public class FruitChunksProjectile : GenericProjectile
 
         bossActive = (BossActiveData)activeData;
 
-        StopAllCoroutines();
-        StartCoroutine(ActivateProjectileCoroutine());
     }
 
 
-    // Update is called once per frame
     void Update()
     {
 
-        //if (isActive)
+        //Vector3 raycastPosition = transform.position + raycastOffset;
+        //Debug.DrawLine(raycastPosition, raycastPosition + Vector3.up * raycastDistance, Color.red);
+        //if (Physics.Raycast(raycastPosition, Vector3.up, out RaycastHit hit, raycastDistance, raycastTargetLayer))
         //{
-        //    float velocity = projectileSpeed * Time.deltaTime;
-        //    transform.position += -transform.forward * velocity;
+        //    Debug.Log("HIT NAME: " + hit.collider.gameObject.name);
+        //}
+        //else if (isActive)
+        //{
+        //    ReturnToPool();
         //}
 
-    }
+
+        //BROKEN 
+        Vector3 raycastPosition = transform.position + raycastOffset;
+        Debug.DrawLine(raycastPosition, raycastPosition + Vector3.up * raycastDistance, Color.red);
+
+        bool hittingFloor = Physics.Raycast(raycastPosition, Vector3.up, out RaycastHit hit, raycastDistance);
 
 
-    private IEnumerator ActivateProjectileCoroutine()
-    {
-        yield return new WaitForSeconds(delayTimeBeforeFiring);
-        isActive = true;
-    }
+        if (hittingFloor)
+            Debug.Log(hit.collider?.gameObject.name + " layer: " + hit.collider?.gameObject.layer);
 
-
-    public void ActivateProjectile()
-    {
-        isActive = true;
-
-        //StartCoroutine(ActivateProjectileCoroutine());
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        //bool hitEnemy = other.CompareTag("Enemy");
-        bool hitEnvironment = other.CompareTag("Environment");
-        bool hitPlayer = other.CompareTag("Player");
-
-        Vector3 hitPoint = transform.position;
-        Vector3 hitNormal = Vector3.up;
-        if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
+        if (isActive && !hittingFloor)
         {
-            hitPoint = hit.point;
-            hitNormal = hit.normal;
-        }
-
-        if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
-        {
-            Debug.Log($"Hit player for {projectileDamage} damage!");
             ReturnToPool();
         }
 
 
-        //if (hitEnvironment)
+        ////check if have succesfully exited ground 
+        //if (isActive)
         //{
-        //    //spawn particles
-        //    bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
-        //    bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
-        //    bossActive.isObjectPoolTriggered = true;
-        //    ReturnToPool();
+        //    //Vector3 hitPoint = transform.position;
+        //    //Vector3 hitNormal = Vector3.up;
+
+        //    Vector3 raycastPosition = transform.position + raycastOffset;
+        //    Debug.DrawLine(raycastPosition, raycastPosition + Vector3.up * raycastDistance, Color.red);
+        //    if (Physics.Raycast(raycastPosition, Vector3.up, out RaycastHit hit, raycastDistance, raycastIgnoreLayer))
+        //    {
+        //        //hitPoint = hit.point;
+        //        //hitNormal = hit.normal;
+        //    }
+        //    else
+        //    {
+        //        //Debug.Log("HIT NAME: " + hit.collider.gameObject.name);
+        //        ReturnToPool();
+        //    }
+
+
+        //    //if (hit.collider != null)
+        //    //{
+
+        //    //}
+
+        //    //if (hit.collider != null && hit.collider.gameObject.CompareTag("Environment"))
+        //    //{
+        //    //    ReturnToPool();
+        //    //}
+        //    ////float velocity = disintergateSpeed * Time.deltaTime;
+        //    ////transform.position += -Vector3.up * velocity;
+        //    //Vector3 newPosition = transform.position + -Vector3.up * disintergateSpeed * Time.deltaTime;
+        //    //rb.MovePosition(newPosition);
         //}
+
     }
+
+
+
+    void FixedUpdate()
+    {
+        if (isActive)
+        {
+            rb.MovePosition(rb.position + Vector3.down * disintergateSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        bool hitPlayer = collision.gameObject.CompareTag("Player");
+        bool hitEnvironment = collision.gameObject.CompareTag("Environment");
+
+        //Vector3 hitPoint = transform.position;
+        //Vector3 hitNormal = Vector3.up;
+        //if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
+        //{
+        //    hitPoint = hit.point;
+        //    hitNormal = hit.normal;
+        //}
+
+        if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
+        {
+            Debug.Log($"Hit player for {projectileDamage} damage!");
+        }
+
+        if (hitEnvironment)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.useGravity = false;
+            rb.freezeRotation = true;
+            thisCollider.excludeLayers = ignoreLayerAfterCollision;
+
+            isActive = true;
+            ////spawn particles
+            //bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
+            //bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+            //bossActive.isObjectPoolTriggered = true;
+        }
+    }
+
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    bool hitEnvironment = collision.gameObject.CompareTag("Environment");
+
+    //    if (hitEnvironment)
+    //    {
+    //        isActive = false;
+    //        ReturnToPool();
+    //    }
+    //}
+
+
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    //bool hitEnemy = other.CompareTag("Enemy");
+    //    bool hitEnvironment = other.CompareTag("Environment");
+    //    bool hitPlayer = other.CompareTag("Player");
+
+    //    Vector3 hitPoint = transform.position;
+    //    Vector3 hitNormal = Vector3.up;
+    //    if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
+    //    {
+    //        hitPoint = hit.point;
+    //        hitNormal = hit.normal;
+    //    }
+
+    //    if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
+    //    {
+    //        Debug.Log($"Hit player for {projectileDamage} damage!");
+    //        ReturnToPool();
+    //    }
+
+
+    //    //if (hitEnvironment)
+    //    //{
+    //    //    //spawn particles
+    //    //    bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
+    //    //    bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+    //    //    bossActive.isObjectPoolTriggered = true;
+    //    //    ReturnToPool();
+    //    //}
+    //}
 }
