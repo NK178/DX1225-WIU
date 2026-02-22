@@ -91,11 +91,8 @@ public class GenericProjectile : MonoBehaviour
 
         bool hitPlayer = other.CompareTag("Player");
 
-        //Tag Style
-        //bool hitDummy = other.CompareTag("Dummy");
-
-        //Layer style
-        bool hitDummy = other.gameObject.layer == LayerMask.NameToLayer("Dummy");
+        bool hitDummyTag = other.CompareTag("Dummy");
+        bool hitDummyLayer = other.gameObject.layer == LayerMask.NameToLayer("Dummy");
 
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
@@ -103,9 +100,8 @@ public class GenericProjectile : MonoBehaviour
             ReturnToPool();
         }
 
-        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)
+        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummyTag || hitDummyLayer)
         {
-
             DummyController dummy = other.GetComponentInParent<DummyController>();
 
             if (dummy != null)
@@ -118,8 +114,26 @@ public class GenericProjectile : MonoBehaviour
                 Debug.LogWarning("DUMMY NULL!");
             }
 
-                ReturnToPool();
+             ReturnToPool();
         }
+
+        //if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)
+        //{
+
+        //    DummyController dummy = other.GetComponentInParent<DummyController>();
+
+        //    if (dummy != null)
+        //    {
+        //        Debug.LogWarning("DUMMY HIT!");
+        //        dummy.TakeDamage(10);
+        //    }
+        //    else
+        //    {
+        //        Debug.LogWarning("DUMMY NULL!");
+        //    }
+
+        //    ReturnToPool();
+        //}
         //if (hitEnvironment)
         //{
         //    ReturnToPool();
