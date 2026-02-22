@@ -122,10 +122,34 @@ public class ProjectileObjectPool : MonoBehaviour, IObjectPool
             rb.angularVelocity = Vector3.zero;
             rb.useGravity = true;
 
-            Debug.Log("FORCE GO: " + impluse);
             rb.AddForce(impluse, ForceMode.Impulse);
         }
     }
+
+    //Fruits
+    public void SpawnProjectile(Vector3 position, Vector3 forward, BaseActiveData baseData, float damage, Vector3 impluse)
+    {
+        GameObject obj = projectilePool.Get();
+        obj.transform.position = position;
+        obj.transform.rotation = Quaternion.LookRotation(forward);
+
+        GenericProjectile proj = obj.GetComponent<GenericProjectile>();
+        if (proj != null)
+        {
+            proj.Initialize(baseData, damage);
+        }
+
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.useGravity = true;
+            rb.AddForce(impluse, ForceMode.Impulse);
+        }
+        return;
+    }
+
 
 
     // for seeds and rubber bands

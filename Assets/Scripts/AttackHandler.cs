@@ -92,6 +92,9 @@ public class AttackHandler : MonoBehaviour
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
                     DisableCollider(hitColliders[j].name);
+
+                    //handle stuff like particles and whatnot 
+                    detectors.GetComponent<BossController>().HandleTriggerParticles(hitColliders[j].gameObject);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
@@ -106,6 +109,8 @@ public class AttackHandler : MonoBehaviour
                     DisableCollider(hitColliders[j].name);
                     continue;
                 }
+
+                //need one for environment
             }
 
 

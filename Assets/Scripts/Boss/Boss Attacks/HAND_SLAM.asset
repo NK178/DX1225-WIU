@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46435dffae0fb0d4fb2e1e39d6c4f72a, type: 3}
   m_Name: HAND_SLAM
   m_EditorClassIdentifier: Assembly-CSharp::HandSlamAttack
-  _attack: 3
+  _attack: 4
