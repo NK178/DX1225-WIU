@@ -40,6 +40,7 @@ public class AttackHandler : MonoBehaviour
 
     public void EnableCollider(string atkName)
     {
+        Debug.Log("ENABLING " + atkName);
         for (int i = 0; i < attackColliders.Count; i++)
         {
             if (attackColliders[i].name == atkName)
@@ -53,6 +54,7 @@ public class AttackHandler : MonoBehaviour
 
     public void DisableCollider(string atkName)
     {
+        Debug.Log("DISABLING " + atkName);
         for (int i = 0; i < attackColliders.Count; i++)
         {
             if (attackColliders[i].name == atkName)
@@ -81,7 +83,7 @@ public class AttackHandler : MonoBehaviour
             Collider detectors = attackColliders[i].obj;
 
             //if (!detectors.activeSelf) continue;
-            if (!detectors.enabled) return;
+            if (!detectors.enabled) continue;
 
             //Collider[] hitColliders = Physics.OverlapSphere(detector.transform.position, detector.radius, targetLayer);
             DebugColliders = detectors.transform;
@@ -91,22 +93,22 @@ public class AttackHandler : MonoBehaviour
                 if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss || colliderType == ColliderType.NPC))
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
-                    DisableCollider(hitColliders[j].name);
+                    DisableCollider(detectors.name);
 
                     //handle stuff like particles and whatnot 
-                    detectors.GetComponent<BossController>().HandleTriggerParticles(hitColliders[j].gameObject);
+                    //detectors.GetComponent<BossController>().HandleTriggerParticles(hitColliders[j].gameObject);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
-                    DisableCollider(hitColliders[j].name);
+                    DisableCollider(detectors.name);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT ENEMY");
-                    DisableCollider(hitColliders[j].name);
+                    DisableCollider(detectors.name);
                     continue;
                 }
 
