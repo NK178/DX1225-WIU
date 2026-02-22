@@ -1,6 +1,7 @@
 using UnityEditor.Rendering;
 using UnityEngine.AI;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [System.Serializable]
 public enum ENEMYCLASSTYPE
@@ -255,17 +256,24 @@ public class EnemyController : MonoBehaviour
         Vector3 aimDirection = (activeData.targetPlayer.position - firePoint.position).normalized;
         firePoint.rotation = Quaternion.LookRotation(aimDirection);
 
+        Vector3 forceVector = firePoint.forward * rangerData.launchForce;
+
         activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
             firePoint.position,
             firePoint.forward,
-            20f, // Launch Force
+            forceVector,
             rangerData.damage
         );
 
         //Calling the type of object it will spawn
         activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RUBBERBAND_BULLETS;
-
         activeData.isObjectPoolTriggered = true;
+
+        if (ObjectPoolManager.Instance != null)
+        {
+            ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+        }
+
         lastAttackTime = Time.time;
     }
 

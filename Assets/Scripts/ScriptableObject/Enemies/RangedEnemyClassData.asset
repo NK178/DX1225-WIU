@@ -18,4 +18,5 @@ MonoBehaviour:
   moveSpeed: 20
   detectionRadius: 10
   stopDistance: 7
+  launchForce: 20
   enemyClassType: 1

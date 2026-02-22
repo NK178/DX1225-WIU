@@ -7,5 +7,6 @@ public class RangedEnemyClassData : BaseClassData
     public float moveSpeed;
     public float detectionRadius;
     public float stopDistance;
+    public float launchForce;
     public ENEMYCLASSTYPE enemyClassType;
 }
