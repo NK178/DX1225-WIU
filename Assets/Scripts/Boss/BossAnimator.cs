@@ -68,6 +68,11 @@ public class BossAnimator : MonoBehaviour
             //    //playanim
 
             //}
+            if (animator == null)
+            {
+                Debug.Log("No animator!");
+                return;
+            }
             switch (activeData.BAnimState)
             {
                 case BossActiveData.BossAnimStates.KNIFE_ATTACK:

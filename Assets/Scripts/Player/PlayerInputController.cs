@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -28,6 +29,11 @@ public class PlayerInputController : MonoBehaviour
     // Switching Actions
     private InputAction switchFighterAction;
     private InputAction switchRangerAction;
+
+    // Camera (Klaus)
+    private InputAction cameraAction;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform cam;
 
     // Targeting Actions
     private InputAction lockOnAction;
@@ -76,12 +82,16 @@ public class PlayerInputController : MonoBehaviour
 
         switchTargetLeftAction = playerInput.actions.FindAction("SwitchLeft");
         switchTargetLeftAction?.Enable();
+
+        cameraAction = playerInput.actions.FindAction("Look");
+        cameraAction?.Enable();
     }
 
     void Update()
     {
         HandleCharacterSwitching();
         HandleMove();
+        HandleCameraMovement();
         HandleCombat();
     }
 
@@ -138,6 +148,20 @@ public class PlayerInputController : MonoBehaviour
             activeData.moveDirection = Vector2.zero;
             activeData.isMoving = false;
         }
+    }
+    
+    // Klaus
+    // Rotates the X-Axis of the input manager GO, it is the one being tracked by Cinemachine
+    // Rotate the Y-Axis of the player.
+    private void HandleCameraMovement()
+    {
+        if (cameraAction == null && cam == null) return;
+
+        Vector2 dir = cameraAction.ReadValue<Vector2>();
+        if (dir.magnitude <= 0) return;
+        //Debug.Log("Moving camera");
+        transform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
+        playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
     }
 
     void HandleCombat()

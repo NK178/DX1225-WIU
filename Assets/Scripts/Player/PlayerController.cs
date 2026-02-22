@@ -26,6 +26,9 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PLAYER DATA NOT FOUND");
             return;
         }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
@@ -46,9 +49,11 @@ public class PlayerController : MonoBehaviour
         // reads whatever speed the active class (or a dodge roll) has set
         float moveSpeed = activeData.currentMoveSpeed;
 
-        Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
+        // Movement changed a bit to fit
+        Vector3 moveDirection = activeData.moveDirection.y * transform.forward + activeData.moveDirection.x * transform.right;
+        //Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
 
-        Vector3 velocity = moveDirection * moveSpeed * Time.deltaTime;
+        Vector3 velocity = moveDirection.normalized * moveSpeed * Time.deltaTime;
 
         characterController.Move(velocity);
     }
