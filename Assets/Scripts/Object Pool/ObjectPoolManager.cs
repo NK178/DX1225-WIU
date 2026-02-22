@@ -160,8 +160,9 @@ public class ObjectPoolManager : MonoBehaviour
                 case SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK].SpawnImpactEffect(spawnPos, spawnNormal);
                     break;
-                case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:     
-                    particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, launchForce);
+                case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:
+                    //particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
+                    particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, baseActiveData, damage, baseActiveData.objectPoolSpawnData.impluseForce);
                     break; 
                 
 

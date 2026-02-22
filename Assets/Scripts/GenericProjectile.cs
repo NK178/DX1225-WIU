@@ -91,12 +91,49 @@ public class GenericProjectile : MonoBehaviour
 
         bool hitPlayer = other.CompareTag("Player");
 
+        bool hitDummyTag = other.CompareTag("Dummy");
+        bool hitDummyLayer = other.gameObject.layer == LayerMask.NameToLayer("Dummy");
+
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
             Debug.Log($"Hit player for {projectileDamage} damage!");
             ReturnToPool();
         }
 
+        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummyTag || hitDummyLayer)
+        {
+            DummyController dummy = other.GetComponentInParent<DummyController>();
+
+            if (dummy != null)
+            {
+                Debug.LogWarning("DUMMY HIT!");
+                dummy.TakeDamage(10);
+            }
+            else
+            {
+                Debug.LogWarning("DUMMY NULL!");
+            }
+
+             ReturnToPool();
+        }
+
+        //if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)
+        //{
+
+        //    DummyController dummy = other.GetComponentInParent<DummyController>();
+
+        //    if (dummy != null)
+        //    {
+        //        Debug.LogWarning("DUMMY HIT!");
+        //        dummy.TakeDamage(10);
+        //    }
+        //    else
+        //    {
+        //        Debug.LogWarning("DUMMY NULL!");
+        //    }
+
+        //    ReturnToPool();
+        //}
         //if (hitEnvironment)
         //{
         //    ReturnToPool();
