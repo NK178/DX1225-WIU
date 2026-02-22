@@ -194,5 +194,5 @@ MonoBehaviour:
   raycastTargetLayer:
     serializedVersion: 2
     m_Bits: 512
-  raycastDistance: 2
-  raycastOffset: {x: 0, y: -1, z: 0}
+  raycastDistance: 1.2
+  raycastOffset: {x: 0, y: 0.5, z: 0}

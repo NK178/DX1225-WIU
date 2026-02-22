@@ -22,18 +22,6 @@ public class SugarcaneMissilesAttack : BossAttacks
             return; 
         }
 
-        //if (playerRef != null)
-        //{
-        //    float ringAngle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-        //    Vector3 offset = new Vector3(Mathf.Cos(ringAngle) * ringRadius, debugStartHeight, Mathf.Sin(ringAngle) * ringRadius);
-        //    Vector3 spawnPos = playerRef.transform.position + offset;
-
-        //    Vector3 directionToPlayer = (playerRef.transform.position - spawnPos).normalized;
-
-        //    activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.SUGARCANE_MISSILES;
-        //    activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPos, -directionToPlayer);
-        //    activeData.isObjectPoolTriggered = true;
-        //}
         timer = 0f;
     }
 
@@ -48,6 +36,13 @@ public class SugarcaneMissilesAttack : BossAttacks
 
             Vector3 directionToPlayer = (playerRef.transform.position - spawnPos).normalized;
 
+            ////New way that will work with spawned enemies and what not 
+            //activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.SUGARCANE_MISSILES;
+            //activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPos, -directionToPlayer);
+            //activeData.isObjectPoolTriggered = true;
+            //ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+
+            //Current way 
             activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.SUGARCANE_MISSILES;
             activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPos, -directionToPlayer);
             activeData.isObjectPoolTriggered = true;

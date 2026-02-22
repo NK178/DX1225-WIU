@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public interface IObjectPool
@@ -74,6 +75,8 @@ public class ObjectPoolManager : MonoBehaviour
 
     Dictionary<SPAWNABLE_TYPES, IObjectPool> particleMap;
 
+    public static ObjectPoolManager Instance; 
+
     private void Start()
     {
         entityDataList = new List<BaseActiveData>();
@@ -97,6 +100,11 @@ public class ObjectPoolManager : MonoBehaviour
         {
             data.onObjectPoolTriggered += HandleSpawnRequest;
         }
+
+        if (Instance == null)
+        {
+            Instance = this; 
+        }
     }
 
     private void OnDisable()
@@ -107,7 +115,7 @@ public class ObjectPoolManager : MonoBehaviour
         }
     }
 
-    private void HandleSpawnRequest(BaseActiveData baseActiveData)
+    public void HandleSpawnRequest(BaseActiveData baseActiveData)
     {
         if (baseActiveData.isObjectPoolTriggered)
         {
