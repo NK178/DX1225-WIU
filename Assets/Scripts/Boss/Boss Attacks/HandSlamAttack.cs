@@ -22,6 +22,8 @@ public class HandSlamAttack : BossAttacks
             atkHandler.EnableCollider("RightHandCollider");
         }
 
+        activeData.BAnimState = _attack;
+        activeData.isAttacking = true;
 
         timer = 0f;
         playParticle1 = true;

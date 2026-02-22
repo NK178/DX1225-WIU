@@ -56,6 +56,7 @@ public class ObjectPoolManager : MonoBehaviour
         PARTICLE_FRUITSPLASH,
         PARTICLE_DUSTSPLASH,
         PARTICLE_WOODSPLINTER,
+        PARTICLE_ELECTRICSPARK,
         RUBBERBAND_BULLETS,
         NUM_TYPES
     }
@@ -69,6 +70,7 @@ public class ObjectPoolManager : MonoBehaviour
     [SerializeField] private ParticleObjectPool fruitSplashEffectSpawner;
     [SerializeField] private ParticleObjectPool woodSplinterEffectSpawner;
     [SerializeField] private ParticleObjectPool dustSplashEffectSpawner;
+    [SerializeField] private ParticleObjectPool electricSparkEffectSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
     private List<BaseActiveData> entityDataList;
@@ -90,6 +92,8 @@ public class ObjectPoolManager : MonoBehaviour
         if (fruitSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH] = fruitSplashEffectSpawner;
         if (woodSplinterEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER] = woodSplinterEffectSpawner;
         if (dustSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH] = dustSplashEffectSpawner;
+        if (electricSparkEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK] = electricSparkEffectSpawner;
+
 
         foreach (DataHolder dataHolder in dataHolders)
         {
@@ -137,8 +141,6 @@ public class ObjectPoolManager : MonoBehaviour
                     break;
                 case SPAWNABLE_TYPES.FRUIT_CHUNKS:
                     particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, baseActiveData, damage, baseActiveData.objectPoolSpawnData.impluseForce);
-
-                    //particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
                     break;
                 case SPAWNABLE_TYPES.SUGARCANE_MISSILES:
                     particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
@@ -154,6 +156,9 @@ public class ObjectPoolManager : MonoBehaviour
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
+                    break;
+                case SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK:
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK].SpawnImpactEffect(spawnPos, spawnNormal);
                     break;
                 case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:     
                     particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, launchForce);

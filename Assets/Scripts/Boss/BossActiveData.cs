@@ -20,10 +20,13 @@ public class BossActiveData : BaseActiveData
         THROWING_SUGARCANE_ATTACK,
     }
 
+    //public bool isAttacking;
+
     public BossAnimStates BAnimState;
-    public bool isAttacking;
     public BossActiveData()
     {
+        isMoving = true;
+        isAttacking = false;
         Debug.Log("Boss Initalizing");
         BAnimState = BossAnimStates.IDLE;
         dataType = DataHolder.DATATYPE.BOSS_ENEMY;

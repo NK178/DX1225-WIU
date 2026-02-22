@@ -27,6 +27,9 @@ public class FruitRainAttack : BossAttacks
     {
         Debug.Log("Fruit Attack");
 
+        activeData.BAnimState = _attack;
+        activeData.isAttacking = true;
+
         timer = 0f;
         canFire = false;
         randomSpawnDelay = Random.Range(spawnDelayMin, spawnDelayMax);

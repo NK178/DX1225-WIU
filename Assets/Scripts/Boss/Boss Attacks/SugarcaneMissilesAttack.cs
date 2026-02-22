@@ -22,6 +22,9 @@ public class SugarcaneMissilesAttack : BossAttacks
             return; 
         }
 
+        activeData.BAnimState = _attack;
+        activeData.isAttacking = true;
+
         timer = 0f;
     }
 

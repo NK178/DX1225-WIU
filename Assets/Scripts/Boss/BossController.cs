@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,6 +50,12 @@ public class BossController : MonoBehaviour
             return;
         }
 
+        //Set to idle 
+        activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
+        activeData.isMoving = false;
+
+
+        //Debug 
         DEBUGAttackData.ExecuteAttack(activeData);
         debugRunning = true;
     }
@@ -76,5 +83,18 @@ public class BossController : MonoBehaviour
     public void HandleAttack()
     {
         
+    }
+
+    public void HandleTriggerParticles(GameObject referenceCollider)
+    {
+        switch (activeData.BAnimState)
+        {
+            case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
+                activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK;
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referenceCollider.transform.position, Vector3.up);
+                activeData.isObjectPoolTriggered = true;
+                ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+                break; 
+        }
     }
 }

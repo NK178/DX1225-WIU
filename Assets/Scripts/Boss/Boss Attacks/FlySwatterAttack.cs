@@ -14,6 +14,14 @@ public class FlySwatterAttack : BossAttacks
 
     public override void ExecuteAttack(BossActiveData activeData)
     {
+
+        AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+
+        if (atkHandler != null)
+        {
+            atkHandler.EnableCollider("FlySwatterCollider");
+        }
+
         attackDelayTime = Random.Range(attackDelayMin, attackDelayMax);
         timer = 0f;
         shouldAttack = hasAttacked = false;
@@ -34,7 +42,8 @@ public class FlySwatterAttack : BossAttacks
             Debug.Log("FLY SWAT ATTACK");
             hasAttacked = true;
 
-
+            activeData.BAnimState = _attack;
+            activeData.isAttacking = true;
 
         }
 
