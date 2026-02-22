@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossAttacks : BAttacks
 {
-    [SerializeField] private BossActiveData.BossAnimStates _attack;
+    [SerializeField] protected BossActiveData.BossAnimStates _attack;
     public override void ExecuteAttack(BossActiveData activeData)
     {
         activeData.BAnimState = _attack;

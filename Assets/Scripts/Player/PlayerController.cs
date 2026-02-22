@@ -12,6 +12,7 @@ public enum CLASSTYPE
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private CharacterController characterController;
 
     private PlayerActiveData activeData;
 
@@ -34,6 +35,8 @@ public class PlayerController : MonoBehaviour
         DebugHandleMove();
     }
 
+
+
     //Testing function since no animation move
     void DebugHandleMove()
     {
@@ -47,6 +50,6 @@ public class PlayerController : MonoBehaviour
 
         Vector3 velocity = moveDirection * moveSpeed * Time.deltaTime;
 
-        transform.position = transform.position + velocity;
+        characterController.Move(velocity);
     }
 }

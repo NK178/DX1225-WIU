@@ -1,15 +1,17 @@
-using System.Collections;
 using UnityEngine;
 
 
 public class FruitChunksProjectile : GenericProjectile
 {
 
+    [SerializeField] private float disintergateSpeed = 2f;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Collider thisCollider;
+    [SerializeField] private LayerMask ignoreLayerAfterCollision; 
+    [SerializeField] private LayerMask raycastTargetLayer;
 
-    //For now I will leave it like this , will take from the base class later 
-
-    [SerializeField] private float delayTimeBeforeFiring = 2f;
-    [SerializeField] private float projectileSpeed = 10f;
+    [SerializeField] private float raycastDistance;
+    [SerializeField] private Vector3 raycastOffset;
 
     private BossActiveData bossActive;
 
@@ -22,19 +24,6 @@ public class FruitChunksProjectile : GenericProjectile
 
     }
 
-
-    override public void Initialize(DataHolder.DATATYPE spawner, float damageAmount)
-    {
-        isActive = false;
-        spawnerType = spawner;
-        projectileDamage = damageAmount;
-
-        StopAllCoroutines();
-        StartCoroutine(ActivateProjectileCoroutine());
-
-    }
-
-
     override public void Initialize(BaseActiveData activeData, float damageAmount)
     {
 
@@ -45,48 +34,42 @@ public class FruitChunksProjectile : GenericProjectile
 
         bossActive = (BossActiveData)activeData;
 
-        StopAllCoroutines();
-        StartCoroutine(ActivateProjectileCoroutine());
+        rb.isKinematic = false;
+
     }
 
 
-    // Update is called once per frame
     void Update()
     {
+        if (isActive)
+        {
+            float velocity = disintergateSpeed * Time.deltaTime;
+            transform.position += -Vector3.up * velocity;
+        }
 
-        //if (isActive)
-        //{
-        //    float velocity = projectileSpeed * Time.deltaTime;
-        //    transform.position += -transform.forward * velocity;
-        //}
+        Vector3 raycastPosition = transform.position + raycastOffset;
+        Debug.DrawLine(raycastPosition, raycastPosition + -Vector3.up * raycastDistance, Color.red);
 
+        bool hittingFloor = Physics.Raycast(raycastPosition, -Vector3.up, out RaycastHit hit, raycastDistance, raycastTargetLayer);
+
+        if (isActive)
+        {
+            float velocity = disintergateSpeed * Time.deltaTime;
+            transform.position += -Vector3.up * velocity;
+
+            if (!hittingFloor)
+                ReturnToPool();
+        }
     }
 
-
-    private IEnumerator ActivateProjectileCoroutine()
+    private void OnCollisionEnter(Collision collision)
     {
-        yield return new WaitForSeconds(delayTimeBeforeFiring);
-        isActive = true;
-    }
-
-
-    public void ActivateProjectile()
-    {
-        isActive = true;
-
-        //StartCoroutine(ActivateProjectileCoroutine());
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        //bool hitEnemy = other.CompareTag("Enemy");
-        bool hitEnvironment = other.CompareTag("Environment");
-        bool hitPlayer = other.CompareTag("Player");
+        bool hitPlayer = collision.gameObject.CompareTag("Player");
+        bool hitEnvironment = collision.gameObject.CompareTag("Environment");
 
         Vector3 hitPoint = transform.position;
         Vector3 hitNormal = Vector3.up;
-        if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
+        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 1.5f))
         {
             hitPoint = hit.point;
             hitNormal = hit.normal;
@@ -95,17 +78,19 @@ public class FruitChunksProjectile : GenericProjectile
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
             Debug.Log($"Hit player for {projectileDamage} damage!");
-            ReturnToPool();
         }
 
 
-        //if (hitEnvironment)
-        //{
-        //    //spawn particles
-        //    bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
-        //    bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
-        //    bossActive.isObjectPoolTriggered = true;
-        //    ReturnToPool();
-        //}
+        if (hitEnvironment)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.isKinematic = true;
+
+            isActive = true;
+            //spawn particles
+            bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH;
+            bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+            bossActive.isObjectPoolTriggered = true;
+        }
     }
 }

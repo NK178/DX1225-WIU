@@ -10,6 +10,7 @@ TagManager:
   - Environment
   - Dummy
   - EnemyBullet
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -21,6 +22,8 @@ TagManager:
   - Player
   - Dummy
   - EnemyBullet
+  - BossProjectiles
+  - Environment
   - 
   - 
   - 

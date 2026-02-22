@@ -50,8 +50,14 @@ public class BossController : MonoBehaviour
             return;
         }
 
+        //Set to idle 
+        activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
+        activeData.isMoving = false;
 
-       StartCoroutine(TestAttackFunction());
+
+        //Debug 
+        DEBUGAttackData.ExecuteAttack(activeData);
+        debugRunning = true;
     }
 
     private void Update()
@@ -68,31 +74,6 @@ public class BossController : MonoBehaviour
     }
 
 
-
-
-    ////FOR MY TESTING - AINS: 
-    public IEnumerator TestAttackFunction()
-    {
-
-        yield return null;
-        DEBUGAttackData.ExecuteAttack(activeData);
-        debugRunning = true;
-    }
-
-
-    ////FOR MY TESTING - AINS: 
-    //public IEnumerator TestAttackFunction()
-    //{
-    //    while (true)
-    //    {
-    //        Debug.Log("HELLO");
-    //        yield return new WaitForSeconds(0.1f);
-
-    //        DEBUGAttackData.ExecuteAttack(activeData);
-    //    }
-    //}
-
-
     public void HandleMove()
     {
 
@@ -102,5 +83,18 @@ public class BossController : MonoBehaviour
     public void HandleAttack()
     {
         
+    }
+
+    public void HandleTriggerParticles(GameObject referenceCollider)
+    {
+        switch (activeData.BAnimState)
+        {
+            case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
+                activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK;
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referenceCollider.transform.position, Vector3.up);
+                activeData.isObjectPoolTriggered = true;
+                ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+                break; 
+        }
     }
 }

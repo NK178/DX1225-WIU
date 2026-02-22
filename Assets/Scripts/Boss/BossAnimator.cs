@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
@@ -24,16 +25,37 @@ public class BossAnimator : MonoBehaviour
         activeData.onStateChanged += OnStateChanged;
     }
 
+    //private void OnEnable()
+    //{
+    //    StartCoroutine(WaitForData());
+    //}
+
+    //private IEnumerator WaitForData()
+    //{
+    //    while (dataHolder.activeData == null)
+    //        yield return null;
+
+    //    Debug.Log("FOUDN DATA");
+    //    activeData = (BossActiveData)dataHolder.activeData;
+    //    activeData.onStateChanged += OnStateChanged;
+    //}
+
 
     public int GetAnimState()
     {
         return (int)activeData.BAnimState;
     }
 
+
+
     public void OnStateChanged()
     {
+        Debug.Log("ANIM STATE CHANGED");
         string targetAnimation = ((BossActiveData.BossAnimStates)GetAnimState()).ToString();
-        if (activeData.BAnimState == BossActiveData.BossAnimStates.IDLE && activeData.isAttacking)
+        Debug.Log("ANIMATION: " + targetAnimation);
+
+
+        if (activeData.BAnimState == BossActiveData.BossAnimStates.IDLE && !activeData.isMoving)
         {
             activeData.isAttacking = false;
             //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);

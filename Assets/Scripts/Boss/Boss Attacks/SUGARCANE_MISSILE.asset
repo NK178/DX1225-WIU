@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SugarcaneMissilesAttack
   _attack: 8
   debugStartHeight: 7
-  delayTimeBeforeFiring: 20
+  spawnDelay: 0.5
   ringRadius: 5

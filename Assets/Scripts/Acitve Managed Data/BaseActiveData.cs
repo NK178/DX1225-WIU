@@ -85,9 +85,24 @@ public class BaseActiveData
         }
     }
 
+    private bool _isAttacking = false;
+    public bool isAttacking
+    {
+        get => _isAttacking;
+        set
+        {
+            if (_isAttacking != value)
+            {
+                _isAttacking = value;
+                TriggerStateChanged();
+            }
+        }
+    }
+
     public BaseActiveData()
     {
         isMoving = false;
+        isAttacking = false; 
         isObjectPoolTriggered = false;
         spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
         objectPoolSpawnData = new ObjectPoolSpawnData();
