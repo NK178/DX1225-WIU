@@ -8,6 +8,8 @@ TagManager:
   - Enemy Range
   - Enemy
   - Environment
+  - Dummy
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX
@@ -17,8 +19,8 @@ TagManager:
   - UI
   - Enemy
   - Player
-  - 
-  - 
+  - Dummy
+  - EnemyBullet
   - 
   - 
   - 
