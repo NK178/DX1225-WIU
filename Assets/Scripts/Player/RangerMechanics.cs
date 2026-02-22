@@ -9,6 +9,9 @@ public class RangerMechanics : BaseClassMechanics
     [SerializeField] private LineRenderer laserLine;
     [SerializeField] private TargetingSystem targetingSystem;
 
+    [Header("UI")]
+    [SerializeField] private BattleUIManager uiManager;
+
     [Header("Visuals & Animation")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform characterMesh;
@@ -16,6 +19,9 @@ public class RangerMechanics : BaseClassMechanics
 
     private float nextAttackTime;
     private float nextLaserTime;
+    private float nextRollTime;
+    private float rollCooldown = 3.0f;
+
     private bool isRolling;
     private bool isFiringLaser;
 
@@ -24,9 +30,20 @@ public class RangerMechanics : BaseClassMechanics
         if (laserLine != null) laserLine.enabled = false;
     }
 
+    private void Update()
+    {
+        if (uiManager != null && rangerData != null)
+        {
+            float laserRemaining = Mathf.Max(0, nextLaserTime - Time.time);
+            uiManager.UpdateCooldownUI(uiManager.laserCooldownImage, laserRemaining, rangerData.laserCooldown);
+
+            float rollRemaining = Mathf.Max(0, nextRollTime - Time.time);
+            uiManager.UpdateCooldownUI(uiManager.rollCooldownImage, rollRemaining, rollCooldown);
+        }
+    }
+
     private void LateUpdate()
     {
-        // Handle the visual drawing of the laser here so it perfectly matches the player's movement
         if (isFiringLaser && laserLine != null && firePoint != null && rangerData != null)
         {
             Vector3 fireDirection = firePoint.forward;
@@ -95,8 +112,9 @@ public class RangerMechanics : BaseClassMechanics
 
     public override void HandleDefense()
     {
-        if (!isRolling && activeData != null && activeData.isMoving && !isFiringLaser && rangerData != null)
+        if (Time.time >= nextRollTime && !isRolling && activeData != null && activeData.isMoving && !isFiringLaser && rangerData != null)
         {
+            nextRollTime = Time.time + rollCooldown;
             StartCoroutine(RollRoutine());
         }
     }
@@ -115,7 +133,6 @@ public class RangerMechanics : BaseClassMechanics
         {
             timer += Time.deltaTime;
 
-            // Spin the mesh to look like a rolling fruit
             if (characterMesh != null && activeData.isMoving)
             {
                 characterMesh.Rotate(Vector3.right, rollRotationSpeed * Time.deltaTime, Space.Self);
@@ -127,7 +144,6 @@ public class RangerMechanics : BaseClassMechanics
         activeData.currentMoveSpeed = originalSpeed;
         if (animator != null) animator.SetBool("IsRolling", false);
 
-        // Snap the mesh upright when finished
         if (characterMesh != null) characterMesh.localRotation = Quaternion.identity;
 
         isRolling = false;
@@ -135,10 +151,8 @@ public class RangerMechanics : BaseClassMechanics
 
     public override void HandleAbility()
     {
-        // Check if the cooldown time has passed!
         if (Time.time >= nextLaserTime && !isFiringLaser && !isRolling && rangerData != null)
         {
-            // Set the cooldown timer for the next use
             nextLaserTime = Time.time + rangerData.laserCooldown;
             StartCoroutine(LaserRoutine());
         }
@@ -151,24 +165,9 @@ public class RangerMechanics : BaseClassMechanics
 
         float timer = 0f;
 
-        // Loop continuously until the duration runs out
         while (timer < rangerData.laserDuration)
         {
-            timer += 0.1f; // add 0.1 because yield for 0.1 seconds below
-
-            // Example Damage Logic:
-            /*
-            Vector3 fireDirection = firePoint.forward;
-            if (targetingSystem != null && targetingSystem.currentTarget != null)
-                fireDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
-                
-            Ray ray = new Ray(firePoint.position, fireDirection);
-            if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
-            {
-                // hit.collider.GetComponent<EnemyHealth>().TakeDamage(tickDamage);
-            }
-            */
-
+            timer += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
 

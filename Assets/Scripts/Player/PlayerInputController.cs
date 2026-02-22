@@ -19,6 +19,7 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private TargetingSystem targetingSystem;
 
     private PlayerActiveData activeData;
+    public BattleUIManager uiManager;
 
     // Movement & Combat Actions
     private InputAction moveAction;
@@ -129,7 +130,10 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics.EquipClass();
             Debug.Log("Swapped to Mandarin (Ranger)!");
         }
-
+        if (uiManager != null)
+        {
+            uiManager.SwapActivePlayerUI(newClass);
+        }
     }
 
     void HandleMove()
