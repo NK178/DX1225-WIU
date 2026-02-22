@@ -8,6 +8,8 @@ TagManager:
   - Enemy Range
   - Enemy
   - Environment
+  - Dummy
+  - EnemyBullet
   - Boss
   layers:
   - Default
@@ -18,6 +20,8 @@ TagManager:
   - UI
   - Enemy
   - Player
+  - Dummy
+  - EnemyBullet
   - BossProjectiles
   - Environment
   - 
