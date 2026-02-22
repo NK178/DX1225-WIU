@@ -9,18 +9,45 @@ public class RangerMechanics : BaseClassMechanics
     [SerializeField] private LineRenderer laserLine;
     [SerializeField] private TargetingSystem targetingSystem;
 
+    [Header("Visuals & Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private Transform characterMesh;
+    [SerializeField] private float rollRotationSpeed = 800f;
+
     private float nextAttackTime;
+    private float nextLaserTime;
     private bool isRolling;
-    private int currentLaserAmmo;
     private bool isFiringLaser;
 
     private void Start()
     {
-        if (rangerData != null)
-        {
-            currentLaserAmmo = rangerData.maxLaserAmmo;
-        }
         if (laserLine != null) laserLine.enabled = false;
+    }
+
+    private void LateUpdate()
+    {
+        // Handle the visual drawing of the laser here so it perfectly matches the player's movement
+        if (isFiringLaser && laserLine != null && firePoint != null && rangerData != null)
+        {
+            Vector3 fireDirection = firePoint.forward;
+
+            if (targetingSystem != null && targetingSystem.currentTarget != null)
+            {
+                fireDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
+            }
+
+            laserLine.SetPosition(0, firePoint.position);
+
+            Ray ray = new Ray(firePoint.position, fireDirection);
+            if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
+            {
+                laserLine.SetPosition(1, hit.point);
+            }
+            else
+            {
+                laserLine.SetPosition(1, firePoint.position + fireDirection * rangerData.laserRange);
+            }
+        }
     }
 
     public override void EquipClass()
@@ -34,7 +61,7 @@ public class RangerMechanics : BaseClassMechanics
 
     public override void HandleAttack()
     {
-        if (Time.time >= nextAttackTime && !isRolling && rangerData != null)
+        if (Time.time >= nextAttackTime && !isRolling && !isFiringLaser && rangerData != null)
         {
             ShootSeed();
             nextAttackTime = Time.time + rangerData.attackCooldown;
@@ -45,7 +72,6 @@ public class RangerMechanics : BaseClassMechanics
     {
         if (rangerData == null || firePoint == null) return;
 
-        // AUTO-AIM LOGIC: Look at the target if we have one
         if (targetingSystem != null && targetingSystem.currentTarget != null)
         {
             Vector3 aimDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
@@ -53,11 +79,9 @@ public class RangerMechanics : BaseClassMechanics
         }
         else
         {
-            // Reset to shoot straight forward based on player rotation
             firePoint.localRotation = Quaternion.identity;
         }
 
-        // Package the data for the Object Pool Manager
         activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
             firePoint.position,
             firePoint.forward,
@@ -65,14 +89,13 @@ public class RangerMechanics : BaseClassMechanics
             rangerData.seedLaunchForce
         );
 
-        // Tell the manager what to spawn and pull the trigger
         activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RANGER_SEED;
         activeData.isObjectPoolTriggered = true;
     }
 
     public override void HandleDefense()
     {
-        if (!isRolling && activeData != null && activeData.isMoving && rangerData != null)
+        if (!isRolling && activeData != null && activeData.isMoving && !isFiringLaser && rangerData != null)
         {
             StartCoroutine(RollRoutine());
         }
@@ -83,17 +106,40 @@ public class RangerMechanics : BaseClassMechanics
         isRolling = true;
         float originalSpeed = rangerData.moveSpeed;
 
+        if (animator != null) animator.SetBool("IsRolling", true);
+
         activeData.currentMoveSpeed = originalSpeed * rangerData.rollSpeedMultiplier;
-        yield return new WaitForSeconds(rangerData.rollDuration);
+
+        float timer = 0f;
+        while (timer < rangerData.rollDuration)
+        {
+            timer += Time.deltaTime;
+
+            // Spin the mesh to look like a rolling fruit
+            if (characterMesh != null && activeData.isMoving)
+            {
+                characterMesh.Rotate(Vector3.right, rollRotationSpeed * Time.deltaTime, Space.Self);
+            }
+
+            yield return null;
+        }
 
         activeData.currentMoveSpeed = originalSpeed;
+        if (animator != null) animator.SetBool("IsRolling", false);
+
+        // Snap the mesh upright when finished
+        if (characterMesh != null) characterMesh.localRotation = Quaternion.identity;
+
         isRolling = false;
     }
 
     public override void HandleAbility()
     {
-        if (currentLaserAmmo > 0 && !isFiringLaser && !isRolling && rangerData != null)
+        // Check if the cooldown time has passed!
+        if (Time.time >= nextLaserTime && !isFiringLaser && !isRolling && rangerData != null)
         {
+            // Set the cooldown timer for the next use
+            nextLaserTime = Time.time + rangerData.laserCooldown;
             StartCoroutine(LaserRoutine());
         }
     }
@@ -103,33 +149,25 @@ public class RangerMechanics : BaseClassMechanics
         isFiringLaser = true;
         if (laserLine != null) laserLine.enabled = true;
 
-        while (currentLaserAmmo > 0)
+        float timer = 0f;
+
+        // Loop continuously until the duration runs out
+        while (timer < rangerData.laserDuration)
         {
-            currentLaserAmmo--;
+            timer += 0.1f; // add 0.1 because yield for 0.1 seconds below
+
+            // Example Damage Logic:
+            /*
             Vector3 fireDirection = firePoint.forward;
             if (targetingSystem != null && targetingSystem.currentTarget != null)
-            {
-                // Constantly calculate direction to the target so the laser "bends" to track them
                 fireDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
-            }
-            Ray ray = new Ray(firePoint.position, firePoint.forward);
-
+                
+            Ray ray = new Ray(firePoint.position, fireDirection);
             if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
             {
-                if (laserLine != null)
-                {
-                    laserLine.SetPosition(0, firePoint.position);
-                    laserLine.SetPosition(1, hit.point);
-                }
+                // hit.collider.GetComponent<EnemyHealth>().TakeDamage(tickDamage);
             }
-            else
-            {
-                if (laserLine != null)
-                {
-                    laserLine.SetPosition(0, firePoint.position);
-                    laserLine.SetPosition(1, firePoint.position + firePoint.forward * rangerData.laserRange);
-                }
-            }
+            */
 
             yield return new WaitForSeconds(0.1f);
         }

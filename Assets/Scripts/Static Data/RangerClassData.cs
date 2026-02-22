@@ -16,7 +16,8 @@ public class RangerClassData : BaseClassData
     public float rollDuration = 0.4f;
 
     [Header("Ability: Laser Eyes")]
-    public int maxLaserAmmo = 50;
+    public float laserDuration = 3.0f;
+    public float laserCooldown = 10.0f;
     public float laserRange = 50f;
     public LayerMask hitMask;
 }

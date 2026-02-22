@@ -16,13 +16,14 @@ MonoBehaviour:
   damage: 0
   classType: 1
   moveSpeed: 20
-  seedProjectilePrefab: {fileID: 0}
-  seedLaunchForce: 15
+  seedProjectilePrefab: {fileID: 6994982273477506858, guid: 4e4c36753a08acf408089c89fc684279, type: 3}
+  seedLaunchForce: 60
   attackCooldown: 0.2
   rollSpeedMultiplier: 2.5
-  rollDuration: 0.4
-  maxLaserAmmo: 50
+  rollDuration: 3
+  laserDuration: 3
+  laserCooldown: 10
   laserRange: 30
   hitMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
