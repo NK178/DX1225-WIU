@@ -50,8 +50,8 @@ public class BossController : MonoBehaviour
             return;
         }
 
-
-       StartCoroutine(TestAttackFunction());
+        DEBUGAttackData.ExecuteAttack(activeData);
+        debugRunning = true;
     }
 
     private void Update()
@@ -66,31 +66,6 @@ public class BossController : MonoBehaviour
             DEBUGAttackData.UpdateAttack(activeData);
         }
     }
-
-
-
-
-    ////FOR MY TESTING - AINS: 
-    public IEnumerator TestAttackFunction()
-    {
-
-        yield return null;
-        DEBUGAttackData.ExecuteAttack(activeData);
-        debugRunning = true;
-    }
-
-
-    ////FOR MY TESTING - AINS: 
-    //public IEnumerator TestAttackFunction()
-    //{
-    //    while (true)
-    //    {
-    //        Debug.Log("HELLO");
-    //        yield return new WaitForSeconds(0.1f);
-
-    //        DEBUGAttackData.ExecuteAttack(activeData);
-    //    }
-    //}
 
 
     public void HandleMove()

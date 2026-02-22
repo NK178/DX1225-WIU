@@ -8,6 +8,7 @@ TagManager:
   - Enemy Range
   - Enemy
   - Environment
+  - Boss
   layers:
   - Default
   - TransparentFX

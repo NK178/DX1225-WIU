@@ -53,6 +53,8 @@ public class ObjectPoolManager : MonoBehaviour
         RANGER_SEED,
         PARTICLE_SUGARCANESPLASH,
         PARTICLE_FRUITSPLASH,
+        PARTICLE_DUSTSPLASH,
+        PARTICLE_WOODSPLINTER,
         RUBBERBAND_BULLETS,
         NUM_TYPES
     }
@@ -64,6 +66,8 @@ public class ObjectPoolManager : MonoBehaviour
     [SerializeField] private ProjectileObjectPool rubberBandSpawner;
     [SerializeField] private ParticleObjectPool sugarcaneSplashEffectSpawner;
     [SerializeField] private ParticleObjectPool fruitSplashEffectSpawner;
+    [SerializeField] private ParticleObjectPool woodSplinterEffectSpawner;
+    [SerializeField] private ParticleObjectPool dustSplashEffectSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
     private List<BaseActiveData> entityDataList;
@@ -81,6 +85,8 @@ public class ObjectPoolManager : MonoBehaviour
         if (rubberBandSpawner != null) particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS] = rubberBandSpawner;
         if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
         if (fruitSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH] = fruitSplashEffectSpawner;
+        if (woodSplinterEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER] = woodSplinterEffectSpawner;
+        if (dustSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH] = dustSplashEffectSpawner;
 
         foreach (DataHolder dataHolder in dataHolders)
         {
@@ -122,8 +128,6 @@ public class ObjectPoolManager : MonoBehaviour
                     particleMap[SPAWNABLE_TYPES.RANGER_SEED].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.PLAYER, damage, launchForce);
                     break;
                 case SPAWNABLE_TYPES.FRUIT_CHUNKS:
-
-
                     particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, baseActiveData, damage, baseActiveData.objectPoolSpawnData.impluseForce);
 
                     //particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.BOSS_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
@@ -136,6 +140,12 @@ public class ObjectPoolManager : MonoBehaviour
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
+                    break;
+                case SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER:
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER].SpawnImpactEffect(spawnPos, spawnNormal);
+                    break;
+                case SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH:
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH].SpawnImpactEffect(spawnPos, spawnNormal);
                     break;
                 case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:     
                     particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, launchForce);
