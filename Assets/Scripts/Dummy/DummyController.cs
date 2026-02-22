@@ -37,14 +37,4 @@ public class DummyController : MonoBehaviour
             return;
         }
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("EnemyBullet") || other.CompareTag("EnemyBullet"))
-        {
-            Debug.LogWarning("DUMMY HIT!");
-            TakeDamage(10);
-            other.gameObject.SetActive(false);
-        }
-    }
 }
