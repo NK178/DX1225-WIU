@@ -258,8 +258,8 @@ public class EnemyController : MonoBehaviour
         activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
             firePoint.position,
             firePoint.forward,
-            rangerData.damage,
-            20f // Launch Force
+            20f, // Launch Force
+            rangerData.damage
         );
 
         //Calling the type of object it will spawn
