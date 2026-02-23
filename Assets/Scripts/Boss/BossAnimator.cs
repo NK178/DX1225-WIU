@@ -53,7 +53,7 @@ public class BossAnimator : MonoBehaviour
     {
         Debug.Log("ANIM STATE CHANGED");
         string targetAnimation = ((BossActiveData.BossAnimStates)GetAnimState()).ToString();
-        Debug.Log("ANIMATION: " + targetAnimation);
+        Debug.Log("ANIMATION: " + targetAnimation); 
 
 
         if (activeData.BAnimState == BossActiveData.BossAnimStates.IDLE && !activeData.isMoving)

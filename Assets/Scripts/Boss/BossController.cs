@@ -94,7 +94,10 @@ public class BossController : MonoBehaviour
             //DEBUGAttackData.UpdateAttack(activeData);
             //DEBUGAttackData.ExecuteAttack(activeData);
         }
-        HandleAttack();
+        //HandleAttack();
+
+        attackPhaseData[activeData.BossPhase]._atks[0].UpdateAttack(activeData);
+        attackPhaseData[activeData.BossPhase]._atks[1].UpdateAttack(activeData);
     }
 
 
@@ -106,8 +109,8 @@ public class BossController : MonoBehaviour
 
     public void HandleAttack()
     {
-        //if (!DebugEnableAttack)
-            //StartCoroutine(DebugAttacking());
+        if (!DebugEnableAttack)
+            StartCoroutine(DebugAttacking());
     }
 
     private IEnumerator DebugAttacking()
@@ -153,6 +156,7 @@ public class BossController : MonoBehaviour
         switch (activeData.BAnimState)
         {
             case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
+                Debug.Log("FLY SWATTER PARTICLE");
                 activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK;
                 activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
                 activeData.isObjectPoolTriggered = true;
