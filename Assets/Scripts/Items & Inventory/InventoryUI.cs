@@ -13,6 +13,11 @@ public class InventoryUI : MonoBehaviour
     void Start()
     {
         
+        foreach (InventoryGrid grid in inventoryGridList)
+        {
+            grid.isEmpty = true;
+            Debug.Log("GRID: " + grid.isEmpty);
+        }
     }
 
     // Update is called once per frame
@@ -27,7 +32,7 @@ public class InventoryUI : MonoBehaviour
         //check for empty space
         foreach (InventoryGrid grid in inventoryGridList)
         {
-
+            Debug.Log("NAME: " + grid.gameObject.name + "IS EMPTY: " + grid.isEmpty);
             if (grid.isEmpty)
             {
                 DraggableItemUI itemUI = CreateDraggableItem(itemData);

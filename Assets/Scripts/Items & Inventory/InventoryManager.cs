@@ -64,7 +64,7 @@ public class InventoryManager : MonoBehaviour
 
                 inventoryUI.UpdateItemUI(pickUpItem.GetItemData());
 
-                Destroy(other.gameObject);
+                Destroy(other.transform.parent.gameObject);
             }
         }
     }
