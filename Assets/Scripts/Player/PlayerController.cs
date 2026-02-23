@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [Header("OnHitVFX")]
     [SerializeField] private Renderer objectRenderer;
     [SerializeField] private Color damageColor;
-    [SerializeField] private float damageEffectDuration;
+
     private Color originalColor;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
