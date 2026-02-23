@@ -5,6 +5,10 @@ public class HealItemData : ItemData
 {
     public override void ItemFunction()
     {
-        Debug.Log("Heal Me");
+        Debug.Log("WHY IS HANYU NOT HEALING ME PLS");
+
+
+        //might as well hard code for the player 
+        
     }
 }

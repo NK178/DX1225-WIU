@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 //can be reused with player as well
@@ -70,4 +71,14 @@ public class PlayerController : MonoBehaviour
 
         characterController.Move(velocity);
     }
+
+    public void SetCurrentHealth(float newHealth)
+    {
+
+    }
+
+    //public float GetCurrentHealth()
+    //{
+    //    //return 
+    //}
 }
