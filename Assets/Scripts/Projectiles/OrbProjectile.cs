@@ -5,29 +5,46 @@ public class OrbProjectile : MonoBehaviour
 
     [Header("Enemy Settings")]
     [SerializeField] private GameObject[] enemies;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private GameObject spawnEffect;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    private bool hasSpawned = false;
 
     private void SpawnEnemy()
     {
+        if (enemies == null || enemies.Length == 0)
+        {
+            Debug.LogError("NO ENEMIES");
+            return;
+        }
 
+        int randomIndex = Random.Range(0, enemies.Length);
+        GameObject enemyPrefab = enemies[randomIndex];
+
+        GameObject spawnedEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+        UnityEngine.AI.NavMeshAgent agent = spawnedEnemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
+
+        if (agent != null)
+        {
+            agent.Warp(transform.position); // Forces the agent onto the NavMesh
+        }
+
+        //Effect if there is one
+        if (spawnEffect != null)
+        {
+            Instantiate(spawnEffect, transform.position, Quaternion.identity);
+        }
+
+        Destroy(gameObject);
     }
-
+        
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Floor"))
         {
+            hasSpawned = true;
             Debug.Log("ENEMY SPAWN!");
             SpawnEnemy();
+            Destroy(gameObject);
         }
     }
 }
