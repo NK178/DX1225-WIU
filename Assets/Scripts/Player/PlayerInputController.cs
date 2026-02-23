@@ -31,10 +31,14 @@ public class PlayerInputController : MonoBehaviour
     private InputAction switchFighterAction;
     private InputAction switchRangerAction;
 
+    [Header("Camera")]
     // Camera (Klaus)
-    private InputAction cameraAction;
+    // playerTransform set to the Player Controller
+    // cameraTransform set to the cameraHolder / playerInputManager 
+    // (Basically whatever CineMachine Third Person is targetting)
     [SerializeField] private Transform playerTransform;
-    [SerializeField] private Transform cam;
+    [SerializeField] private Transform cameraTransform;
+    private InputAction cameraAction;
 
     // Targeting Actions
     private InputAction lockOnAction;
@@ -155,16 +159,20 @@ public class PlayerInputController : MonoBehaviour
     }
     
     // Klaus
-    // Rotates the X-Axis of the input manager GO, it is the one being tracked by Cinemachine
-    // Rotate the Y-Axis of the player.
+    /// <summary>
+    /// Player can turn the character left and right but not up and down.
+    /// (You can just set the playerTransform and cameraTransform to the same GO to achieve a left right up down)
+    /// Rotates the X-Axis of the input manager GO, it is the one being tracked by Cinemachine
+    /// Rotate the Y-Axis of the player.
+    /// </summary>
     private void HandleCameraMovement()
     {
-        if (cameraAction == null && cam == null) return;
+        if (cameraAction == null && cameraTransform == null && playerTransform == null) return;
 
         Vector2 dir = cameraAction.ReadValue<Vector2>();
         if (dir.magnitude <= 0) return;
         //Debug.Log("Moving camera");
-        transform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
+        cameraTransform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
         playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
     }
 
