@@ -94,6 +94,14 @@ public class ObjectPoolManager : MonoBehaviour
         if (dustSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH] = dustSplashEffectSpawner;
         if (electricSparkEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK] = electricSparkEffectSpawner;
 
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+
+        //Insurance for using bad method
+        if (dataHolders == null)
+            return; 
 
         foreach (DataHolder dataHolder in dataHolders)
         {
@@ -104,15 +112,14 @@ public class ObjectPoolManager : MonoBehaviour
         {
             data.onObjectPoolTriggered += HandleSpawnRequest;
         }
-
-        if (Instance == null)
-        {
-            Instance = this; 
-        }
     }
 
     private void OnDisable()
     {
+
+        if (entityDataList == null)
+            return;
+
         foreach (BaseActiveData data in entityDataList)
         {
             data.onObjectPoolTriggered -= HandleSpawnRequest;

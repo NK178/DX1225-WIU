@@ -31,6 +31,9 @@ public class PlayerInputController : MonoBehaviour
     private InputAction switchFighterAction;
     private InputAction switchRangerAction;
 
+    //Inventory (Ains) 
+    private InputAction inventoryAction; 
+
     // Camera (Klaus)
     private InputAction cameraAction;
     [SerializeField] private Transform playerTransform;
@@ -86,6 +89,9 @@ public class PlayerInputController : MonoBehaviour
 
         cameraAction = playerInput.actions.FindAction("Look");
         cameraAction?.Enable();
+
+        inventoryAction = playerInput.actions.FindAction("Inventory");
+        inventoryAction?.Enable();
     }
 
     void Update()
@@ -94,6 +100,11 @@ public class PlayerInputController : MonoBehaviour
         HandleMove();
         HandleCameraMovement();
         HandleCombat();
+
+        if (inventoryAction.WasPressedThisFrame())
+        {
+            activeData.isInventoryOpen = !activeData.isInventoryOpen;
+        }
     }
 
     void HandleCharacterSwitching()
