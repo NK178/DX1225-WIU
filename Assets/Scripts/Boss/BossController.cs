@@ -54,7 +54,7 @@ public class BossController : MonoBehaviour
             return;
         }
 
-        originalColor = GetComponent<Renderer>().material.color;
+        originalColor = objectRenderer.material.color;
         //Set to idle 
         activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
         activeData.isMoving = false;
@@ -106,8 +106,8 @@ public class BossController : MonoBehaviour
 
     public void HandleAttack()
     {
-        if (!DebugEnableAttack)
-            StartCoroutine(DebugAttacking());
+        //if (!DebugEnableAttack)
+            //StartCoroutine(DebugAttacking());
     }
 
     private IEnumerator DebugAttacking()
@@ -125,9 +125,14 @@ public class BossController : MonoBehaviour
         DebugEnableAttack = false;
     }
 
-    public IEnumerator TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
-        HP -= damage;
+        activeData.currentHealth -= damage;
+        StartCoroutine(TakeDamageEffect());
+    }
+
+    private IEnumerator TakeDamageEffect()
+    {
         // Set to damage color instantly
         objectRenderer.material.color = damageColor;
         // Gradually transition back to the original color over time

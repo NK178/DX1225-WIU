@@ -26,9 +26,9 @@ TagManager:
   - EnemyBullet
   - BossProjectiles
   - Environment
-  - 
-  - 
-  - 
+  - TutorialLevel
+  - MinionLevel
+  - BossLevel
   - 
   - 
   - 
