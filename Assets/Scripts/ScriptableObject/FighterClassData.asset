@@ -17,7 +17,7 @@ MonoBehaviour:
   classType: 0
   moveSpeed: 30
   swordCollider: {fileID: 0}
-  AtkCD: 5
+  AtkCD: 1
   parryTiming: 0
   blockDamageReduction: 0
   parryCD: 0

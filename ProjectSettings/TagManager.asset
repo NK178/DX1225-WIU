@@ -12,6 +12,7 @@ TagManager:
   - EnemyBullet
   - Boss
   - Floor
+  - Item
   layers:
   - Default
   - TransparentFX

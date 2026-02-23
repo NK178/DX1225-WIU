@@ -29,10 +29,14 @@ public class BossController : MonoBehaviour
 
     public float HP;
     public float ATK;
-
+    private bool DebugEnableAttack;
 
     public bool debugRunning = false;
 
+    [SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Color damageColor;
+    [SerializeField] private float damageEffectDuration;
+    private Color originalColor;
 
     private void Start()
     {
@@ -50,14 +54,27 @@ public class BossController : MonoBehaviour
             return;
         }
 
+        originalColor = GetComponent<Renderer>().material.color;
         //Set to idle 
         activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
         activeData.isMoving = false;
 
 
         //Debug 
-        DEBUGAttackData.ExecuteAttack(activeData);
+        DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
+        DebugEnableAttack = false;
+        HP = 100;
+
+        // Debug to check what phases have what attacks
+        //for (int i = 0; i < attackPhaseData.Count; i++)
+        //{
+        //    for (int j = 0; j < attackPhaseData[i]._atks.Count; j++)
+        //    {
+        //        Debug.Log("Phase " + attackPhaseData[i].phaseNo + " : " + attackPhaseData[i]._atks[j].name);
+        //    }
+        //}
+        HandleAttack();
     }
 
     private void Update()
@@ -67,10 +84,17 @@ public class BossController : MonoBehaviour
         //    //Debug.Log(attackPhaseData[0]._atks[i]);
         //}
 
+        if (HP <= 70 && activeData.BossPhase == 0)
+        {
+            activeData.BossPhase++;
+        }
+
         if (debugRunning) {
 
-            DEBUGAttackData.UpdateAttack(activeData);
+            //DEBUGAttackData.UpdateAttack(activeData);
+            //DEBUGAttackData.ExecuteAttack(activeData);
         }
+        HandleAttack();
     }
 
 
@@ -82,19 +106,67 @@ public class BossController : MonoBehaviour
 
     public void HandleAttack()
     {
-        
+        if (!DebugEnableAttack)
+            StartCoroutine(DebugAttacking());
     }
 
-    public void HandleTriggerParticles(GameObject referenceCollider)
+    private IEnumerator DebugAttacking()
+    {
+        DebugEnableAttack = true;
+        //GameObject obj = attackColliders[Random.Range(0,attackColliders.Count)].obj;
+        //Collider obj = attackColliders[Random.Range(0, attackColliders.Count)].obj;
+        //Collider obj = attackColliders[Random.Range(0, attackColliders.Count)].obj;
+        //attackPhaseData[activeData.BossPhase]._atks[Random.Range(0, attackPhaseData[activeData.BossPhase]._atks.Count)].ExecuteAttack(activeData);
+        attackPhaseData[activeData.BossPhase]._atks[0].ExecuteAttack(activeData);
+        attackPhaseData[activeData.BossPhase]._atks[1].ExecuteAttack(activeData);
+        //EnableCollider(obj.name);
+        yield return new WaitForSeconds(3.0f);
+        //DisableCollider(obj.name);
+        DebugEnableAttack = false;
+    }
+
+    public IEnumerator TakeDamage(float damage)
+    {
+        HP -= damage;
+        // Set to damage color instantly
+        objectRenderer.material.color = damageColor;
+        // Gradually transition back to the original color over time
+        float elapsedTime = 0f;
+        while (elapsedTime < damageEffectDuration)
+        {
+            objectRenderer.material.color = Color.Lerp(damageColor,
+            originalColor, elapsedTime / damageEffectDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        // Ensure the final color is reset to the original
+        objectRenderer.material.color = originalColor;
+    }
+
+    public void HandleTriggerParticles(Vector3 hitPoint)
     {
         switch (activeData.BAnimState)
         {
             case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
                 activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK;
-                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referenceCollider.transform.position, Vector3.up);
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
                 activeData.isObjectPoolTriggered = true;
                 ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
-                break; 
+                break;
+            case BossActiveData.BossAnimStates.HANDSLAM_ATTACK:
+                Debug.Log("HAND SLAM ATTACK");
+                activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER;
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+                activeData.isObjectPoolTriggered = true;
+                activeData.isObjectPoolTriggered = false;
+
+                activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+                activeData.isObjectPoolTriggered = true;
+                ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+                break;
+
         }
     }
+
 }

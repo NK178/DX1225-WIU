@@ -13,14 +13,14 @@ public class HandSlamAttack : BossAttacks
 
 
         //get the references    
-        AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+        //AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
 
-        if (atkHandler != null)
-        {
-            Debug.Log("Hand Slam");
-            atkHandler.EnableCollider("LeftHandCollider");
-            atkHandler.EnableCollider("RightHandCollider");
-        }
+        //if (atkHandler != null)
+        //{
+        //    Debug.Log("Hand Slam");
+        //    atkHandler.EnableCollider("LeftHandCollider");
+        //    atkHandler.EnableCollider("RightHandCollider");
+        //}
 
         activeData.BAnimState = _attack;
         activeData.isAttacking = true;
@@ -39,30 +39,27 @@ public class HandSlamAttack : BossAttacks
         if (timer > particleDelay && playParticle1)
         {
             playParticle1 = false;
-            timer = 0f;
 
-            //spawn particles
-            activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER;
-            activeData.objectPoolSpawnData = new ObjectPoolSpawnData(Vector3.zero, Vector3.up);
-            activeData.isObjectPoolTriggered = true;
-            activeData.isObjectPoolTriggered = false;
+            AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
 
-            activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
-            activeData.objectPoolSpawnData = new ObjectPoolSpawnData(Vector3.zero, Vector3.up);
-            activeData.isObjectPoolTriggered = true;
+            if (atkHandler != null)
+            {
+                Debug.Log("Hand Slam");
+                atkHandler.EnableCollider("LeftHandCollider");
+                atkHandler.EnableCollider("RightHandCollider");
+            }
         }
 
-        if (timer > particleDelay && playParticle2)
-        {
-            playParticle2 = false;
+        //if (timer > particleDelay && playParticle2)
+        //{
+        //    playParticle2 = false;
 
 
-            activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
-            activeData.objectPoolSpawnData = new ObjectPoolSpawnData(Vector3.zero, Vector3.up);
-            activeData.isObjectPoolTriggered = true;
+        //    activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
+        //    activeData.objectPoolSpawnData = new ObjectPoolSpawnData(Vector3.zero, Vector3.up);
+        //    activeData.isObjectPoolTriggered = true;
 
-        }
-
+        //}
 
 
         timer += Time.deltaTime;

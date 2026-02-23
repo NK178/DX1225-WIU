@@ -4,9 +4,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 // Klaus
-// For Player, NPC Enemies, Boss Colliders
-// Enable and Disable Collider
-// Handling which collider does what
+/// <summary>
+/// For Player, NPC Enemies, Boss Colliders
+/// Enable and Disable Collider
+/// Handling which collider does what
+/// </summary>
 
 [System.Serializable]
 public struct NamingCollider
@@ -19,7 +21,7 @@ public struct NamingCollider
 public class AttackHandler : MonoBehaviour
 {
     //[SerializeField] private List<NamingCollider> attackColliders; // For now just set to GameObject. CHANGE TO COLLIDERS WHEN MODEL ARE HERE
-    public List<NamingCollider> attackColliders; // For now just set to GameObject. CHANGE TO COLLIDERS WHEN MODEL ARE HERE
+    public List<NamingCollider> attackColliders;
 
     private enum ColliderType
     {
@@ -29,7 +31,7 @@ public class AttackHandler : MonoBehaviour
     }
     [SerializeField] private ColliderType colliderType;
 
-    [Header("Debugging")]
+    [Header("Debugging")]   
     private bool DebugEnableAttack = false;
     private Transform DebugColliders;
 
@@ -79,13 +81,10 @@ public class AttackHandler : MonoBehaviour
         //    StartCoroutine(DebugEnableCollider());
         for (int i = 0; i < attackColliders.Count; i++)
         {
-            //GameObject detectors = attackColliders[i].obj;
             Collider detectors = attackColliders[i].obj;
 
-            //if (!detectors.activeSelf) continue;
             if (!detectors.enabled) continue;
 
-            //Collider[] hitColliders = Physics.OverlapSphere(detector.transform.position, detector.radius, targetLayer);
             DebugColliders = detectors.transform;
             Collider[] hitColliders = Physics.OverlapBox(detectors.transform.position, detectors.transform.localScale / 2);
             for (int j = 0; j < hitColliders.Length; j++)
@@ -94,14 +93,16 @@ public class AttackHandler : MonoBehaviour
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
                     DisableCollider(detectors.name);
-
                     //handle stuff like particles and whatnot 
-                    //detectors.GetComponent<BossController>().HandleTriggerParticles(hitColliders[j].gameObject);
+                    Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
+                    detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
+                    //Boss.HP -= 10.0f;
+                    StartCoroutine(Boss.TakeDamage(10f));
                     DisableCollider(detectors.name);
                     continue;
                 }
@@ -111,8 +112,15 @@ public class AttackHandler : MonoBehaviour
                     DisableCollider(detectors.name);
                     continue;
                 }
-
                 //need one for environment
+                else if (hitColliders[j].CompareTag("Environment") && colliderType == ColliderType.Boss)
+                {
+                    Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
+                    Debug.Log(detectors.name + " HIT ENEMY");
+                    DisableCollider(detectors.name);
+                    detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
+                    continue;
+                }
             }
 
 
