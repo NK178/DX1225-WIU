@@ -94,9 +94,9 @@ public class AttackHandler : MonoBehaviour
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
                     DisableCollider(detectors.name);
-
                     //handle stuff like particles and whatnot 
-                    //detectors.GetComponent<BossController>().HandleTriggerParticles(hitColliders[j].gameObject);
+                    Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
+                    detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
@@ -111,8 +111,15 @@ public class AttackHandler : MonoBehaviour
                     DisableCollider(detectors.name);
                     continue;
                 }
-
                 //need one for environment
+                else if (hitColliders[j].CompareTag("Environment") && colliderType == ColliderType.Boss)
+                {
+                    Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
+                    Debug.Log(detectors.name + " HIT ENEMY");
+                    DisableCollider(detectors.name);
+                    detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
+                    continue;
+                }
             }
 
 

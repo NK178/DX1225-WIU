@@ -85,16 +85,31 @@ public class BossController : MonoBehaviour
         
     }
 
-    public void HandleTriggerParticles(GameObject referenceCollider)
+
+    public void HandleTriggerParticles(Vector3 hitPoint)
     {
         switch (activeData.BAnimState)
         {
             case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
                 activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK;
-                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referenceCollider.transform.position, Vector3.up);
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
                 activeData.isObjectPoolTriggered = true;
                 ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
-                break; 
+                break;
+            case BossActiveData.BossAnimStates.HANDSLAM_ATTACK:
+                Debug.Log("HAND SLAM ATTACK");
+                activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER;
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+                activeData.isObjectPoolTriggered = true;
+                activeData.isObjectPoolTriggered = false;
+
+                activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
+                activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+                activeData.isObjectPoolTriggered = true;
+                ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+                break;
+
         }
     }
+
 }
