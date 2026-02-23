@@ -93,6 +93,7 @@ public class AttackHandler : MonoBehaviour
                 if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss || colliderType == ColliderType.NPC))
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
+                    // POSSIBLE PROBLEM!
                     if (detectors.transform.parent.TryGetComponent<BossController>(out var tempBoss))
                         player.TakeDamage(tempBoss.ActiveData.currentAttack);
                     else if (detectors.transform.parent.TryGetComponent<EnemyController>(out var tempNPC))

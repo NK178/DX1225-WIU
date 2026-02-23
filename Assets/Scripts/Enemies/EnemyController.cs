@@ -68,7 +68,7 @@ public class EnemyController : MonoBehaviour
         agent.acceleration = acceleration;
         agent.angularSpeed = rotationSpeed * 100f;
 
-        activeData = (EnemyActiveData)dataHolder.activeData;
+        ActiveData = (EnemyActiveData)dataHolder.activeData;
 
         if (activeData == null) return;
         if (firePoint == null) return;
@@ -76,7 +76,7 @@ public class EnemyController : MonoBehaviour
         activeData.enemyClassType = enemyType;
 
         //Casting it to access wanderDestination/currentState
-        activeData = dataHolder.activeData as EnemyActiveData;
+        //activeData = dataHolder.activeData as EnemyActiveData;
 
         if (activeData != null)
         {
@@ -102,7 +102,7 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        HandleMove();
+        //HandleMove();
     }
 
     private void HandleMove()
