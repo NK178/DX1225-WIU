@@ -106,8 +106,8 @@ public class BossController : MonoBehaviour
 
     public void HandleAttack()
     {
-        if (!DebugEnableAttack)
-            StartCoroutine(DebugAttacking());
+        //if (!DebugEnableAttack)
+            //StartCoroutine(DebugAttacking());
     }
 
     private IEnumerator DebugAttacking()
@@ -125,9 +125,13 @@ public class BossController : MonoBehaviour
         DebugEnableAttack = false;
     }
 
-    public IEnumerator TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         HP -= damage;
+    }
+
+    public IEnumerator TakeDamageEffect(float damage)
+    {
         // Set to damage color instantly
         objectRenderer.material.color = damageColor;
         // Gradually transition back to the original color over time
