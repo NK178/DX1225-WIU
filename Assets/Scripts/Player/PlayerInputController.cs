@@ -163,7 +163,7 @@ public class PlayerInputController : MonoBehaviour
             activeData.isMoving = true;
         }
         else
-        {
+        {   
             activeData.moveDirection = Vector2.zero;
             activeData.isMoving = false;
         }
@@ -179,7 +179,7 @@ public class PlayerInputController : MonoBehaviour
     private void HandleCameraMovement()
     {
         if (cameraAction == null && cameraTransform == null && playerTransform == null) return;
-
+        if (activeData.isInventoryOpen) return; 
         Vector2 dir = cameraAction.ReadValue<Vector2>();
         if (dir.magnitude <= 0) return;
         //Debug.Log("Moving camera");
@@ -189,7 +189,7 @@ public class PlayerInputController : MonoBehaviour
 
     void HandleCombat()
     {
-        if (currentMechanics == null) return;
+        if (currentMechanics == null || activeData.isInventoryOpen) return;
 
         if (attackAction != null && attackAction.WasPressedThisFrame())
         {
