@@ -11,6 +11,7 @@ TagManager:
   - Dummy
   - EnemyBullet
   - Boss
+  - Floor
   - Item
   layers:
   - Default

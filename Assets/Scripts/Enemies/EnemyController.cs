@@ -45,7 +45,9 @@ public class EnemyController : MonoBehaviour
     private EnemyActiveData activeData;
     private float detectionRadius;
 
-    private void Awake()
+    private Transform validTarget;
+
+    void Start()
     {
         activeData = (EnemyActiveData)dataHolder.activeData;
 
@@ -53,10 +55,7 @@ public class EnemyController : MonoBehaviour
         if (firePoint == null) return;
 
         activeData.enemyClassType = enemyType;
-    }
 
-    void Start()
-    {
         //Casting it to access wanderDestination/currentState
         activeData = dataHolder.activeData as EnemyActiveData;
 
@@ -66,6 +65,11 @@ public class EnemyController : MonoBehaviour
             activeData.wanderDestination = transform.position;
             activeData.waitTimer = 2f;
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
+
+            if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
+                activeData.currentHealth = knifeData.maxHealth;
+            else if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
+                activeData.currentHealth = rangerData.maxHealth;
         }
     }
 
@@ -94,7 +98,24 @@ public class EnemyController : MonoBehaviour
         float moveSpeed = activeData.currentMoveSpeed;
 
         Collider[] player = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
-        if (player.Length > 0)
+        validTarget = null;
+
+        foreach (Collider col in player)
+        {
+            DummyController dummy = col.GetComponentInParent<DummyController>();
+            if (dummy != null)
+            {
+                if (dummy.IsAlive())
+                {
+                    validTarget = col.transform;
+                    break;
+                }
+
+                continue;
+            }
+        }
+
+        if (validTarget != null)
         {
             activeData.targetPlayer = player[0].transform;
             activeData.currentState = EnemyActiveData.AIState.CHASING;
@@ -102,6 +123,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             //If player is out of range/gone return back to wandering 
+            activeData.targetPlayer = null;
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
         }
 
@@ -151,6 +173,12 @@ public class EnemyController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
+        if (validTarget == null && activeData.currentState == EnemyActiveData.AIState.CHASING)
+        {
+            activeData.currentState = EnemyActiveData.AIState.WANDERING;
+            PickNewWanderDestination();
+        }
+
         //Apply movement once at the end
         transform.position += currentVelocity * Time.deltaTime;
     }
@@ -192,6 +220,14 @@ public class EnemyController : MonoBehaviour
     {
         if (activeData.targetPlayer == null)
             return;
+
+        DummyController dummy = activeData.targetPlayer.GetComponentInParent<DummyController>();
+        if (dummy != null && !dummy.IsAlive())
+        {
+            activeData.targetPlayer = null;
+            activeData.currentState = EnemyActiveData.AIState.WANDERING;
+            return;
+        }
 
         Vector3 toPlayer = activeData.targetPlayer.position - transform.position;
         toPlayer.y = Vector3.zero.y;

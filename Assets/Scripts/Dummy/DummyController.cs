@@ -37,4 +37,9 @@ public class DummyController : MonoBehaviour
             return;
         }
     }
+
+    public bool IsAlive()
+    {
+        return health > 0;
+    }
 }

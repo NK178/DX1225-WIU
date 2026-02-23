@@ -40,7 +40,7 @@ public class BaseActiveData
 {
     public event Action onStateChanged;
     public float currentMoveSpeed;
-
+    public float currentHealth;
    
     //New stuff 
     public DATATYPE dataType;
