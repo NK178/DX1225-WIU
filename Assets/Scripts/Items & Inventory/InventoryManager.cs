@@ -50,6 +50,8 @@ public class InventoryManager : MonoBehaviour
 
                 itemDataList.Add(pickUpItem.GetItemData());
 
+                inventoryUI.UpdateItemUI(pickUpItem.GetItemData());
+
                 Destroy(other.gameObject);
             }
         }

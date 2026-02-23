@@ -36,6 +36,19 @@ public class PlayerController : MonoBehaviour
         // PlayerController no longer forces the speed variable every frame,
         // It just executes the movement based on whatever the active data currently says
         DebugHandleMove();
+
+
+        if (activeData.isInventoryOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else if (!activeData.isInventoryOpen)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
     }
 
 

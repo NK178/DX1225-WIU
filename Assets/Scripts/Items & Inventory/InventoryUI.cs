@@ -1,9 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
+    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private List<InventoryGrid> inventoryGridList;
 
-    //[SerializeField] private List<Panel> 
+    [SerializeField] private GameObject itemPrefab; 
+
+ 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,6 +20,39 @@ public class InventoryUI : MonoBehaviour
     {
         
     }
+
+
+    public void UpdateItemUI(ItemData itemData)
+    {
+        //check for empty space
+        foreach (InventoryGrid grid in inventoryGridList)
+        {
+
+            if (grid.isEmpty)
+            {
+                DraggableItemUI itemUI = CreateDraggableItem(itemData);
+                grid.HandleItemDrop(itemUI);
+                break;
+            }
+
+
+        }
+    }
+
+    public DraggableItemUI CreateDraggableItem(ItemData itemData)
+    {
+        GameObject refObj = Instantiate(itemPrefab);
+        refObj.transform.SetParent(inventoryPanel.gameObject.transform);
+        DraggableItemUI itemUI = refObj.GetComponent<DraggableItemUI>();
+
+        itemUI.image.sprite = itemData.sprite;
+
+        Debug.Log("HELLO SPAWN UI");
+
+        return itemUI;
+    }
+
+
 }
 
 
