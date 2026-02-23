@@ -17,7 +17,7 @@ public class DraggableItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private int numClicks = 0;
 
     public ItemData itemData;
-    public event Action<ItemData> usedItemEvent;
+    public event Action<ItemData, DraggableItemUI> usedItemEvent;
 
     void Start()
     {
@@ -78,7 +78,7 @@ public class DraggableItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             Debug.Log("USING ITEM");
             numClicks = 0;
             StopAllCoroutines();
-            usedItemEvent?.Invoke(itemData);
+            usedItemEvent?.Invoke(itemData, this);
         }
     }
 

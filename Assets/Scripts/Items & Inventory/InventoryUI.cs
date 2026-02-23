@@ -55,11 +55,14 @@ public class InventoryUI : MonoBehaviour
         return itemUI;
     }
     
-    private void HandleItemUsed(ItemData itemData)
+    private void HandleItemUsed(ItemData itemData, DraggableItemUI itemUI)
     {
         Debug.Log("ITEM USED: " + itemData.sprite.name);
 
-        
+        InventoryManager.Instance.UseItemFunction(itemData);
+
+        Destroy(itemUI.gameObject);
+
     }
 
 

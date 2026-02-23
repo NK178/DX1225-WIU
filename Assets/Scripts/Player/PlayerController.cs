@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 
 //can be reused with player as well
@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private CharacterController characterController;
+
+    [SerializeField] private float damageEffectDuration; 
+    [SerializeField] private float speedEffectDuration; 
+
 
     private PlayerActiveData activeData;
 
@@ -74,11 +78,39 @@ public class PlayerController : MonoBehaviour
 
     public void SetCurrentHealth(float newHealth)
     {
-
+        activeData.currentHealth = newHealth;
+        Debug.Log("PLAYER CURRENT HEALTH: " + activeData.currentHealth);
     }
 
-    //public float GetCurrentHealth()
-    //{
-    //    //return 
-    //}
+    public float GetCurrentHealth()
+    {
+        return activeData.currentHealth;
+    }
+
+    public void SetDamageMultiplier(float damageMulti)
+    {
+        activeData.currentDamageMultiplier = damageMulti;
+        StartCoroutine(DamageEffectCoroutine());
+        Debug.Log("PLAYER CURRENT MULTIPLIER: " + activeData.currentDamageMultiplier);
+    }
+
+    public void SetSpeedMultiplier(float speedMulti)
+    {
+        activeData.currentMoveSpeed = speedMulti;
+        StartCoroutine(SpeedEffectCoroutine());
+
+        Debug.Log("PLAYER SPEED MULTI: " + activeData.currentMoveSpeed);
+    }
+
+    private IEnumerator DamageEffectCoroutine()
+    {
+        yield return new WaitForSeconds(damageEffectDuration);
+        activeData.currentDamageMultiplier = 1f;
+    }
+
+    private IEnumerator SpeedEffectCoroutine()
+    {
+        yield return new WaitForSeconds(speedEffectDuration);
+        activeData.currentMoveSpeed = 1f;
+    }
 }
