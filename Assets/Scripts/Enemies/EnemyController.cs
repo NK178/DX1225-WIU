@@ -46,7 +46,6 @@ public class EnemyController : MonoBehaviour
     private EnemyActiveData activeData;
     private float detectionRadius;
 
-    private float tempHP;
     [Header("OnHitVFX")]
     [SerializeField] private Renderer objectRenderer;
     [SerializeField] private Color damageColor;
@@ -78,6 +77,8 @@ public class EnemyController : MonoBehaviour
             else if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
                 activeData.currentHealth = rangerData.maxHealth;
         }
+
+        originalColor = objectRenderer.material.color;
     }
 
     void Update()

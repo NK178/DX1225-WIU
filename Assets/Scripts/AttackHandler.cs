@@ -92,10 +92,11 @@ public class AttackHandler : MonoBehaviour
                 if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss || colliderType == ColliderType.NPC))
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
+                    player.TakeDamage(30f);
                     DisableCollider(detectors.name);
                     //handle stuff like particles and whatnot 
-                    Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
-                    detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
+                    //Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
+                    //detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
