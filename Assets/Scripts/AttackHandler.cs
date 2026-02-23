@@ -28,6 +28,7 @@ public class AttackHandler : MonoBehaviour
         Player = 0,
         NPC,
         Boss,
+        Environment,
     }
     [SerializeField] private ColliderType colliderType;
 
@@ -92,7 +93,12 @@ public class AttackHandler : MonoBehaviour
                 if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss || colliderType == ColliderType.NPC))
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
-                    player.TakeDamage(30f);
+                    // POSSIBLE PROBLEM!
+                    if (detectors.transform.parent.TryGetComponent<BossController>(out var tempBoss))
+                        player.TakeDamage(tempBoss.ActiveData.currentAttack);
+                    else if (detectors.transform.parent.TryGetComponent<EnemyController>(out var tempNPC))
+                        player.TakeDamage(tempNPC.ActiveData.currentAttack);
+                    else Debug.LogError("A Fake Player hit Boss?");
                     DisableCollider(detectors.name);
                     //handle stuff like particles and whatnot 
                     //Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
@@ -102,27 +108,38 @@ public class AttackHandler : MonoBehaviour
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
-                    //Boss.HP -= 10.0f;
-                    //StartCoroutine(Boss.TakeDamage(10f));
-                    Boss.TakeDamage(10f);
-                    DisableCollider(detectors.name);
+                    if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
+                        Boss.TakeDamage(tempPlayer.ActiveData.currentAttack);
+                    else Debug.LogError("A Fake Player hit Boss?");
+                        DisableCollider(detectors.name);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT ENEMY");
-                    Enemy.TakeDamage(10f);
+                    if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
+                        Enemy.TakeDamage(tempPlayer.ActiveData.currentAttack);
+                    else Debug.LogError("A Fake Player hit Enemy?");
                     DisableCollider(detectors.name);
                     continue;
                 }
-                //need one for environment
-                else if (hitColliders[j].CompareTag("Environment") && colliderType == ColliderType.Boss)
+                //need one for environment (No problem, -Klaus)
+                else if (hitColliders[j].CompareTag("Environment") && colliderType == ColliderType.Environment)
                 {
                     Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
                     Debug.Log(detectors.name + " HIT ENEMY");
                     DisableCollider(detectors.name);
                     detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
                     continue;
+                }
+                // For Environment against player
+                else if (hitColliders[j].TryGetComponent<PlayerController>(out var Player) && colliderType == ColliderType.Environment)
+                {
+                    // Logic here
+                }
+                else if (hitColliders[j].TryGetComponent<PlayerController>(out var NPC) && colliderType == ColliderType.Environment)
+                {
+                    // Logic here
                 }
             }
 

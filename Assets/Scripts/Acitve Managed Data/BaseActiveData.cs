@@ -45,6 +45,8 @@ public class BaseActiveData
     //New stuff 
     public DATATYPE dataType;
 
+    public float currentAttack;
+
     public ObjectPoolManager.SPAWNABLE_TYPES spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
 
     public ObjectPoolSpawnData objectPoolSpawnData;

@@ -148,10 +148,11 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics = fighterMechanics;
             currentMechanics.EquipClass();
             activeData.currentHealth = fighterHP;
+            activeData.currentAttack = fighterMechanics.fighterClassData.damage;
             Debug.Log("Swapped to DragonFruit (Fighter)!");
-            Debug.Log("currentHealth: " + activeData.currentHealth);
-            Debug.Log("fighterHP: " + fighterHP);
-            Debug.Log("rangerHP: " + rangerHP);
+            //Debug.Log("currentHealth: " + activeData.currentHealth);
+            //Debug.Log("fighterHP: " + fighterHP);
+            //Debug.Log("rangerHP: " + rangerHP);
         }
         else if (newClass == CLASSTYPE.RANGED)
         {
@@ -159,10 +160,11 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics = rangerMechanics;
             currentMechanics.EquipClass();
             activeData.currentHealth = rangerHP;
+            activeData.currentAttack = rangerMechanics.rangerData.damage;
             Debug.Log("Swapped to Mandarin (Ranger)!");
-            Debug.Log("currentHealth: " + activeData.currentHealth);
-            Debug.Log("fighterHP: " + fighterHP);
-            Debug.Log("rangerHP: " + rangerHP);
+            //Debug.Log("currentHealth: " + activeData.currentHealth);
+            //Debug.Log("fighterHP: " + fighterHP);
+            //Debug.Log("rangerHP: " + rangerHP);
         }
         if (uiManager != null)
         {

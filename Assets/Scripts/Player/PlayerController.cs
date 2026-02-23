@@ -21,6 +21,11 @@ public class PlayerController : MonoBehaviour
 
 
     private PlayerActiveData activeData;
+    public PlayerActiveData ActiveData
+    {
+        get { return activeData; }
+        private set { activeData = value; }
+    }
 
     [Header("OnHitVFX")]
     [SerializeField] private Renderer objectRenderer;
