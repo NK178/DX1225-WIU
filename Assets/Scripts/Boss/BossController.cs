@@ -127,10 +127,11 @@ public class BossController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        HP -= damage;
+        activeData.currentHealth -= damage;
+        StartCoroutine(TakeDamageEffect());
     }
 
-    public IEnumerator TakeDamageEffect(float damage)
+    private IEnumerator TakeDamageEffect()
     {
         // Set to damage color instantly
         objectRenderer.material.color = damageColor;

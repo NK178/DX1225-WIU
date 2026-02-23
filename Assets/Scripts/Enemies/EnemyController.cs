@@ -322,10 +322,9 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        tempHP -= damage;
+        activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
     }
-
 
     private IEnumerator TakeDamageEffect()
     {
