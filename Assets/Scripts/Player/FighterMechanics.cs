@@ -3,7 +3,7 @@ using UnityEngine;
 public class FighterMechanics : BaseClassMechanics
 {
 
-    [SerializeField] private FighterClassData fighterClassData;
+    public FighterClassData fighterClassData;
     [SerializeField] private AttackHandler SwordHandler;
 
     private float AtkCDTimer;

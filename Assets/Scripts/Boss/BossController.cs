@@ -54,7 +54,7 @@ public class BossController : MonoBehaviour
             return;
         }
 
-        originalColor = GetComponent<Renderer>().material.color;
+        originalColor = objectRenderer.material.color;
         //Set to idle 
         activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
         activeData.isMoving = false;
