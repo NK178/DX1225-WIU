@@ -29,7 +29,7 @@ public class AttackHandler : MonoBehaviour
     }
     [SerializeField] private ColliderType colliderType;
 
-    [Header("Debugging")]
+    [Header("Debugging")]   
     private bool DebugEnableAttack = false;
     private Transform DebugColliders;
 

@@ -132,8 +132,6 @@ public class FruitRainAttack : BossAttacks
         float gravity = Mathf.Abs(Physics.gravity.y);
         float verticalSpeed = (deltaY + 0.5f * gravity * flightTime * flightTime) / flightTime;
 
-        //float verticalSpeed = (deltaY - 0.5f * 1000f * flightTime * flightTime) / flightTime;
-
         Vector3 firingForce = new Vector3(
             normalizeDirection.x * horizontalSpeed,
             verticalSpeed,
