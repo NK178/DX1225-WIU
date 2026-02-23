@@ -20,6 +20,13 @@ public class InventoryGrid : MonoBehaviour, IDropHandler
         heldItem = null;
     }
 
+    void Start()
+    {
+        heldItem = null;
+        isEmpty = true;
+
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         if (!isEmpty)
@@ -107,12 +114,7 @@ public class InventoryGrid : MonoBehaviour, IDropHandler
     }
 
 
-    void Start()
-    {
-        heldItem = null;
-        isEmpty = true;
 
-    }
 
     void Update()
     {

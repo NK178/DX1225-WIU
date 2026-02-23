@@ -12,6 +12,7 @@ public class InventoryManager : MonoBehaviour
 
     private PlayerActiveData activeData;
 
+    public static InventoryManager Instance; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,6 +30,11 @@ public class InventoryManager : MonoBehaviour
 
         inventoryUI.gameObject.SetActive(false);
 
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+
     }
 
     // Update is called once per frame
@@ -36,6 +42,12 @@ public class InventoryManager : MonoBehaviour
     {
         inventoryUI.gameObject.SetActive(activeData.isInventoryOpen);
 
+    }
+
+
+    public void UseItemFunction(ItemData item)
+    {
+        item.ItemFunction();
     }
 
 
@@ -52,7 +64,7 @@ public class InventoryManager : MonoBehaviour
 
                 inventoryUI.UpdateItemUI(pickUpItem.GetItemData());
 
-                Destroy(other.gameObject);
+                Destroy(other.transform.parent.gameObject);
             }
         }
     }
