@@ -94,6 +94,8 @@ public class GenericProjectile : MonoBehaviour
         bool hitDummyTag = other.CompareTag("Dummy");
         bool hitDummyLayer = other.gameObject.layer == LayerMask.NameToLayer("Dummy");
 
+        bool hitFloor = other.CompareTag("Floor");
+
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
             Debug.Log($"Hit player for {projectileDamage} damage!");

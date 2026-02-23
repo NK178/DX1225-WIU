@@ -8,6 +8,9 @@ public class PlayerActiveData : BaseActiveData
 
     public CLASSTYPE currentClassType;
 
+    public float currentDamageMultiplier = 1f;
+    public float currentSpeedMultiplier = 1f;   
+
     private bool _isInventoryOpen = false;
     public bool isInventoryOpen
     {
@@ -29,6 +32,8 @@ public class PlayerActiveData : BaseActiveData
         currentClassType = CLASSTYPE.MELEE;
         dataType = DataHolder.DATATYPE.PLAYER;
         isInventoryOpen = false;
+        currentDamageMultiplier = 1f;
+        currentSpeedMultiplier = 1f;
     }
 
 }

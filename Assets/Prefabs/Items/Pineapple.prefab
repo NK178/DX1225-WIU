@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5435221534752810611
+--- !u!1 &3375837054615369320
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,95 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 547834058492980918}
-  - component: {fileID: 5860534715424617506}
-  - component: {fileID: 2816013610607531839}
-  - component: {fileID: 658795767914835424}
-  - component: {fileID: -7109885316759072230}
-  - component: {fileID: 4452982347733733706}
-  - component: {fileID: 7742144309579264745}
+  - component: {fileID: 8410745469209128850}
+  - component: {fileID: 5862647418713957105}
   m_Layer: 0
-  m_Name: Spawning Orb
-  m_TagString: Untagged
+  m_Name: Pineapple
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &547834058492980918
+--- !u!4 &8410745469209128850
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
+  m_GameObject: {fileID: 3375837054615369320}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.035802215, y: -0.074648514, z: -0.013900484, w: 0.9964701}
+  m_LocalPosition: {x: 1.09, y: 1.57, z: 0.21}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5351693240098366198}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 3.972, y: -8.634, z: -1.898}
+--- !u!114 &5862647418713957105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375837054615369320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a87d9d2b713bd438b8d8d5eeed43cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupableItem
+  itemData: {fileID: 11400000, guid: 2874c3e0d021bb8488f77407d71217ea, type: 2}
+  meshFilter: {fileID: 4117800801865035632}
+--- !u!1 &3460569404995818276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5351693240098366198}
+  - component: {fileID: 4117800801865035632}
+  - component: {fileID: 4618946824306801357}
+  - component: {fileID: 648284081469179119}
+  - component: {fileID: 8919385032782587656}
+  m_Layer: 0
+  m_Name: Sprite
+  m_TagString: Item
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5351693240098366198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3460569404995818276}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 8410745469209128850}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5860534715424617506
+--- !u!33 &4117800801865035632
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
+  m_GameObject: {fileID: 3460569404995818276}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &2816013610607531839
+--- !u!23 &4618946824306801357
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
+  m_GameObject: {fileID: 3460569404995818276}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -70,7 +115,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: d18f11b5b6a88ff4f8ad5b6d6bc53c2f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,13 +138,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &658795767914835424
+--- !u!135 &648284081469179119
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
+  m_GameObject: {fileID: 3460569404995818276}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -114,13 +159,13 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &-7109885316759072230
+--- !u!54 &8919385032782587656
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
+  m_GameObject: {fileID: 3460569404995818276}
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
@@ -137,36 +182,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4452982347733733706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 237c3d23cb179884fa2746b559d3e146, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GenericProjectile
-  lifetime: 5
---- !u!114 &7742144309579264745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5435221534752810611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a26090751fecfe40ad728c9a48f698c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OrbProjectile
-  enemies:
-  - {fileID: 2072051332501917476, guid: 75df7afe2e22b47438fe134c2ca2ab4b, type: 3}
-  - {fileID: 3784287887147908238, guid: ee9ac95244e63614892fc58079cf3ee9, type: 3}
-  spawnEffect: {fileID: 0}
