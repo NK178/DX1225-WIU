@@ -4,13 +4,14 @@ using TMPro;
 
 public class BattleUIManager : MonoBehaviour
 {
+    public static BattleUIManager Instance;
+
     [Header("Boss UI")]
     public Slider bossHealthSlider;
 
     [Header("Player HP Bars")]
     public RectTransform activePos;
     public RectTransform inactivePos;
-
     public CanvasGroup mandarinHPGroup;
     public CanvasGroup dragonFruitHPGroup;
 
@@ -26,6 +27,17 @@ public class BattleUIManager : MonoBehaviour
     public TextMeshProUGUI damageTrackerText;
     private float mandarinDamage = 0;
     private float dragonFruitDamage = 0;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        UpdateDamageTrackerUI();
+    }
 
     private void Update()
     {
@@ -45,7 +57,6 @@ public class BattleUIManager : MonoBehaviour
         float mandarinTargetAlpha = isMandarinActive ? 1f : 0.5f;
         float dragonTargetAlpha = isMandarinActive ? 0.5f : 1f;
 
-        // Lerp everything smooth slide and fade effect
         mandarinRect.anchoredPosition = Vector3.Lerp(mandarinRect.anchoredPosition, mandarinTargetPos, Time.deltaTime * swapSpeed);
         dragonFruitRect.anchoredPosition = Vector3.Lerp(dragonFruitRect.anchoredPosition, dragonTargetPos, Time.deltaTime * swapSpeed);
 
@@ -53,28 +64,38 @@ public class BattleUIManager : MonoBehaviour
         dragonFruitHPGroup.alpha = Mathf.Lerp(dragonFruitHPGroup.alpha, dragonTargetAlpha, Time.deltaTime * swapSpeed);
     }
 
-    // Call this whenever the player presses 1 or 2 to switch characters
     public void SwapActivePlayerUI(CLASSTYPE activeClass)
     {
         isMandarinActive = (activeClass == CLASSTYPE.RANGED);
     }
 
-    // Call these to update the visuals
-    public void UpdateDamageTracker(float mandarinDmg, float dragonDmg)
-    {
-        mandarinDamage = mandarinDmg;
-        dragonFruitDamage = dragonDmg;
-        float total = mandarinDamage + dragonFruitDamage;
-
-        damageTrackerText.text = $"Mandarin: {mandarinDamage}\nDragonFruit: {dragonFruitDamage}\n<color=yellow>TOTAL: {total}</color>";
-    }
-
     public void UpdateCooldownUI(Image abilityIcon, float currentCooldownTimer, float maxCooldown)
     {
-        // Fills the radial circle from 0 to 1 based on the timer
         if (abilityIcon != null)
         {
             abilityIcon.fillAmount = 1f - (currentCooldownTimer / maxCooldown);
+        }
+    }
+    public void AddDamage(CLASSTYPE classSource, float amount)
+    {
+        if (classSource == CLASSTYPE.RANGED)
+        {
+            mandarinDamage += amount;
+        }
+        else if (classSource == CLASSTYPE.MELEE)
+        {
+            dragonFruitDamage += amount;
+        }
+
+        UpdateDamageTrackerUI();
+    }
+
+    private void UpdateDamageTrackerUI()
+    {
+        if (damageTrackerText != null)
+        {
+            float total = mandarinDamage + dragonFruitDamage;
+            damageTrackerText.text = $"Mandarin: {mandarinDamage}\nDragonFruit: {dragonFruitDamage}\n<color=yellow>TOTAL: {total}</color>";
         }
     }
 }
