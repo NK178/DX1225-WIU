@@ -53,9 +53,8 @@ public class EnemyController : MonoBehaviour
     private Color originalColor;
 
     private NavMeshAgent agent;
-
-    void Start()
     private Transform validTarget;
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
