@@ -23,10 +23,12 @@ public class BossActiveData : BaseActiveData
     //public bool isAttacking;
 
     public BossAnimStates BAnimState;
+    public int BossPhase;
     public BossActiveData()
     {
         isMoving = true;
         isAttacking = false;
+        BossPhase = 0;
         Debug.Log("Boss Initalizing");
         BAnimState = BossAnimStates.IDLE;
         dataType = DataHolder.DATATYPE.BOSS_ENEMY;

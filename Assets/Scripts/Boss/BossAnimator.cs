@@ -14,6 +14,7 @@ public class BossAnimator : MonoBehaviour
 
     private BossActiveData activeData;
 
+    [SerializeField] private AttackHandler DEBUGAttackHandler;
 
     private void Start()
     {
@@ -68,36 +69,48 @@ public class BossAnimator : MonoBehaviour
             //    //playanim
 
             //}
-            if (animator == null)
-            {
-                Debug.Log("No animator!");
-                return;
-            }
+            //if (animator == null)
+            //{
+            //    Debug.Log("No animator!");
+            //    return;
+            //}
             switch (activeData.BAnimState)
             {
                 case BossActiveData.BossAnimStates.KNIFE_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider("KnifeCollider");
+                    activeData.isAttacking = false;
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.HANDSWIPE_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider("HandCollider");
+                    activeData.isAttacking = false;
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.TRIPLEKNIFE_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider(targetAnimation);
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.HANDSLAM_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider("HandCollider");
+                    activeData.isAttacking = false;
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider(targetAnimation);
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.CLAWGRAB_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider("ClawCollider");
+                    activeData.isAttacking = false;
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.SUGARCANEMISSILES_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider(targetAnimation);
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.FRUITAIRSTRICK_ATTACK:
-                    animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
+                    DEBUGAttackHandler.EnableCollider(targetAnimation);
+                    //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
             }
         }
