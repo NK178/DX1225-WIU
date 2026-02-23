@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
@@ -38,6 +39,14 @@ public class BossController : MonoBehaviour
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
 
+
+    //the actual phases
+    private int waveIndex = 0;
+    private bool shouldStartBoss = false;
+    private bool shouldRandomizeAttack = false;
+
+    private BossAttacks activeBossAttack; 
+
     private void Start()
     {
         if (dataHolder.activeData == null)
@@ -66,6 +75,13 @@ public class BossController : MonoBehaviour
         DebugEnableAttack = false;
         HP = 100;
 
+        // Set true for now 
+        shouldStartBoss = true;
+
+        waveIndex = 0;
+        activeData.BossPhase = 0;
+        shouldRandomizeAttack = true;
+
         // Debug to check what phases have what attacks
         //for (int i = 0; i < attackPhaseData.Count; i++)
         //{
@@ -74,31 +90,78 @@ public class BossController : MonoBehaviour
         //        Debug.Log("Phase " + attackPhaseData[i].phaseNo + " : " + attackPhaseData[i]._atks[j].name);
         //    }
         //}
-        HandleAttack();
+        //HandleAttack();
     }
+
+
 
     private void Update()
     {
-        //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
-        //{
-        //    //Debug.Log(attackPhaseData[0]._atks[i]);
-        //}
-
-        if (HP <= 70 && activeData.BossPhase == 0)
+        if (shouldStartBoss)
         {
-            activeData.BossPhase++;
+            if (activeData.BossPhase == waveIndex && shouldRandomizeAttack)
+            {
+                SelectAttackPhase();
+                StartCoroutine(AttackDurationCoroutine());
+                activeBossAttack.ExecuteAttack(activeData);
+            }
+
+            if (activeBossAttack != null)
+            {
+                activeBossAttack.UpdateAttack(activeData);
+            }
+
+
+            if (HP <= 70 && activeData.BossPhase == 0)
+            {
+                activeData.BossPhase++;
+            }
         }
-
-        if (debugRunning) {
-
-            //DEBUGAttackData.UpdateAttack(activeData);
-            //DEBUGAttackData.ExecuteAttack(activeData);
-        }
-        //HandleAttack();
-
-        attackPhaseData[activeData.BossPhase]._atks[0].UpdateAttack(activeData);
-        attackPhaseData[activeData.BossPhase]._atks[1].UpdateAttack(activeData);
     }
+
+
+    private void SelectAttackPhase()
+    {
+        Debug.Log("SELECTED ATTACK");
+        //randomize the attack 
+        int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
+        int randomAttackIndex = Random.Range(0, attackListCount);
+        shouldRandomizeAttack = false;
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+    }
+
+    private IEnumerator AttackDurationCoroutine()
+    {
+        //shld prob set a attack duration somewhere here 
+        yield return new WaitForSeconds(5f);
+        Debug.Log("RANDOMIZE ATTACK AGAIN");
+        shouldRandomizeAttack = true;
+    }
+
+
+
+    //private void Update()
+    //{
+    //    //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
+    //    //{
+    //    //    //Debug.Log(attackPhaseData[0]._atks[i]);
+    //    //}
+
+    //    if (HP <= 70 && activeData.BossPhase == 0)
+    //    {
+    //        activeData.BossPhase++;
+    //    }
+
+    //    if (debugRunning) {
+
+    //        //DEBUGAttackData.UpdateAttack(activeData);
+    //        //DEBUGAttackData.ExecuteAttack(activeData);
+    //    }
+    //    //HandleAttack();
+
+    //    attackPhaseData[activeData.BossPhase]._atks[0].UpdateAttack(activeData);
+    //    attackPhaseData[activeData.BossPhase]._atks[1].UpdateAttack(activeData);
+    //}
 
 
     public void HandleMove()

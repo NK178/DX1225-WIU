@@ -6,6 +6,8 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private DataHolder dataHolder; 
     [SerializeField] private BoxCollider boxCollider;
+
+    [SerializeField] private GameObject inventoryPanel;  
     [SerializeField] private InventoryUI inventoryUI;
 
     private List<ItemData> itemDataList; 
@@ -26,9 +28,9 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        activeData.isInventoryOpen = false; 
+        activeData.isInventoryOpen = false;
 
-        inventoryUI.gameObject.SetActive(false);
+        inventoryPanel.gameObject.SetActive(false);
 
         if (Instance == null)
         {
@@ -40,7 +42,7 @@ public class InventoryManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inventoryUI.gameObject.SetActive(activeData.isInventoryOpen);
+        inventoryPanel.gameObject.SetActive(activeData.isInventoryOpen);
 
     }
 
@@ -48,6 +50,15 @@ public class InventoryManager : MonoBehaviour
     public void UseItemFunction(ItemData item)
     {
         item.ItemFunction();
+        //remove from the list 
+        foreach (ItemData itemData in itemDataList)
+        {
+            if (itemData.itemType == item.itemType)
+            {
+                itemDataList.Remove(itemData);
+                break; 
+            }
+        }
     }
 
 
