@@ -1,17 +1,12 @@
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 
 public class InventoryGrid : MonoBehaviour, IDropHandler
 {
-
-
     [HideInInspector] public bool isEmpty;
     public GameObject heldItem;
     private int row, col;
-
-
 
     InventoryGrid()
     {
@@ -27,23 +22,19 @@ public class InventoryGrid : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (!isEmpty)
+            return; 
+
         GameObject dropped = eventData.pointerDrag;
         DraggableItemUI draggableItem = dropped.GetComponent<DraggableItemUI>();
         HandleItemDrop(draggableItem);
-
-        //draggableItem.parentAfterDrag = transform;
-
-        //Debug.Log("DROPPING BOMBS");
-        ////store the gameobject 
-        //heldItem = gameObject;
-        //isEmpty = false;
     }
 
 
     public void HandleItemDrop(DraggableItemUI dragItem)
     {
         dragItem.parentAfterDrag = transform;
-        dragItem.transform.parent = dragItem.parentAfterDrag;
+        dragItem.transform.parent = dragItem.parentAfterDrag;   
 
         Debug.Log("DROPPING BOMBS");
         //store the gameobject 

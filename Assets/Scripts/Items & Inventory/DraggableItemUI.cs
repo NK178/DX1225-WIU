@@ -22,6 +22,13 @@ public class DraggableItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
         image.raycastTarget = false;
+
+        //update the grid parent also 
+        InventoryGrid grid = parentAfterDrag.GetComponent<InventoryGrid>();
+        if (grid != null)
+        {
+            grid.isEmpty = true;
+        }
     }
 
 
