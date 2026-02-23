@@ -44,6 +44,12 @@ public class EnemyController : MonoBehaviour
     private float stopDistance;
 
     private EnemyActiveData activeData;
+    public EnemyActiveData ActiveData
+    {
+        get { return activeData; }
+        private set { activeData = value; }
+    }
+
     private float detectionRadius;
 
     [Header("OnHitVFX")]
@@ -73,9 +79,15 @@ public class EnemyController : MonoBehaviour
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
 
             if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
+            {
                 activeData.currentHealth = knifeData.maxHealth;
+                activeData.currentAttack = knifeData.damage;
+            }
             else if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
+            {
                 activeData.currentHealth = rangerData.maxHealth;
+                activeData.currentAttack = rangerData.damage;
+            }
         }
 
         originalColor = objectRenderer.material.color;

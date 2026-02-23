@@ -19,9 +19,15 @@ public class BossController : MonoBehaviour
 {
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private BossAnimator animator;
+    [SerializeField] private BossClassData bossData;
 
     [SerializeField] private List<AttackPhaseData> attackPhaseData;
     private BossActiveData activeData;
+    public BossActiveData ActiveData
+    {
+        get { return activeData; }
+        private set { activeData = value; }
+    }
 
     [Header("Debugging")]
     [SerializeField] private BossAttacks DEBUGAttackData;
@@ -64,7 +70,8 @@ public class BossController : MonoBehaviour
         DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
         DebugEnableAttack = false;
-        HP = 100;
+        activeData.currentHealth = bossData.maxHealth;
+        activeData.currentAttack = bossData.damage;
 
         // Debug to check what phases have what attacks
         //for (int i = 0; i < attackPhaseData.Count; i++)
@@ -83,8 +90,8 @@ public class BossController : MonoBehaviour
         //{
         //    //Debug.Log(attackPhaseData[0]._atks[i]);
         //}
-
-        if (HP <= 70 && activeData.BossPhase == 0)
+        HP = activeData.currentHealth;
+        if (activeData.currentHealth <= 70 && activeData.BossPhase == 0)
         {
             activeData.BossPhase++;
         }

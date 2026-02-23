@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a40fcfcac550f458b7b39b1dec1768, type: 3}
   m_Name: BossClassData
   m_EditorClassIdentifier: Assembly-CSharp::BossClassData
-  maxHealth: 0
-  damage: 0
+  maxHealth: 100
+  damage: 30
