@@ -4,10 +4,10 @@ using UnityEngine;
 public class RangerMechanics : BaseClassMechanics
 {
     [Header("References")]
-    [SerializeField] private RangerClassData rangerData;
     [SerializeField] private Transform firePoint;
     [SerializeField] private LineRenderer laserLine;
     [SerializeField] private TargetingSystem targetingSystem;
+    public RangerClassData rangerData;
 
     [Header("UI")]
     [SerializeField] private BattleUIManager uiManager;

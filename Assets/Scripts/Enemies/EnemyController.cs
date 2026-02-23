@@ -2,6 +2,7 @@ using UnityEditor.Rendering;
 using UnityEngine.AI;
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Collections;
 
 [System.Serializable]
 public enum ENEMYCLASSTYPE
@@ -45,11 +46,17 @@ public class EnemyController : MonoBehaviour
     private EnemyActiveData activeData;
     private float detectionRadius;
 
-    private Transform validTarget;
+    [Header("OnHitVFX")]
+    [SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Color damageColor;
+    [SerializeField] private float damageEffectDuration;
+    private Color originalColor;
 
     private NavMeshAgent agent;
 
     void Start()
+    private Transform validTarget;
+    private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.stoppingDistance = arrivalRadius;
@@ -78,6 +85,8 @@ public class EnemyController : MonoBehaviour
             else if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
                 activeData.currentHealth = rangerData.maxHealth;
         }
+
+        originalColor = objectRenderer.material.color;
     }
 
     void Update()
@@ -316,7 +325,7 @@ public class EnemyController : MonoBehaviour
         if (NavMesh.SamplePosition(sourcePosition, out hit, 10f, NavMesh.AllAreas))
         {
             activeData.wanderDestination = hit.position;
-            agent.SetDestination(hit.position); // critical — actually send agent there
+            agent.SetDestination(hit.position); // critical ï¿½ actually send agent there
         }
         else
         {
@@ -397,12 +406,30 @@ public class EnemyController : MonoBehaviour
         lastAttackTime = Time.time;
     }
 
-    private void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-
+        activeData.currentHealth -= damage;
+        StartCoroutine(TakeDamageEffect());
     }
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator TakeDamageEffect()
+    {
+        // Set to damage color instantly
+        objectRenderer.material.color = damageColor;
+        // Gradually transition back to the original color over time
+        float elapsedTime = 0f;
+        while (elapsedTime  < damageEffectDuration)
+        {
+            objectRenderer.material.color = Color.Lerp(damageColor,
+            originalColor, elapsedTime / damageEffectDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        // Ensure the final color is reset to the original
+        objectRenderer.material.color = originalColor;
+    }
+
+private void OnTriggerEnter(Collider other)
     {
         
     }

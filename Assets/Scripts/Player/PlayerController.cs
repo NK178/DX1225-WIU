@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 //can be reused with player as well
 [System.Serializable]
@@ -16,6 +18,12 @@ public class PlayerController : MonoBehaviour
 
     private PlayerActiveData activeData;
 
+    [Header("OnHitVFX")]
+    [SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Color damageColor;
+    [SerializeField] private float damageEffectDuration;
+    private Color originalColor;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,6 +34,8 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PLAYER DATA NOT FOUND");
             return;
         }
+
+        originalColor = objectRenderer.material.color;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -70,4 +80,37 @@ public class PlayerController : MonoBehaviour
 
         characterController.Move(velocity);
     }
+
+    public void SetCurrentHealth(float newHealth)
+    {
+
+    }
+
+    //public float GetCurrentHealth()
+    //{
+    //    //return 
+    //}
+
+    public void TakeDamage(float Damage)
+    {
+        activeData.currentHealth -= Damage;
+        StartCoroutine(TakeDamageEffect());
+    }
+    private IEnumerator TakeDamageEffect()
+    {
+        // Set to damage color instantly
+        objectRenderer.material.color = damageColor;
+        // Gradually transition back to the original color over time
+        float elapsedTime = 0f;
+        while (elapsedTime < damageEffectDuration)
+        {
+            objectRenderer.material.color = Color.Lerp(damageColor,
+            originalColor, elapsedTime / damageEffectDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        // Ensure the final color is reset to the original
+        objectRenderer.material.color = originalColor;
+    }
+
 }

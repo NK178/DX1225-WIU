@@ -6,8 +6,8 @@ using UnityEngine.ProBuilder.MeshOperations;
 public class PlayerInputController : MonoBehaviour
 {
     [Header("Character Mechanics")]
-    [SerializeField] private BaseClassMechanics fighterMechanics;
-    [SerializeField] private BaseClassMechanics rangerMechanics; 
+    [SerializeField] private FighterMechanics fighterMechanics;
+    [SerializeField] private RangerMechanics rangerMechanics; 
 
     private BaseClassMechanics currentMechanics;
 
@@ -48,6 +48,11 @@ public class PlayerInputController : MonoBehaviour
     private InputAction switchTargetRightAction;
     private InputAction switchTargetLeftAction;
 
+    [Header("Health")]
+    // Health Issues
+    [SerializeField] private float fighterHP;
+    [SerializeField] private float rangerHP;
+
     void Start()
     {
         activeData = (PlayerActiveData)dataHolder.activeData;
@@ -55,6 +60,10 @@ public class PlayerInputController : MonoBehaviour
         if (fighterMechanics != null) 
             fighterMechanics.Initialize(activeData);
         if (rangerMechanics != null) rangerMechanics.Initialize(activeData);
+
+        fighterHP = fighterMechanics.fighterClassData.maxHealth;
+        rangerHP = rangerMechanics.rangerData.maxHealth;
+        activeData.currentHealth = rangerHP;
 
         // default to melee class
         SwitchCharacter(CLASSTYPE.MELEE);
@@ -135,15 +144,25 @@ public class PlayerInputController : MonoBehaviour
 
         if (newClass == CLASSTYPE.MELEE)
         {
+            rangerHP = activeData.currentHealth;
             currentMechanics = fighterMechanics;
             currentMechanics.EquipClass();
+            activeData.currentHealth = fighterHP;
             Debug.Log("Swapped to DragonFruit (Fighter)!");
+            Debug.Log("currentHealth: " + activeData.currentHealth);
+            Debug.Log("fighterHP: " + fighterHP);
+            Debug.Log("rangerHP: " + rangerHP);
         }
         else if (newClass == CLASSTYPE.RANGED)
         {
+            fighterHP = activeData.currentHealth;
             currentMechanics = rangerMechanics;
             currentMechanics.EquipClass();
+            activeData.currentHealth = rangerHP;
             Debug.Log("Swapped to Mandarin (Ranger)!");
+            Debug.Log("currentHealth: " + activeData.currentHealth);
+            Debug.Log("fighterHP: " + fighterHP);
+            Debug.Log("rangerHP: " + rangerHP);
         }
         if (uiManager != null)
         {
@@ -163,7 +182,7 @@ public class PlayerInputController : MonoBehaviour
             activeData.isMoving = true;
         }
         else
-        {
+        {   
             activeData.moveDirection = Vector2.zero;
             activeData.isMoving = false;
         }
@@ -179,7 +198,7 @@ public class PlayerInputController : MonoBehaviour
     private void HandleCameraMovement()
     {
         if (cameraAction == null && cameraTransform == null && playerTransform == null) return;
-
+        if (activeData.isInventoryOpen) return; 
         Vector2 dir = cameraAction.ReadValue<Vector2>();
         if (dir.magnitude <= 0) return;
         //Debug.Log("Moving camera");
@@ -189,7 +208,7 @@ public class PlayerInputController : MonoBehaviour
 
     void HandleCombat()
     {
-        if (currentMechanics == null) return;
+        if (currentMechanics == null || activeData.isInventoryOpen) return;
 
         if (attackAction != null && attackAction.WasPressedThisFrame())
         {

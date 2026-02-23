@@ -45,11 +45,21 @@ public class InventoryUI : MonoBehaviour
         refObj.transform.SetParent(inventoryPanel.gameObject.transform);
         DraggableItemUI itemUI = refObj.GetComponent<DraggableItemUI>();
 
+        itemUI.usedItemEvent += HandleItemUsed;
+        itemUI.itemData = itemData;
+
         itemUI.image.sprite = itemData.sprite;
 
         Debug.Log("HELLO SPAWN UI");
 
         return itemUI;
+    }
+    
+    private void HandleItemUsed(ItemData itemData)
+    {
+        Debug.Log("ITEM USED: " + itemData.sprite.name);
+
+        
     }
 
 
