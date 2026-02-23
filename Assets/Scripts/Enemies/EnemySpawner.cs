@@ -43,7 +43,7 @@ public class EnemySpawner : MonoBehaviour
         if (spawner != null)
             ApplySineWave();
     }
-
+        
     private void ApplySineWave()
     {
         float newY = Mathf.Sin(Time.time * frequency) * amplitude;
