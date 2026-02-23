@@ -242,6 +242,9 @@ MonoBehaviour:
   minDistance: 1.5
   maxDistance: 7
   firePoint: {fileID: 2680460381376702812}
+  objectRenderer: {fileID: 2920972093640009710}
+  damageColor: {r: 0, g: 0, b: 0, a: 0}
+  damageEffectDuration: 0
 --- !u!114 &7624691737591667147
 MonoBehaviour:
   m_ObjectHideFlags: 0
