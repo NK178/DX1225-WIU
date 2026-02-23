@@ -2,6 +2,7 @@ using UnityEditor.Rendering;
 using UnityEngine.AI;
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Collections;
 
 [System.Serializable]
 public enum ENEMYCLASSTYPE
@@ -45,9 +46,15 @@ public class EnemyController : MonoBehaviour
     private EnemyActiveData activeData;
     private float detectionRadius;
 
-    private Transform validTarget;
+    private float tempHP;
+    [Header("OnHitVFX")]
+    [SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Color damageColor;
+    [SerializeField] private float damageEffectDuration;
+    private Color originalColor;
 
-    void Start()
+    private Transform validTarget;
+    private void Awake()
     {
         activeData = (EnemyActiveData)dataHolder.activeData;
 
@@ -313,12 +320,30 @@ public class EnemyController : MonoBehaviour
         lastAttackTime = Time.time;
     }
 
-    private void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-
+        activeData.currentHealth -= damage;
+        StartCoroutine(TakeDamageEffect());
     }
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator TakeDamageEffect()
+    {
+        // Set to damage color instantly
+        objectRenderer.material.color = damageColor;
+        // Gradually transition back to the original color over time
+        float elapsedTime = 0f;
+        while (elapsedTime  < damageEffectDuration)
+        {
+            objectRenderer.material.color = Color.Lerp(damageColor,
+            originalColor, elapsedTime / damageEffectDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        // Ensure the final color is reset to the original
+        objectRenderer.material.color = originalColor;
+    }
+
+private void OnTriggerEnter(Collider other)
     {
         
     }

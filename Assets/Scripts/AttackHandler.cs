@@ -102,13 +102,15 @@ public class AttackHandler : MonoBehaviour
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
                     //Boss.HP -= 10.0f;
-                    StartCoroutine(Boss.TakeDamage(10f));
+                    //StartCoroutine(Boss.TakeDamage(10f));
+                    Boss.TakeDamage(10f);
                     DisableCollider(detectors.name);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT ENEMY");
+                    Enemy.TakeDamage(10f);
                     DisableCollider(detectors.name);
                     continue;
                 }
