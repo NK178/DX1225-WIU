@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using System.Collections;
 
 //can be reused with player as well
 [System.Serializable]
@@ -90,7 +89,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         // reads whatever speed the active class (or a dodge roll) has set
-        float moveSpeed = activeData.currentMoveSpeed;
+        float moveSpeed = activeData.currentMoveSpeed * activeData.currentSpeedMultiplier;
 
         // Movement changed a bit to fit
         Vector3 moveDirection = activeData.moveDirection.y * transform.forward + activeData.moveDirection.x * transform.right;
