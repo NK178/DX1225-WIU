@@ -5,7 +5,7 @@ using UnityEngine;
 public class ItemSpawner : MonoBehaviour
 {
     [SerializeField] private List<GameObject> spawnableItemList;
-
+    [SerializeField] private int maxItemCount;
 
     [SerializeField] private BoxCollider boxCollider;
 
@@ -37,10 +37,12 @@ public class ItemSpawner : MonoBehaviour
 
         if (spawnerCoroutine == null && !spawnFruit)
         {
-
-            Debug.Log("SPAWNING FRUIT");
-            spawnerCoroutine = SpawnTimerCoroutine();
-            StartCoroutine(spawnerCoroutine);
+            //dont start spawning if cant spawn anymore 
+            if (totalItemCount != maxItemCount)
+            {
+                spawnerCoroutine = SpawnTimerCoroutine();
+                StartCoroutine(spawnerCoroutine);
+            }
         }
 
         
@@ -70,7 +72,12 @@ public class ItemSpawner : MonoBehaviour
         int randomFruitIndex = Random.Range(0, spawnableItemList.Count);
 
         GameObject fruit = Instantiate(spawnableItemList[randomFruitIndex], spawnPosition, Quaternion.identity);
-        //PickupableItem item = fruit
+        PickupableItem item = fruit.GetComponent<PickupableItem>();
+        if (item != null)
+        {
+            item.onPickedUpEvent += OnItemPickedUp;
+            totalItemCount++;
+        }
 
     }
 

@@ -19,4 +19,9 @@ public class PickupableItem : MonoBehaviour
     {
         return itemData;    
     }
+
+    public void InvokePickUpEvent()
+    {
+        onPickedUpEvent?.Invoke();
+    }
 }

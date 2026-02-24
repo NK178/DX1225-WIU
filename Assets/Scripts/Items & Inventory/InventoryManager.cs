@@ -72,8 +72,10 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log("PICKED UP ITEM");
 
                 itemDataList.Add(pickUpItem.GetItemData());
-
+                
                 inventoryUI.UpdateItemUI(pickUpItem.GetItemData());
+
+                pickUpItem.InvokePickUpEvent();
 
                 Destroy(other.transform.parent.gameObject);
             }
