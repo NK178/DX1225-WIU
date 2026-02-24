@@ -48,7 +48,7 @@ public class BaseActiveData
 
     public float currentAttack;
 
-    //Stupid workaround but it works
+    //Very stupid please delete thanks
     public GameObject referenceParticle; 
 
     public ObjectPoolManager.SPAWNABLE_TYPES spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;

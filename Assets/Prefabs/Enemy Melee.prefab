@@ -244,7 +244,6 @@ MonoBehaviour:
   edgeDetectionRadius: 2
   edgeSlowdownRadius: 4
   edgeAvoidanceStrength: 5
-  objectRenderer: {fileID: 0}
   objectRenderer: {fileID: 8068956261523479448}
   damageColor: {r: 0, g: 0, b: 0, a: 0}
   damageEffectDuration: 0

@@ -81,8 +81,8 @@ public class BossController : MonoBehaviour
         activeData.currentHealth = bossData.maxHealth;
         activeData.currentAttack = bossData.damage;
 
-        // Set true for now 
-        shouldStartBoss = true;
+        // Set true for now     
+        shouldStartBoss = false;
 
         waveIndex = 0;
         activeData.BossPhase = 0;
