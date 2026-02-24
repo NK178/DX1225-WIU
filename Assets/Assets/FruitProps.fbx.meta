@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: 7225da60412711641ae61880e28cdb05
+guid: 2537811c1b8bf404684d302a6aca6458
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StingrayPBS_FruitsSoapSugar
+    second: {fileID: 2100000, guid: a87b00345c171194ca86e83778dec12b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: aiStandardSurface1
+    second: {fileID: 2100000, guid: 74626e18f9752a14aa5b70f27ee86979, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
