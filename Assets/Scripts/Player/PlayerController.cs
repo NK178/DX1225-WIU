@@ -75,7 +75,20 @@ public class PlayerController : MonoBehaviour
     //Testing function since no animation move
     void DebugHandleMove()
     {
-        if (activeData == null || !activeData.isMoving)
+        if (activeData == null)
+            return;
+        if (!characterController.isGrounded)
+        {
+            activeData.isMoving = true;
+            activeData.jumpVel.y -= 9.81f * Time.deltaTime;
+        }
+        else if (!activeData.isJumping)
+        {
+            activeData.jumpVel.y = 0;
+        }
+        activeData.isJumping = !characterController.isGrounded;
+
+        if (!activeData.isMoving)
             return;
 
         // reads whatever speed the active class (or a dodge roll) has set
@@ -84,10 +97,13 @@ public class PlayerController : MonoBehaviour
         // Movement changed a bit to fit
         Vector3 moveDirection = activeData.moveDirection.y * transform.forward + activeData.moveDirection.x * transform.right;
         //Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
+        //if (characterController.isGrounded)
 
-        Vector3 velocity = moveDirection.normalized * moveSpeed * Time.deltaTime;
+
+        Vector3 velocity = (moveDirection.normalized * moveSpeed + activeData.jumpVel) * Time.deltaTime;
 
         characterController.Move(velocity);
+        //Debug.Log(velocity);
     }
 
     public void SetCurrentHealth(float newHealth)

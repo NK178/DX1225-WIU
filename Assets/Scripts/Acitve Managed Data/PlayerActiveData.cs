@@ -4,6 +4,8 @@ public class PlayerActiveData : BaseActiveData
 {
 
     public Vector2 moveDirection;
+    public Vector3 jumpVel;
+    public bool isJumping;
 
 
     public CLASSTYPE currentClassType;
