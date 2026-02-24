@@ -6,6 +6,7 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private DataHolder dataHolder; 
     [SerializeField] private BoxCollider boxCollider;
+    [SerializeField] private SphereCollider sphereColldier;
 
     [SerializeField] private GameObject inventoryPanel;  
     [SerializeField] private InventoryUI inventoryUI;
