@@ -63,6 +63,8 @@ public class ObjectPoolManager : MonoBehaviour
         PARTICLE_WOODSPLINTER,
         PARTICLE_ELECTRICSPARK,
         PARTICLE_HEALINGEFFECT,
+        PARTICLE_DAMAGEEFFECT,
+        PARTICLE_SMOKESOURCEEFFECT,
         RUBBERBAND_BULLETS,
         NUM_TYPES
     }
@@ -78,6 +80,8 @@ public class ObjectPoolManager : MonoBehaviour
     [SerializeField] private ParticleObjectPool dustSplashEffectSpawner;
     [SerializeField] private ParticleObjectPool electricSparkEffectSpawner;
     [SerializeField] private ParticleObjectPool healingEffectSpawner;
+    [SerializeField] private ParticleObjectPool damageEffectSpawner;
+    [SerializeField] private ParticleObjectPool smokeSourceEffectSpawner;
 
     [SerializeField] private DataHolder[] dataHolders;
     private List<BaseActiveData> entityDataList;
@@ -101,6 +105,9 @@ public class ObjectPoolManager : MonoBehaviour
         if (dustSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH] = dustSplashEffectSpawner;
         if (electricSparkEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK] = electricSparkEffectSpawner;
         if (healingEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT] = healingEffectSpawner;
+        if (damageEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT] = damageEffectSpawner;
+        if (smokeSourceEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT] = smokeSourceEffectSpawner;
+
 
         if (Instance == null)
         {
@@ -179,8 +186,15 @@ public class ObjectPoolManager : MonoBehaviour
                     particleMap[SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK].SpawnImpactEffect(spawnPos, spawnNormal);
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT:
-                    //particleMap[SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT].SpawnImpactEffect(spawnPos, spawnNormal);
                     particleMap[SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT].SpawnImpactEffect(spawnPos, spawnNormal,ref referenceGameobject);
+                    baseActiveData.referenceParticle = referenceGameobject;
+                    break;
+                case SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT:
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT].SpawnImpactEffect(spawnPos, spawnNormal, ref referenceGameobject);
+                    baseActiveData.referenceParticle = referenceGameobject;
+                    break;
+                case SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT:
+                    particleMap[SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT].SpawnImpactEffect(spawnPos, spawnNormal, ref referenceGameobject);
                     baseActiveData.referenceParticle = referenceGameobject;
                     break;
                 case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:
