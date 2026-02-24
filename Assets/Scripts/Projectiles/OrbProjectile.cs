@@ -6,8 +6,14 @@ public class OrbProjectile : MonoBehaviour
     [Header("Enemy Settings")]
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private GameObject spawnEffect;
+    [SerializeField] private EnemySpawner spawner;
 
     private bool hasSpawned = false;
+
+    public void SetSpawner(EnemySpawner spawnerRef)
+    {
+        spawner = spawnerRef;
+    }
 
     private void SpawnEnemy()
     {
@@ -21,12 +27,16 @@ public class OrbProjectile : MonoBehaviour
         GameObject enemyPrefab = enemies[randomIndex];
 
         GameObject spawnedEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
-        UnityEngine.AI.NavMeshAgent agent = spawnedEnemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
 
+        UnityEngine.AI.NavMeshAgent agent = spawnedEnemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent != null)
         {
             agent.Warp(transform.position); // Forces the agent onto the NavMesh
         }
+
+        EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
+        if (enemyController != null && spawner != null)
+            spawner.RegisterEnemy(enemyController);
 
         //Effect if there is one
         if (spawnEffect != null)

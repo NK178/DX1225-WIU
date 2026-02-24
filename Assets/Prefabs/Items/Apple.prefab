@@ -185,4 +185,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupableItem
   itemData: {fileID: 11400000, guid: c4eb028019f00a94986ce6f94d076e3b, type: 2}
-  meshFilter: {fileID: 1522791796403330243}
+  spriteObject: {fileID: 771782684453379827}
+  rotationSpeed: 50

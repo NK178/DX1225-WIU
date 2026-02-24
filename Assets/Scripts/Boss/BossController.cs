@@ -136,10 +136,9 @@ public class BossController : MonoBehaviour
         int randomAttackIndex = Random.Range(0, attackListCount);
         shouldRandomizeAttack = false;
 
-        if (debugAttackInt + 1 != attackListCount)
+        if (debugAttackInt < attackListCount - 1)
             debugAttackInt++;
         else
-        
             debugAttackInt = 0;
         //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
         activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
