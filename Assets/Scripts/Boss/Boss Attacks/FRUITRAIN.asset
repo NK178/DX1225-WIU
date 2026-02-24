@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FruitRainAttack
   _attack: 9
   attackDuration: 10
-  spawnPoint: {x: 0, y: 7, z: 7}
+  spawnPoint: {x: 0, y: 35, z: 17.5}
   spawnDelayMin: 0.1
   spawnDelayMax: 2
   fireCountMin: 2

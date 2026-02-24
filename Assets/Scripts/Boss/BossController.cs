@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
@@ -99,6 +98,7 @@ public class BossController : MonoBehaviour
     {
         if (shouldStartBoss)
         {
+            Debug.LogWarning("SHLD RANDOM: " + shouldRandomizeAttack);
             if (activeData.BossPhase == waveIndex && shouldRandomizeAttack)
             {
                 SelectAttackPhase();
@@ -119,6 +119,7 @@ public class BossController : MonoBehaviour
         }
     }
 
+    int debugAttackInt = 0;
 
     private void SelectAttackPhase()
     {
@@ -127,7 +128,8 @@ public class BossController : MonoBehaviour
         int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
         int randomAttackIndex = Random.Range(0, attackListCount);
         shouldRandomizeAttack = false;
-        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
     }
 
     private IEnumerator AttackDurationCoroutine()
@@ -136,6 +138,11 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(5f);
         Debug.Log("RANDOMIZE ATTACK AGAIN");
         shouldRandomizeAttack = true;
+
+        int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
+
+        if (debugAttackInt - 1 != attackListCount)
+            debugAttackInt++;
     }
 
 
@@ -216,6 +223,7 @@ public class BossController : MonoBehaviour
 
     public void HandleTriggerParticles(Vector3 hitPoint)
     {
+        Debug.Log("ANIM: " + activeData.BAnimState);
         switch (activeData.BAnimState)
         {
             case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
