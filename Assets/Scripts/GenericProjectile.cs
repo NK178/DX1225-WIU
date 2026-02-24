@@ -88,7 +88,6 @@ public class GenericProjectile : MonoBehaviour
         //bool hitEnemy = other.CompareTag("Enemy");
         //bool hitEnvironment = other.CompareTag("Environment");
 
-
         bool hitPlayer = other.CompareTag("Player");
 
         bool hitDummyTag = other.CompareTag("Dummy");
@@ -113,54 +112,66 @@ public class GenericProjectile : MonoBehaviour
         // Player shoots the Boss or Enemy
         if (spawnerType == DataHolder.DATATYPE.PLAYER && (hitEnemy || other.CompareTag("Boss")))
         {
-            // Try to find what we hit and damage it
-            BossController boss = other.GetComponentInParent<BossController>();
-            EnemyController enemy = other.GetComponentInParent<EnemyController>();
-
-            if (boss != null) boss.TakeDamage(projectileDamage);
-            if (enemy != null) enemy.TakeDamage(projectileDamage);
-
-            // Tell the UI
-            if (BattleUIManager.Instance != null && referenceData is PlayerActiveData playerData)
+            if (other.gameObject.CompareTag("PlayerBullet"))
             {
-                BattleUIManager.Instance.AddDamage(playerData.currentClassType, projectileDamage);
+                // Try to find what we hit and damage it
+                BossController boss = other.GetComponentInParent<BossController>();
+                EnemyController enemy = other.GetComponentInParent<EnemyController>();
+
+                if (boss != null) boss.TakeDamage(projectileDamage);
+                if (enemy != null) enemy.TakeDamage(projectileDamage);
+
+                // Tell the UI
+                if (BattleUIManager.Instance != null && referenceData is PlayerActiveData playerData)
+                {
+                    BattleUIManager.Instance.AddDamage(playerData.currentClassType, projectileDamage);
+                }
+                ReturnToPool();
             }
-            ReturnToPool();
         }
 
         // Dummy logic
         if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && (hitDummyTag || hitDummyLayer))
         {
+            Debug.LogWarning("DUMMY HIT!");
             DummyController dummy = other.GetComponentInParent<DummyController>();
             if (dummy != null) dummy.TakeDamage(10);
             ReturnToPool();
         }
 
-        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitPlayer)
+        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && other.CompareTag("EnemyBullet"))
         {
-            PlayerController player = other.GetComponentInParent<PlayerController>();
+            if (hitPlayer)
+            {
+                PlayerController player = other.GetComponentInParent<PlayerController>();
 
-            if (player != null)
-            {
-                Debug.Log("PLAYER HIT!");
-                player.TakeDamage(10);
+                if (player != null) 
+                {
+                    Debug.LogWarning("PLAYER HIT!");
+                    player.TakeDamage(10);
+                }
+                else
+                {
+                    Debug.LogError("PLAYER NULL!");
+                }
             }
-            else
+            else if (hitDummyLayer || hitDummyTag)
             {
-                Debug.LogError("PLAYER NULL!");
+                DummyController dummy = other.GetComponentInParent<DummyController>();
+                if (dummy != null) dummy.TakeDamage(10);
             }
 
             ReturnToPool();
         }
 
-        if (spawnerType == DataHolder.DATATYPE.PLAYER && hitEnemyLayer)
-        {
-            if (!gameObject.CompareTag("EnemyBullet") && !gameObject.CompareTag("SpawningOrb"))
-            {
-                Debug.LogError("ENEMY HIT!");
-                ReturnToPool();
-            }
-        }
+        //if (spawnerType == DataHolder.DATATYPE.PLAYER && hitEnemyLayer)
+        //{
+        //    if (!gameObject.CompareTag("EnemyBullet") && !gameObject.CompareTag("SpawningOrb"))
+        //    {
+        //        Debug.LogError("ENEMY HIT!");
+        //        ReturnToPool();
+        //    }
+        //}
 
         //if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)
         //{
