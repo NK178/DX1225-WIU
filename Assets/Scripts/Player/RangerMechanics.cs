@@ -9,9 +9,6 @@ public class RangerMechanics : BaseClassMechanics
     [SerializeField] private TargetingSystem targetingSystem;
     public RangerClassData rangerData;
 
-    [Header("UI")]
-    [SerializeField] private BattleUIManager uiManager;
-
     [Header("Visuals & Animation")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform characterMesh;
@@ -32,13 +29,13 @@ public class RangerMechanics : BaseClassMechanics
 
     private void Update()
     {
-        if (uiManager != null && rangerData != null)
+        if (BattleUIManager.Instance != null && rangerData != null)
         {
             float laserRemaining = Mathf.Max(0, nextLaserTime - Time.time);
-            uiManager.UpdateCooldownUI(uiManager.laserCooldownImage, laserRemaining, rangerData.laserCooldown);
+            BattleUIManager.Instance.UpdateCooldownUI(BattleUIManager.Instance.laserCooldownImage, laserRemaining, rangerData.laserCooldown);
 
             float rollRemaining = Mathf.Max(0, nextRollTime - Time.time);
-            uiManager.UpdateCooldownUI(uiManager.rollCooldownImage, rollRemaining, rollCooldown);
+            BattleUIManager.Instance.UpdateCooldownUI(BattleUIManager.Instance.rollCooldownImage, rollRemaining, rollCooldown);
         }
     }
 

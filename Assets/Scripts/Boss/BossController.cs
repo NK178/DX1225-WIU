@@ -19,9 +19,15 @@ public class BossController : MonoBehaviour
 {
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private BossAnimator animator;
+    [SerializeField] private BossClassData bossData;
 
     [SerializeField] private List<AttackPhaseData> attackPhaseData;
     private BossActiveData activeData;
+    public BossActiveData ActiveData
+    {
+        get { return activeData; }
+        private set { activeData = value; }
+    }
 
     [Header("Debugging")]
     [SerializeField] private BossAttacks DEBUGAttackData;
@@ -72,7 +78,8 @@ public class BossController : MonoBehaviour
         DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
         DebugEnableAttack = false;
-        HP = 100;
+        activeData.currentHealth = bossData.maxHealth;
+        activeData.currentAttack = bossData.damage;
 
         // Set true for now 
         shouldStartBoss = true;
@@ -202,6 +209,10 @@ public class BossController : MonoBehaviour
     {
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
+        if (BattleUIManager.Instance != null && bossData != null)
+        {
+            BattleUIManager.Instance.bossHealthSlider.value = activeData.currentHealth / bossData.maxHealth;
+        }
     }
 
     private IEnumerator TakeDamageEffect()

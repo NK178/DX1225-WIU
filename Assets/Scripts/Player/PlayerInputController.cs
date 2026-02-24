@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.MeshOperations;
@@ -19,13 +20,14 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private TargetingSystem targetingSystem;
 
     private PlayerActiveData activeData;
-    public BattleUIManager uiManager;
 
     // Movement & Combat Actions
     private InputAction moveAction;
     private InputAction attackAction;
     private InputAction defenseAction;
     private InputAction abilityAction;
+    private InputAction jumpAction;
+    [SerializeField] private float JumpVelocity;
 
     // Switching Actions
     private InputAction switchFighterAction;
@@ -41,7 +43,10 @@ public class PlayerInputController : MonoBehaviour
     // (Basically whatever CineMachine Third Person is targetting)
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform cameraTransform;
+    [SerializeField] private CinemachineThirdPersonFollow cinemachineCamera;
     private InputAction cameraAction;
+    private float tempCameraY;
+    private InputAction camZoomAction;
 
     // Targeting Actions
     private InputAction lockOnAction;
@@ -76,6 +81,9 @@ public class PlayerInputController : MonoBehaviour
         moveAction = playerInput.actions.FindAction("Move");
         moveAction?.Enable();
 
+        jumpAction = playerInput.actions.FindAction("Jump");
+        jumpAction?.Enable();
+
         attackAction = playerInput.actions.FindAction("Attack");
         attackAction?.Enable();
 
@@ -103,6 +111,9 @@ public class PlayerInputController : MonoBehaviour
         cameraAction = playerInput.actions.FindAction("Look");
         cameraAction?.Enable();
 
+        camZoomAction = playerInput.actions.FindAction("CameraZoom");
+        camZoomAction?.Enable();
+
         inventoryAction = playerInput.actions.FindAction("Inventory");
         inventoryAction?.Enable();
     }
@@ -117,6 +128,11 @@ public class PlayerInputController : MonoBehaviour
         if (inventoryAction.WasPressedThisFrame())
         {
             activeData.isInventoryOpen = !activeData.isInventoryOpen;
+
+            if (BattleUIManager.Instance != null)
+            {
+                BattleUIManager.Instance.ToggleUI(!activeData.isInventoryOpen);
+            }
         }
     }
 
@@ -148,10 +164,12 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics = fighterMechanics;
             currentMechanics.EquipClass();
             activeData.currentHealth = fighterHP;
+            activeData.maxHealth = fighterMechanics.fighterClassData.maxHealth;
+            activeData.currentAttack = fighterMechanics.fighterClassData.damage;
             Debug.Log("Swapped to DragonFruit (Fighter)!");
-            Debug.Log("currentHealth: " + activeData.currentHealth);
-            Debug.Log("fighterHP: " + fighterHP);
-            Debug.Log("rangerHP: " + rangerHP);
+            //Debug.Log("currentHealth: " + activeData.currentHealth);
+            //Debug.Log("fighterHP: " + fighterHP);
+            //Debug.Log("rangerHP: " + rangerHP);
         }
         else if (newClass == CLASSTYPE.RANGED)
         {
@@ -159,14 +177,16 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics = rangerMechanics;
             currentMechanics.EquipClass();
             activeData.currentHealth = rangerHP;
+            activeData.maxHealth = rangerMechanics.rangerData.maxHealth;
+            activeData.currentAttack = rangerMechanics.rangerData.damage;
             Debug.Log("Swapped to Mandarin (Ranger)!");
-            Debug.Log("currentHealth: " + activeData.currentHealth);
-            Debug.Log("fighterHP: " + fighterHP);
-            Debug.Log("rangerHP: " + rangerHP);
+            //Debug.Log("currentHealth: " + activeData.currentHealth);
+            //Debug.Log("fighterHP: " + fighterHP);
+            //Debug.Log("rangerHP: " + rangerHP);
         }
-        if (uiManager != null)
+        if (BattleUIManager.Instance != null)
         {
-            uiManager.SwapActivePlayerUI(newClass);
+            BattleUIManager.Instance.SwapActivePlayerUI(newClass);
         }
     }
 
@@ -184,7 +204,16 @@ public class PlayerInputController : MonoBehaviour
         else
         {   
             activeData.moveDirection = Vector2.zero;
-            activeData.isMoving = false;
+            activeData.isMoving = activeData.isJumping;
+        }
+
+        if (jumpAction == null) return;
+
+        if (jumpAction.WasPressedThisFrame() && !activeData.isJumping)
+        {
+            activeData.jumpVel.y = JumpVelocity;
+            activeData.isMoving = true;
+            activeData.isJumping = true;
         }
     }
     
@@ -198,12 +227,39 @@ public class PlayerInputController : MonoBehaviour
     private void HandleCameraMovement()
     {
         if (cameraAction == null && cameraTransform == null && playerTransform == null) return;
-        if (activeData.isInventoryOpen) return; 
+        if (activeData.isInventoryOpen) return;
+        HandleCamZoom();
         Vector2 dir = cameraAction.ReadValue<Vector2>();
         if (dir.magnitude <= 0) return;
-        //Debug.Log("Moving camera");
-        cameraTransform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
+        //Debug.Log(cameraTransform.eulerAngles.x);
+        tempCameraY = cameraTransform.eulerAngles.x + 180f;
+        tempCameraY += -dir.y * 0.1f;
+        tempCameraY = Mathf.Clamp(tempCameraY, 180f, 180f + 89f);
+        tempCameraY -= 180f;
+        cameraTransform.eulerAngles = new Vector3(tempCameraY,cameraTransform.eulerAngles.y,cameraTransform.eulerAngles.z);
         playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
+        //cameraTransform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
+    }
+
+    // Klaus
+    /// <summary>
+    /// Player Can Zoom in and out with scroll wheel
+    /// Can also be used for Aiming
+    /// Something akin to roblox (Maybe add on swap to First Person after a certain Zoom in?)
+    /// </summary>
+    private void HandleCamZoom(float camZoom = 0f)
+    {
+        if (camZoomAction == null) return;
+        float dir = -camZoomAction.ReadValue<Vector2>().y;
+        if (dir == 0) return;
+        Debug.Log(dir);
+        if (camZoom == 0f)
+        {
+            cinemachineCamera.CameraDistance += dir;
+            cinemachineCamera.CameraDistance = Mathf.Clamp(cinemachineCamera.CameraDistance, 1f, 6f);
+        }
+        else
+            cinemachineCamera.CameraDistance = Mathf.Clamp(camZoom, 1f, 6f);
     }
 
     void HandleCombat()

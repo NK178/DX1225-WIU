@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91ce51a19fffc404ea14221bd834ff97, type: 3}
   m_Name: RangerClassData
   m_EditorClassIdentifier: Assembly-CSharp::RangerClassData
-  maxHealth: 70
-  damage: 0
+  maxHealth: 55
+  damage: 10
   classType: 1
   moveSpeed: 20
   seedProjectilePrefab: {fileID: 6994982273477506858, guid: 4e4c36753a08acf408089c89fc684279, type: 3}
