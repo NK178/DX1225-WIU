@@ -457,50 +457,50 @@ private void OnTriggerEnter(Collider other)
     //    Gizmos.DrawWireSphere(transform.position, stopDistance);
     //}
 
-    private void OnDrawGizmosSelected()
-    {
-        // 1. Detection Radius (Yellow)
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    //private void OnDrawGizmosSelected()
+    //{
+    //    // 1. Detection Radius (Yellow)
+    //    Gizmos.color = Color.yellow;
+    //    Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-        // 2. Stop/Attack Radius (Red)
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, stopDistance);
+    //    // 2. Stop/Attack Radius (Red)
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(transform.position, stopDistance);
 
-        // --- New Distance-Based Combat Visualization ---
+    //    // --- New Distance-Based Combat Visualization ---
 
-        if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
-        {
-            // 3. Min Distance (Cyan) - Fastest Fire Rate starts here
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(transform.position, minDistance);
+    //    if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
+    //    {
+    //        // 3. Min Distance (Cyan) - Fastest Fire Rate starts here
+    //        Gizmos.color = Color.cyan;
+    //        Gizmos.DrawWireSphere(transform.position, minDistance);
 
-            // 4. Max Distance (Blue) - Slowest Fire Rate starts here
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, maxDistance);
+    //        // 4. Max Distance (Blue) - Slowest Fire Rate starts here
+    //        Gizmos.color = Color.blue;
+    //        Gizmos.DrawWireSphere(transform.position, maxDistance);
 
-            // 5. Visual line to Player + Dynamic Data Label
-            if (activeData != null && activeData.targetPlayer != null)
-            {
-                float dist = Vector3.Distance(transform.position, activeData.targetPlayer.position);
+    //        // 5. Visual line to Player + Dynamic Data Label
+    //        if (activeData != null && activeData.targetPlayer != null)
+    //        {
+    //            float dist = Vector3.Distance(transform.position, activeData.targetPlayer.position);
 
-                // Calculate what the cooldown WOULD be right now
-                float factor = Mathf.InverseLerp(minDistance, maxDistance, dist);
-                float currentCD = Mathf.Lerp(minAttackCooldown, maxAttackCooldown, factor);
+    //            // Calculate what the cooldown WOULD be right now
+    //            float factor = Mathf.InverseLerp(minDistance, maxDistance, dist);
+    //            float currentCD = Mathf.Lerp(minAttackCooldown, maxAttackCooldown, factor);
 
-                // Draw a line to the player
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(transform.position, activeData.targetPlayer.position);
+    //            // Draw a line to the player
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(transform.position, activeData.targetPlayer.position);
 
-                // Draw a label in the Scene View (Requires UnityEditor namespace)
-                #if UNITY_EDITOR
-                string info = $"Distance: {dist:F1}m\nNext CD: {currentCD:F2}s";
-                UnityEditor.Handles.Label(transform.position + Vector3.up * 2f, info);
-                #endif
-            }
-        }
+    //            // Draw a label in the Scene View (Requires UnityEditor namespace)
+    //            #if UNITY_EDITOR
+    //            string info = $"Distance: {dist:F1}m\nNext CD: {currentCD:F2}s";
+    //            UnityEditor.Handles.Label(transform.position + Vector3.up * 2f, info);
+    //            #endif
+    //        }
+    //    }
 
-    }
+    //}
 
     #endregion
 }

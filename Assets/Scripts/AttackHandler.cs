@@ -96,11 +96,12 @@ public class AttackHandler : MonoBehaviour
                     // POSSIBLE PROBLEM!
                     if (detectors.transform.parent.TryGetComponent<BossController>(out var tempBoss))
                         player.TakeDamage(tempBoss.ActiveData.currentAttack);
-                    else Debug.LogError("A Fake Player hit Boss?");
+                    else Debug.LogError("A Fake Boss hit Player?");
                     DisableCollider(detectors.name);
                     //handle stuff like particles and whatnot 
                     Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
                     detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
+                    // CineMachine Impulse
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<PlayerController>(out var n_player) && (colliderType == ColliderType.NPC))
@@ -108,7 +109,7 @@ public class AttackHandler : MonoBehaviour
                     Debug.Log(detectors.name + " HIT PLAYER");
                     if (detectors.transform.parent.TryGetComponent<EnemyController>(out var tempNPC))
                         n_player.TakeDamage(tempNPC.ActiveData.currentAttack);
-                    else Debug.LogError("A Fake Player hit Enemy?");
+                    else Debug.LogError("A Fake Enemy hit Player?");
                     DisableCollider(detectors.name);
                     //handle stuff like particles and whatnot 
                     //Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
@@ -119,20 +120,22 @@ public class AttackHandler : MonoBehaviour
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
-                        Boss.TakeDamage(tempPlayer.ActiveData.currentAttack);
+                        Boss.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     if (BattleUIManager.Instance != null)
-                        BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack);
+                        BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     else Debug.LogError("A Fake Player hit Boss?");
                     DisableCollider(detectors.name);
+                    CineMachineImpulseMan.Instance.testFunc();
+                    Debug.Log("Hit Shake Screen");
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT ENEMY");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
-                        Enemy.TakeDamage(tempPlayer.ActiveData.currentAttack);
+                        Enemy.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     if (BattleUIManager.Instance != null)
-                        BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack);
+                        BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     else Debug.LogError("A Fake Player hit Enemy?");
                     DisableCollider(detectors.name);
                     continue;
