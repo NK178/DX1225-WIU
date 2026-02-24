@@ -13,6 +13,8 @@ TagManager:
   - Boss
   - Floor
   - Item
+  - SpawningOrb
+  - PlayerBullet
   layers:
   - Default
   - TransparentFX

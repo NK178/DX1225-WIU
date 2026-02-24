@@ -40,6 +40,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float maxDistance = 15f;
     [SerializeField] private Transform firePoint;
 
+    [Header("Edge Avoidance")]
+    [SerializeField] private float edgeDetectionRadius = 2f;
+    [SerializeField] private float edgeSlowdownRadius = 4f;
+    [SerializeField] private float edgeAvoidanceStrength = 5f;
+    private bool isNearEdge = false;
+
     private float lastAttackTime;
     private float stopDistance;
 
@@ -62,6 +68,8 @@ public class EnemyController : MonoBehaviour
         agent.acceleration = acceleration;
         agent.angularSpeed = rotationSpeed * 100f;
 
+        agent.avoidancePriority = Random.Range(30, 70);
+
         activeData = (EnemyActiveData)dataHolder.activeData;
 
         if (activeData == null) return;
@@ -78,6 +86,7 @@ public class EnemyController : MonoBehaviour
             activeData.wanderDestination = transform.position;
             activeData.waitTimer = 2f;
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
+            activeData.enemyClassType = enemyType;
 
             if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
                 activeData.currentHealth = knifeData.maxHealth;
@@ -92,7 +101,6 @@ public class EnemyController : MonoBehaviour
     {
         HandleMove();
     }
-
     private void HandleMove()
     {
         activeData.enemyClassType = enemyType;
@@ -146,6 +154,12 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
+            if (activeData.currentState == EnemyActiveData.AIState.CHASING)
+            {
+                agent.ResetPath();
+                PickNewWanderDestination();
+            }
+
             //If player is out of range/gone return back to wandering 
             activeData.targetPlayer = null;
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
@@ -323,6 +337,17 @@ public class EnemyController : MonoBehaviour
         NavMeshHit hit;
         if (NavMesh.SamplePosition(sourcePosition, out hit, 10f, NavMesh.AllAreas))
         {
+            NavMeshHit edgeHit;
+
+            if (NavMesh.FindClosestEdge(hit.position, out edgeHit, NavMesh.AllAreas))
+            {
+                if (edgeHit.distance < edgeDetectionRadius)
+                {
+                    activeData.waitTimer = 0f;
+                    return;
+                }
+            }
+
             activeData.wanderDestination = hit.position;
             agent.SetDestination(hit.position); // critical � actually send agent there
         }
@@ -405,10 +430,17 @@ public class EnemyController : MonoBehaviour
         lastAttackTime = Time.time;
     }
 
+    public event System.Action onEnemyDied;
     public void TakeDamage(float damage)
     {
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
+
+        if (activeData.currentHealth <= 0)
+        {
+            onEnemyDied?.Invoke();
+            Destroy(gameObject);
+        }
     }
 
     private IEnumerator TakeDamageEffect()
@@ -428,7 +460,7 @@ public class EnemyController : MonoBehaviour
         objectRenderer.material.color = originalColor;
     }
 
-private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         
     }

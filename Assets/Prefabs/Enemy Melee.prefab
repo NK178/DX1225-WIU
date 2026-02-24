@@ -141,7 +141,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -241,6 +241,12 @@ MonoBehaviour:
   minDistance: 2
   maxDistance: 15
   firePoint: {fileID: 0}
+  edgeDetectionRadius: 2
+  edgeSlowdownRadius: 4
+  edgeAvoidanceStrength: 5
+  objectRenderer: {fileID: 0}
+  damageColor: {r: 0, g: 0, b: 0, a: 0}
+  damageEffectDuration: 0
 --- !u!114 &8011402919438380869
 MonoBehaviour:
   m_ObjectHideFlags: 0
