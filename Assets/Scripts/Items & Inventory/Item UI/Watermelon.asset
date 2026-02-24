@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29083a7d76feec7488e68c49684676f6, type: 3}
-  m_Name: Pineapple
+  m_Name: Watermelon
   m_EditorClassIdentifier: Assembly-CSharp::DamageItemData
-  sprite: {fileID: 21300000, guid: 83f8eed302628e248a46ebdb1f1481b0, type: 3}
+  itemType: 2
+  sprite: {fileID: 21300000, guid: 30124cc4f9640fc4f86b522da8fe0779, type: 3}
   damageMultiplier: 1.5
