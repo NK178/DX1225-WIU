@@ -33,6 +33,11 @@ public class PlayerController : MonoBehaviour
 
     private Color originalColor;
 
+    //For healing 
+    private bool enablePlayerEffect = false;
+    private float particleOffset = 1f;
+    private GameObject activePlayerParticle = null;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -66,6 +71,20 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+
+        Debug.Log("BOOLEAN: " + enablePlayerEffect + "ISREF: " + activeData.referenceParticle);
+
+        if (enablePlayerEffect && activeData.referenceParticle != null)
+        {
+
+            activeData.referenceParticle.transform.position = transform.position + Vector3.up * -particleOffset;
+
+            if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT)
+            {
+                Debug.Log("PLEASE WORK");
+            }
         }
 
     }
@@ -115,6 +134,16 @@ public class PlayerController : MonoBehaviour
     public float GetCurrentHealth()
     {
         return activeData.currentHealth;
+    }
+
+    public void TriggerHealingEffect()
+    {
+        float offset = 1f;
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position + Vector3.up * -offset, Vector3.forward);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
     }
 
     public void SetDamageMultiplier(float damageMulti)
