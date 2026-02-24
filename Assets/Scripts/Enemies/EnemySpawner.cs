@@ -13,7 +13,8 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] private float minSpawnTime = 2f;
     [SerializeField] private float maxSpawnTime = 7f;
-    [SerializeField] private int currentSpawnCount;    
+    [SerializeField] private int currentSpawnCount;
+    private int livingEnemyCount;
 
     [Header("Sine Wave Settings")]
     [SerializeField] private float amplitude = 0.5f;
@@ -66,21 +67,38 @@ public class EnemySpawner : MonoBehaviour
     private void LaunchOrb()
     {
         if (spawnerOrb == null || firePoint == null) return;
+        if (currentSpawnCount >= maxSpawnCount) return;
 
         Vector3 targetPos;
         if (GetRandomNavMeshPoint(out targetPos))
         {
             GameObject orb = Instantiate(spawnerOrb, firePoint.position, Quaternion.identity);
-            Rigidbody orbRb = orb.GetComponent<Rigidbody>();
 
+            OrbProjectile orbScript = orb.GetComponent<OrbProjectile>();
+            if (orbScript != null)
+                orbScript.SetSpawner(this);
+            
+            Rigidbody orbRb = orb.GetComponent<Rigidbody>();
             if (orbRb != null)
-            {
-                Vector3 force = CalculateForce(targetPos);
-                orbRb.AddForce(force, ForceMode.VelocityChange);
-            }
+                orbRb.AddForce(CalculateForce(targetPos), ForceMode.VelocityChange);
 
             currentSpawnCount++;
+            livingEnemyCount++;
         }
+
+        Debug.Log("Current Spawn Count: " + currentSpawnCount);
+        Debug.Log("Current Enemy Count: " + livingEnemyCount);
+    }
+
+    public void RegisterEnemy(EnemyController enemy)
+    {
+        enemy.onEnemyDied += OnEnemyDied;
+    }
+
+    public void OnEnemyDied()
+    {
+        livingEnemyCount--;
+        currentSpawnCount--;
     }
 
     private bool GetRandomNavMeshPoint(out Vector3 result)
@@ -124,5 +142,21 @@ public class EnemySpawner : MonoBehaviour
         );
 
         return firingForce;
+    }
+    private void OnDrawGizmosSelected()
+    {
+        // Set the color for the Gizmo
+        Gizmos.color = Color.cyan;
+
+        // We want to draw the circle at ground level (y=0) 
+        // because that's where NavMesh sampling usually happens
+        Vector3 center = new Vector3(transform.position.x, 0, transform.position.z);
+
+        // Draw a wireframe sphere to show the 3D volume
+        Gizmos.DrawWireSphere(center, spawnRadius);
+
+        // Optional: Draw a line from the spawner to the floor center
+        Gizmos.color = new Color(0, 1, 1, 0.5f); // Transparent cyan
+        Gizmos.DrawLine(transform.position, center);
     }
 }

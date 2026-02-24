@@ -7,6 +7,8 @@ public class OrbProjectile : MonoBehaviour
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private GameObject spawnEffect;
 
+    [SerializeField] private EnemySpawner spawner;
+
     private bool hasSpawned = false;
 
     private void SpawnEnemy()
@@ -28,6 +30,12 @@ public class OrbProjectile : MonoBehaviour
             agent.Warp(transform.position); // Forces the agent onto the NavMesh
         }
 
+        EnemyController enemyController = spawnedEnemy.GetComponent<EnemyController>();
+        if (enemyController != null)
+            spawner.RegisterEnemy(enemyController);
+        
+
+
         //Effect if there is one
         if (spawnEffect != null)
         {
@@ -46,5 +54,9 @@ public class OrbProjectile : MonoBehaviour
             SpawnEnemy();
             Destroy(gameObject);
         }
+    }
+    public void SetSpawner(EnemySpawner spawnerRef)
+    {
+        spawner = spawnerRef;
     }
 }

@@ -142,7 +142,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -242,6 +242,12 @@ MonoBehaviour:
   minDistance: 1.5
   maxDistance: 7
   firePoint: {fileID: 2680460381376702812}
+  edgeDetectionRadius: 2
+  edgeSlowdownRadius: 4
+  edgeAvoidanceStrength: 5
+  objectRenderer: {fileID: 0}
+  damageColor: {r: 0, g: 0, b: 0, a: 0}
+  damageEffectDuration: 0
 --- !u!114 &7624691737591667147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +268,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3784287887147908238}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 10
@@ -302,7 +308,7 @@ Transform:
   m_GameObject: {fileID: 4429540742961900716}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
