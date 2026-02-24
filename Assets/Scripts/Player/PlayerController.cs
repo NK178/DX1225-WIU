@@ -32,6 +32,11 @@ public class PlayerController : MonoBehaviour
 
     private Color originalColor;
 
+    //For healing 
+    private bool enablePlayerEffect = false;
+    private float particleOffset = 1f;
+    private GameObject activePlayerParticle = null;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -65,6 +70,30 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        if (enablePlayerEffect && activeData.referenceParticle != null)
+        {
+            if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT)
+            {
+                activeData.referenceParticle.transform.position = transform.position + Vector3.up * -particleOffset;
+                if (!activeData.referenceParticle.gameObject.activeInHierarchy)
+                    enablePlayerEffect = false;
+            }
+            else if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT)
+            {
+                activeData.referenceParticle.transform.position = transform.position;
+            }
+            else if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT)
+            {
+                activeData.referenceParticle.transform.position = transform.position;
+                activeData.referenceParticle.transform.rotation = Quaternion.LookRotation(transform.forward);
+            }
+        }
+        else
+        {
+            Debug.Log("PLAYER EFFECT DONE");
+            enablePlayerEffect = false;
         }
 
     }
@@ -114,18 +143,36 @@ public class PlayerController : MonoBehaviour
         return activeData.currentHealth;
     }
 
+    public void TriggerHealingEffect()
+    {
+        float offset = 1f;
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position + Vector3.up * -offset, Vector3.forward);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+    }
+
     public void SetDamageMultiplier(float damageMulti)
     {
         activeData.currentDamageMultiplier = damageMulti;
         StartCoroutine(DamageEffectCoroutine());
-        Debug.Log("PLAYER CURRENT MULTIPLIER: " + activeData.currentDamageMultiplier);
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position, Vector3.up);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
     }
 
     public void SetSpeedMultiplier(float speedMulti)
     {
-        activeData.currentMoveSpeed = speedMulti;
+        activeData.currentSpeedMultiplier = speedMulti;
         StartCoroutine(SpeedEffectCoroutine());
-
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position, transform.forward);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
         Debug.Log("PLAYER SPEED MULTI: " + activeData.currentMoveSpeed);
     }
 
@@ -138,12 +185,8 @@ public class PlayerController : MonoBehaviour
     private IEnumerator SpeedEffectCoroutine()
     {
         yield return new WaitForSeconds(speedEffectDuration);
-        activeData.currentMoveSpeed = 1f;
+        activeData.currentSpeedMultiplier = 1f;
     }
-    //public float GetCurrentHealth()
-    //{
-    //    //return 
-    //}
 
     public void TakeDamage(float Damage)
     {

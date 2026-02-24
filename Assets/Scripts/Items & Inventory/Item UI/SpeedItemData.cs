@@ -14,8 +14,7 @@ public class SpeedItemData : ItemData
         PlayerController player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         if (player != null)
         {
-            //float newHealth = player.GetCurrentHealth() + addHealth;
-            //player.SetCurrentHealth(newHealth);
+            player.SetSpeedMultiplier(speedMultiplier);
         }
     }
 

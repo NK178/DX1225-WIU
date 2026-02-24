@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupableItem
   itemData: {fileID: 11400000, guid: ad206836fbe08e64d83ff773443c36e7, type: 2}
-  meshFilter: {fileID: 5489039612516558467}
+  spriteObject: {fileID: 5195609323641152793}
+  rotationSpeed: 50
 --- !u!1 &5195609323641152793
 GameObject:
   m_ObjectHideFlags: 0
