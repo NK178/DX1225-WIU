@@ -5,8 +5,8 @@ abstract public class ItemData : ScriptableObject
 
     public enum ITEMTYPE{
         APPLE,
-        PINEAPPLE, 
-        BANANA,
+        MANGO, 
+        WATERMELON,
         NUM_ITEMS
     }
 

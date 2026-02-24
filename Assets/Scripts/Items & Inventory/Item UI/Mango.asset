@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e71c93cafb523fe4992617c779833127, type: 3}
-  m_Name: Banana
+  m_Name: Mango
   m_EditorClassIdentifier: Assembly-CSharp::SpeedItemData
-  itemType: 2
-  sprite: {fileID: 21300000, guid: 8c2a0d3b30a8b134a8e4c44b7871da35, type: 3}
+  itemType: 1
+  sprite: {fileID: 21300000, guid: b12633c2490e84949b827b331fc1d7bc, type: 3}
   speedMultiplier: 1.5
