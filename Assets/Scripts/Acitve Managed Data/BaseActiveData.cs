@@ -46,10 +46,7 @@ public class BaseActiveData
     //New stuff 
     public DATATYPE dataType;
 
-    public float currentAttack;
-
-    //Stupid workaround but it works
-    public GameObject referenceParticle; 
+    public float currentAttack; 
 
     public ObjectPoolManager.SPAWNABLE_TYPES spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
 
@@ -110,7 +107,6 @@ public class BaseActiveData
         isMoving = false;
         isAttacking = false; 
         isObjectPoolTriggered = false;
-        referenceParticle = null;
         spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.NUM_TYPES;
         objectPoolSpawnData = new ObjectPoolSpawnData();
     }

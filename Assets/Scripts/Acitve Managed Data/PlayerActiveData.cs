@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerActiveData : BaseActiveData
@@ -27,6 +28,42 @@ public class PlayerActiveData : BaseActiveData
         }
     }
 
+
+    //lmao only way 
+    public class ParticleData
+    {
+        public ObjectPoolManager.SPAWNABLE_TYPES particleType;
+        public GameObject activeParticle;
+        public ParticleData()
+        {
+
+        }
+        public ParticleData(GameObject p, ObjectPoolManager.SPAWNABLE_TYPES type)
+        {
+            activeParticle = p;
+            particleType = type;
+        }
+    }
+
+    public List<ParticleData> activeParticleList;
+
+    public void AddActiveParticle(GameObject activeParticle)
+    {
+        foreach (ParticleData data in activeParticleList)
+        {
+            if (data.activeParticle == activeParticle)
+                return;
+        }
+
+        //insurance check against other stuff 
+        if ((spawnableType != ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT) &&
+            (spawnableType != ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT) &&
+            (spawnableType != ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT))
+            return;
+        activeParticleList.Add(new ParticleData(activeParticle, spawnableType));
+    }
+
+
     public PlayerActiveData()
     {
         Debug.Log("INITALIZED PLAYER DATA");
@@ -36,6 +73,7 @@ public class PlayerActiveData : BaseActiveData
         isInventoryOpen = false;
         currentDamageMultiplier = 1f;
         currentSpeedMultiplier = 1f;
+        activeParticleList =  new List<ParticleData>();
     }
 
 }

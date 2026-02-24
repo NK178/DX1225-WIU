@@ -1,5 +1,8 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using static PlayerActiveData;
 
 //can be reused with player as well
 [System.Serializable]
@@ -37,6 +40,9 @@ public class PlayerController : MonoBehaviour
     private float particleOffset = 1f;
     private GameObject activePlayerParticle = null;
 
+
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -49,6 +55,8 @@ public class PlayerController : MonoBehaviour
         }
 
         originalColor = objectRenderer.material.color;
+
+        //activeParticleList = new List<ParticleData>();    
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -72,30 +80,36 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = false;
         }
 
-        if (enablePlayerEffect && activeData.referenceParticle != null)
-        {
-            if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT)
-            {
-                activeData.referenceParticle.transform.position = transform.position + Vector3.up * -particleOffset;
-                if (!activeData.referenceParticle.gameObject.activeInHierarchy)
-                    enablePlayerEffect = false;
-            }
-            else if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT)
-            {
-                activeData.referenceParticle.transform.position = transform.position;
-            }
-            else if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT)
-            {
-                activeData.referenceParticle.transform.position = transform.position;
-                activeData.referenceParticle.transform.rotation = Quaternion.LookRotation(transform.forward);
-            }
-        }
-        else
-        {
-            Debug.Log("PLAYER EFFECT DONE");
-            enablePlayerEffect = false;
-        }
+        HandlePlayerParticles();
 
+    }
+
+
+    private void HandlePlayerParticles()
+    {
+        if (activeData.activeParticleList.Count == 0)
+            enablePlayerEffect = false;
+        else
+            enablePlayerEffect = true;
+
+        foreach (ParticleData data in activeData.activeParticleList)
+        {
+            ObjectPoolManager.SPAWNABLE_TYPES particleType = data.particleType; 
+
+            switch(particleType)
+            {
+                case ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT:
+                    data.activeParticle.transform.position = transform.position + Vector3.up * -particleOffset;
+                    break;
+                case ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT:
+                    data.activeParticle.transform.position = transform.position;
+                    break;
+                case ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT:
+                    data.activeParticle.transform.position = transform.position;
+                    data.activeParticle.transform.rotation = Quaternion.LookRotation(transform.forward);
+                    break;
+            }
+        }  
     }
 
     //Testing function since no animation move

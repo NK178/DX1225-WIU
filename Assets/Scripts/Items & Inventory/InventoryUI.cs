@@ -16,7 +16,6 @@ public class InventoryUI : MonoBehaviour
         foreach (InventoryGrid grid in inventoryGridList)
         {
             grid.isEmpty = true;
-            Debug.Log("GRID: " + grid.isEmpty);
         }
     }
 
@@ -32,7 +31,6 @@ public class InventoryUI : MonoBehaviour
         //check for empty space
         foreach (InventoryGrid grid in inventoryGridList)
         {
-            Debug.Log("NAME: " + grid.gameObject.name + "IS EMPTY: " + grid.isEmpty);
             if (grid.isEmpty)
             {
                 DraggableItemUI itemUI = CreateDraggableItem(itemData);
@@ -54,15 +52,11 @@ public class InventoryUI : MonoBehaviour
         itemUI.itemData = itemData;
 
         itemUI.image.sprite = itemData.sprite;
-
-        Debug.Log("HELLO SPAWN UI");
-
         return itemUI;
     }
     
     private void HandleItemUsed(ItemData itemData, DraggableItemUI itemUI)
     {
-        Debug.Log("ITEM USED: " + itemData.sprite.name);
 
         InventoryManager.Instance.UseItemFunction(itemData);
 

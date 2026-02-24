@@ -152,7 +152,8 @@ public class ObjectPoolManager : MonoBehaviour
             float launchForce = baseActiveData.objectPoolSpawnData.launchForce;
 
             GameObject referenceGameobject = null;
-
+            PlayerActiveData playerActiveData = null;
+            playerActiveData = (PlayerActiveData)baseActiveData;
 
             if (!particleMap.ContainsKey(baseActiveData.spawnableType))
             {
@@ -187,22 +188,27 @@ public class ObjectPoolManager : MonoBehaviour
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT].SpawnImpactEffect(spawnPos, spawnNormal,ref referenceGameobject);
-                    baseActiveData.referenceParticle = referenceGameobject;
+                    if (playerActiveData != null)
+                        playerActiveData.AddActiveParticle(referenceGameobject);
+                    //baseActiveData.referenceParticle = referenceGameobject;
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT].SpawnImpactEffect(spawnPos, spawnNormal, ref referenceGameobject);
-                    baseActiveData.referenceParticle = referenceGameobject;
+                    if (playerActiveData != null)
+                        playerActiveData.AddActiveParticle(referenceGameobject);                    
+                    //baseActiveData.referenceParticle = referenceGameobject;
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT].SpawnImpactEffect(spawnPos, spawnNormal, ref referenceGameobject);
-                    baseActiveData.referenceParticle = referenceGameobject;
+                    if (playerActiveData != null)
+                        playerActiveData.AddActiveParticle(referenceGameobject);
+                    //baseActiveData.referenceParticle = referenceGameobject;
                     break;
                 case SPAWNABLE_TYPES.RUBBERBAND_BULLETS:
                     //particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, DataHolder.DATATYPE.RANGED_ENEMY, damage, baseActiveData.objectPoolSpawnData.impluseForce);
                     particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS].SpawnProjectile(spawnPos, spawnNormal, baseActiveData, damage, baseActiveData.objectPoolSpawnData.impluseForce);
                     break; 
-                
-
+               
             }
             baseActiveData.isObjectPoolTriggered = false;
         }
