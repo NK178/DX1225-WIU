@@ -82,7 +82,7 @@ public class BossController : MonoBehaviour
         activeData.currentAttack = bossData.damage;
 
         // Set true for now 
-        shouldStartBoss = true;
+        shouldStartBoss = false;
 
         waveIndex = 0;
         activeData.BossPhase = 0;
