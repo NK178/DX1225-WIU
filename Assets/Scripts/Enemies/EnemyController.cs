@@ -11,7 +11,6 @@ public enum ENEMYCLASSTYPE
     RANGED,
     NUM_TYPES
 }
-
 public class EnemyController : MonoBehaviour
 {
     [Header("Enemy Data")]
@@ -106,12 +105,12 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        originalColor = objectRenderer.material.color;
+        //originalColor = objectRenderer.material.color;
     }
 
     void Update()
     {
-        //HandleMove();
+        HandleMove();
     }
     private void HandleMove()
     {
@@ -169,7 +168,7 @@ public class EnemyController : MonoBehaviour
             if (activeData.currentState == EnemyActiveData.AIState.CHASING)
             {
                 agent.ResetPath();
-                PickNewWanderDestination();
+                PickNewWanderDestination(Vector3.zero);
             }
 
             //If player is out of range/gone return back to wandering 
@@ -323,50 +322,87 @@ public class EnemyController : MonoBehaviour
     {
         agent.stoppingDistance = arrivalRadius;
         agent.speed = speed;
-        agent.isStopped = false;
+        //agent.isStopped = false;
+
+        Vector3 awayFromEdge;
+        isNearEdge = CheckForEdge(out awayFromEdge);
+
+        if (isNearEdge)
+        {
+            agent.velocity = Vector3.zero;
+            agent.isStopped = true;
+
+            Vector3 safePosition = transform.position + (awayFromEdge * 5f);
+
+            activeData.wanderDestination = safePosition;
+            activeData.waitTimer = Random.Range(1f, 2f);
+
+            PickNewWanderDestination(awayFromEdge);
+            return;
+        }
 
         bool arrived = !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance;
 
         if (arrived)
         {
-            agent.isStopped = true;
+            //agent.isStopped = true;
             activeData.waitTimer -= Time.deltaTime;
 
             if (activeData.waitTimer <= 0)
             {
-                PickNewWanderDestination();
+                PickNewWanderDestination(Vector3.zero);
                 activeData.waitTimer = Random.Range(2f, 5f);
             }
         }
     }
 
-    private void PickNewWanderDestination()
+    private void PickNewWanderDestination(Vector3 biasDirection)
     {
-        Vector3 randomDirection = Random.insideUnitSphere * 10f;
+        Vector3 randomDirection;
+
+        if (biasDirection != Vector3.zero)
+        {
+            //Pick a point in a 180 degree cone away from the edge
+            randomDirection = Vector3.Slerp(biasDirection, Random.insideUnitSphere, 0.5f) * 10f;
+        }
+        else
+        {
+            randomDirection = Random.insideUnitSphere * 10f;
+        }
+
         randomDirection.y = 0f;
         Vector3 sourcePosition = transform.position + randomDirection;
 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(sourcePosition, out hit, 10f, NavMesh.AllAreas))
         {
-            NavMeshHit edgeHit;
-
-            if (NavMesh.FindClosestEdge(hit.position, out edgeHit, NavMesh.AllAreas))
-            {
-                if (edgeHit.distance < edgeDetectionRadius)
-                {
-                    activeData.waitTimer = 0f;
-                    return;
-                }
-            }
-
             activeData.wanderDestination = hit.position;
-            agent.SetDestination(hit.position); // critical � actually send agent there
+            agent.SetDestination(hit.position);
+            agent.isStopped = false;
         }
         else
         {
-            activeData.waitTimer = 0f; // retry next cycle
+            // If we failed to find a spot, reset timer to try again next frame
+            activeData.waitTimer = 0f;
         }
+
+        //if (NavMesh.SamplePosition(sourcePosition, out hit, 10f, NavMesh.AllAreas))
+        //{
+        //    //Double checks the new destination is not an edge
+        //    NavMeshHit edgeHit;
+        //    if (NavMesh.FindClosestEdge(hit.position, out edgeHit, NavMesh.AllAreas))
+        //    {
+        //        if (edgeHit.distance < edgeDetectionRadius)
+        //        {
+        //            activeData.waitTimer = 0f;
+        //            return;
+        //        }
+        //    }
+
+        //    ActiveData.wanderDestination = hit.position;
+        //    agent.SetDestination(hit.position);
+        //    agent.isStopped = false;
+        //}
     }
     #endregion
 
@@ -394,7 +430,6 @@ public class EnemyController : MonoBehaviour
     {
         if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
         {
-            Debug.Log("RANGER ATTACK!");
             ShootRubberBand();
         }
         else if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
@@ -436,6 +471,7 @@ public class EnemyController : MonoBehaviour
 
         if (ObjectPoolManager.Instance != null)
         {
+            Debug.Log("RANGER ATTACK!");
             ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
         }
 
@@ -470,6 +506,30 @@ public class EnemyController : MonoBehaviour
         }
         // Ensure the final color is reset to the original
         objectRenderer.material.color = originalColor;
+    }
+
+    private bool CheckForEdge(out Vector3 awayFromEdge)
+    {
+        NavMeshHit hit;
+        awayFromEdge = Vector3.zero;
+
+        if (NavMesh.FindClosestEdge(transform.position, out hit, NavMesh.AllAreas))
+        {
+            float distanceToEdge = hit.distance;
+
+            if (distanceToEdge < edgeDetectionRadius)
+            {
+                awayFromEdge = (transform.position - hit.position).normalized;
+                awayFromEdge.y = 0f;
+                return true;
+            }
+            else
+            {
+                agent.speed = activeData.currentMoveSpeed;
+            }
+        }
+
+        return false;
     }
 
     private void OnTriggerEnter(Collider other)
