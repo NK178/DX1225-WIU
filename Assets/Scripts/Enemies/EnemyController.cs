@@ -421,6 +421,7 @@ public class EnemyController : MonoBehaviour
     {
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
+        if (AudioManager.instance != null) AudioManager.instance.Play("EnemyTakeDamage");
     }
 
     private IEnumerator TakeDamageEffect()

@@ -35,6 +35,11 @@ public class BattleUIManager : MonoBehaviour
     private float fighterDamage = 0;
     private float rangerDamage = 0;
 
+    [Header("Player Portraits")]
+    public Image centerPortraitImage;
+    public Sprite fighterPortrait;   
+    public Sprite rangerPortrait;    
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -69,6 +74,11 @@ public class BattleUIManager : MonoBehaviour
     public void SwapActivePlayerUI(CLASSTYPE activeClass)
     {
         isRangerActive = (activeClass == CLASSTYPE.RANGED);
+
+        if (centerPortraitImage != null)
+        {
+            centerPortraitImage.sprite = isRangerActive ? rangerPortrait : fighterPortrait;
+        }
     }
 
     // Called by PlayerController when taking damage

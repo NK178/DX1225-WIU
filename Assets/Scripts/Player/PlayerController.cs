@@ -150,6 +150,7 @@ public class PlayerController : MonoBehaviour
     {
         activeData.currentHealth -= Damage;
         StartCoroutine(TakeDamageEffect());
+        if (AudioManager.instance != null) AudioManager.instance.Play("PlayerTakeDamage");
         if (BattleUIManager.Instance != null)
         {
             BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);

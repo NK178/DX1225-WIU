@@ -167,6 +167,7 @@ public class PlayerInputController : MonoBehaviour
             activeData.maxHealth = fighterMechanics.fighterClassData.maxHealth;
             activeData.currentAttack = fighterMechanics.fighterClassData.damage;
             Debug.Log("Swapped to DragonFruit (Fighter)!");
+            if (AudioManager.instance != null) AudioManager.instance.Play("SwapFighter");
             //Debug.Log("currentHealth: " + activeData.currentHealth);
             //Debug.Log("fighterHP: " + fighterHP);
             //Debug.Log("rangerHP: " + rangerHP);
@@ -180,6 +181,7 @@ public class PlayerInputController : MonoBehaviour
             activeData.maxHealth = rangerMechanics.rangerData.maxHealth;
             activeData.currentAttack = rangerMechanics.rangerData.damage;
             Debug.Log("Swapped to Mandarin (Ranger)!");
+            if (AudioManager.instance != null) AudioManager.instance.Play("SwapRanger");
             //Debug.Log("currentHealth: " + activeData.currentHealth);
             //Debug.Log("fighterHP: " + fighterHP);
             //Debug.Log("rangerHP: " + rangerHP);

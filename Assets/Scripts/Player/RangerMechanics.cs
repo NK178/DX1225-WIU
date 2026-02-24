@@ -105,6 +105,7 @@ public class RangerMechanics : BaseClassMechanics
 
         activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RANGER_SEED;
         activeData.isObjectPoolTriggered = true;
+        if (AudioManager.instance != null) AudioManager.instance.Play("RangerShoot");
     }
 
     public override void HandleDefense()
@@ -112,7 +113,9 @@ public class RangerMechanics : BaseClassMechanics
         if (Time.time >= nextRollTime && !isRolling && activeData != null && activeData.isMoving && !isFiringLaser && rangerData != null)
         {
             nextRollTime = Time.time + rollCooldown;
+            if (AudioManager.instance != null) AudioManager.instance.Play("RangerRoll");
             StartCoroutine(RollRoutine());
+            
         }
     }
 
@@ -151,7 +154,9 @@ public class RangerMechanics : BaseClassMechanics
         if (Time.time >= nextLaserTime && !isFiringLaser && !isRolling && rangerData != null)
         {
             nextLaserTime = Time.time + rangerData.laserCooldown;
+            if (AudioManager.instance != null) AudioManager.instance.Play("RangerLaser");
             StartCoroutine(LaserRoutine());
+           
         }
     }
 

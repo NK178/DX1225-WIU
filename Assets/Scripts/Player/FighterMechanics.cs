@@ -36,6 +36,7 @@ public class FighterMechanics : BaseClassMechanics
 
         AtkCDTimer = Time.time + fighterClassData.AtkCD;
         SwordHandler.EnableCollider("Sword");
+        if (AudioManager.instance != null) AudioManager.instance.Play("FighterAttack");
     }
 
     public override void HandleDefense()
@@ -43,12 +44,13 @@ public class FighterMechanics : BaseClassMechanics
         if (Time.time < ParryCDTimer) return;
 
         ParryCDTimer = Time.time + fighterClassData.parryCD;
-
+        if (AudioManager.instance != null) AudioManager.instance.Play("FighterParry");
         Debug.Log("Parry Executed!");
     }
 
     public override void HandleAbility()
     {
         // Slash logic
+        if (AudioManager.instance != null) AudioManager.instance.Play("FighterAbility");
     }
 }
