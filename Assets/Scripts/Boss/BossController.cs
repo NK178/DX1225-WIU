@@ -82,7 +82,7 @@ public class BossController : MonoBehaviour
         activeData.currentAttack = bossData.damage;
 
         // Set true for now 
-        shouldStartBoss = false;
+        shouldStartBoss = true;
 
         waveIndex = 0;
         activeData.BossPhase = 0;
@@ -106,7 +106,7 @@ public class BossController : MonoBehaviour
         if (shouldStartBoss)
         {
             Debug.LogWarning("SHLD RANDOM: " + shouldRandomizeAttack);
-            if (activeData.BossPhase == waveIndex && shouldRandomizeAttack)
+            if (shouldRandomizeAttack)
             {
                 SelectAttackPhase();
                 StartCoroutine(AttackDurationCoroutine());
@@ -119,7 +119,7 @@ public class BossController : MonoBehaviour
             }
 
 
-            if (HP <= 70 && activeData.BossPhase == 0)
+            if (activeData.currentHealth <= 70 && activeData.BossPhase == 0)
             {
                 activeData.BossPhase++;
             }
@@ -135,6 +135,12 @@ public class BossController : MonoBehaviour
         int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
         int randomAttackIndex = Random.Range(0, attackListCount);
         shouldRandomizeAttack = false;
+
+        if (debugAttackInt + 1 != attackListCount)
+            debugAttackInt++;
+        else
+        
+            debugAttackInt = 0;
         //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
         activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
     }
@@ -146,10 +152,6 @@ public class BossController : MonoBehaviour
         Debug.Log("RANDOMIZE ATTACK AGAIN");
         shouldRandomizeAttack = true;
 
-        int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
-
-        if (debugAttackInt - 1 != attackListCount)
-            debugAttackInt++;
     }
 
 

@@ -70,8 +70,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-
-
     //Testing function since no animation move
     void DebugHandleMove()
     {
@@ -80,7 +78,7 @@ public class PlayerController : MonoBehaviour
         if (!characterController.isGrounded)
         {
             activeData.isMoving = true;
-            activeData.jumpVel.y -= 9.81f * Time.deltaTime;
+            activeData.jumpVel.y -= 9.81f * Time.deltaTime * 3f;
         }
         else if (!activeData.isJumping)
         {
