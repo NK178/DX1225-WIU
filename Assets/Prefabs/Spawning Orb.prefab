@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7742144309579264745}
   m_Layer: 0
   m_Name: Spawning Orb
-  m_TagString: SpawningOrb
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -170,4 +170,3 @@ MonoBehaviour:
   - {fileID: 2072051332501917476, guid: 75df7afe2e22b47438fe134c2ca2ab4b, type: 3}
   - {fileID: 3784287887147908238, guid: ee9ac95244e63614892fc58079cf3ee9, type: 3}
   spawnEffect: {fileID: 0}
-  spawner: {fileID: 0}

@@ -94,8 +94,7 @@ public class GenericProjectile : MonoBehaviour
         bool hitDummyTag = other.CompareTag("Dummy");
         bool hitDummyLayer = other.gameObject.layer == LayerMask.NameToLayer("Dummy");
 
-        bool hitEnemy = other.CompareTag("Enemy");
-        bool hitEnemyLayer = other.gameObject.layer == LayerMask.NameToLayer("Enemy");
+        bool hitFloor = other.CompareTag("Floor");
 
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
@@ -103,8 +102,7 @@ public class GenericProjectile : MonoBehaviour
             ReturnToPool();
         }
 
-        //Dummy testing
-        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummyLayer || hitDummyTag)
+        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummyTag || hitDummyLayer)
         {
             DummyController dummy = other.GetComponentInParent<DummyController>();
 
@@ -119,32 +117,6 @@ public class GenericProjectile : MonoBehaviour
             }
 
              ReturnToPool();
-        }
-
-        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitPlayer)
-        {
-            PlayerController player = other.GetComponentInParent<PlayerController>();
-
-            if (player != null)
-            {
-                Debug.Log("PLAYER HIT!");
-                player.TakeDamage(10);
-            }
-            else
-            {
-                Debug.LogError("PLAYER NULL!");
-            }
-
-            ReturnToPool();
-        }
-
-        if (spawnerType == DataHolder.DATATYPE.PLAYER && hitEnemyLayer)
-        {
-            if (!gameObject.CompareTag("EnemyBullet") || !gameObject.CompareTag("SpawningOrb"))
-            {
-                Debug.LogError("ENEMY HIT!");
-                ReturnToPool();
-            }
         }
 
         //if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)

@@ -13,13 +13,11 @@ TagManager:
   - Boss
   - Floor
   - Item
-  - PlayerBullet
-  - SpawningOrb
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Spawner
+  - 
   - Water
   - UI
   - Enemy
