@@ -136,6 +136,10 @@ public class BossController : MonoBehaviour
     {
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
+        if (BattleUIManager.Instance != null && bossData != null)
+        {
+            BattleUIManager.Instance.bossHealthSlider.value = activeData.currentHealth / bossData.maxHealth;
+        }
     }
 
     private IEnumerator TakeDamageEffect()

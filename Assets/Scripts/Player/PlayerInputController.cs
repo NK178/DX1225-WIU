@@ -19,7 +19,6 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private TargetingSystem targetingSystem;
 
     private PlayerActiveData activeData;
-    public BattleUIManager uiManager;
 
     // Movement & Combat Actions
     private InputAction moveAction;
@@ -117,6 +116,11 @@ public class PlayerInputController : MonoBehaviour
         if (inventoryAction.WasPressedThisFrame())
         {
             activeData.isInventoryOpen = !activeData.isInventoryOpen;
+
+            if (BattleUIManager.Instance != null)
+            {
+                BattleUIManager.Instance.ToggleUI(!activeData.isInventoryOpen);
+            }
         }
     }
 
@@ -148,6 +152,7 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics = fighterMechanics;
             currentMechanics.EquipClass();
             activeData.currentHealth = fighterHP;
+            activeData.maxHealth = fighterMechanics.fighterClassData.maxHealth;
             activeData.currentAttack = fighterMechanics.fighterClassData.damage;
             Debug.Log("Swapped to DragonFruit (Fighter)!");
             //Debug.Log("currentHealth: " + activeData.currentHealth);
@@ -160,15 +165,16 @@ public class PlayerInputController : MonoBehaviour
             currentMechanics = rangerMechanics;
             currentMechanics.EquipClass();
             activeData.currentHealth = rangerHP;
+            activeData.maxHealth = rangerMechanics.rangerData.maxHealth;
             activeData.currentAttack = rangerMechanics.rangerData.damage;
             Debug.Log("Swapped to Mandarin (Ranger)!");
             //Debug.Log("currentHealth: " + activeData.currentHealth);
             //Debug.Log("fighterHP: " + fighterHP);
             //Debug.Log("rangerHP: " + rangerHP);
         }
-        if (uiManager != null)
+        if (BattleUIManager.Instance != null)
         {
-            uiManager.SwapActivePlayerUI(newClass);
+            BattleUIManager.Instance.SwapActivePlayerUI(newClass);
         }
     }
 

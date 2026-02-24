@@ -110,6 +110,8 @@ public class AttackHandler : MonoBehaviour
                     Debug.Log(detectors.name + " HIT BOSS");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
                         Boss.TakeDamage(tempPlayer.ActiveData.currentAttack);
+                    if (BattleUIManager.Instance != null)
+                        BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack);
                     else Debug.LogError("A Fake Player hit Boss?");
                         DisableCollider(detectors.name);
                     continue;
@@ -119,6 +121,8 @@ public class AttackHandler : MonoBehaviour
                     Debug.Log(detectors.name + " HIT ENEMY");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
                         Enemy.TakeDamage(tempPlayer.ActiveData.currentAttack);
+                    if (BattleUIManager.Instance != null)
+                        BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack);
                     else Debug.LogError("A Fake Player hit Enemy?");
                     DisableCollider(detectors.name);
                     continue;

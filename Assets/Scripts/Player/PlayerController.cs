@@ -136,6 +136,10 @@ public class PlayerController : MonoBehaviour
     {
         activeData.currentHealth -= Damage;
         StartCoroutine(TakeDamageEffect());
+        if (BattleUIManager.Instance != null)
+        {
+            BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
+        }
     }
     private IEnumerator TakeDamageEffect()
     {

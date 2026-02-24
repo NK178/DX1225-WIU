@@ -93,30 +93,44 @@ public class GenericProjectile : MonoBehaviour
 
         bool hitDummyTag = other.CompareTag("Dummy");
         bool hitDummyLayer = other.gameObject.layer == LayerMask.NameToLayer("Dummy");
-
+        bool hitEnemy = other.CompareTag("Enemy");
         bool hitFloor = other.CompareTag("Floor");
 
-        if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
+        // Enemy/Boss shoots the Player
+        if ((spawnerType == DataHolder.DATATYPE.BOSS_ENEMY || spawnerType == DataHolder.DATATYPE.RANGED_ENEMY) && hitPlayer)
         {
-            Debug.Log($"Hit player for {projectileDamage} damage!");
+            PlayerController player = other.GetComponentInParent<PlayerController>();
+            if (player != null)
+            {
+                player.TakeDamage(projectileDamage);
+            }
             ReturnToPool();
         }
 
-        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummyTag || hitDummyLayer)
+        // Player shoots the Boss or Enemy
+        if (spawnerType == DataHolder.DATATYPE.PLAYER && (hitEnemy || other.CompareTag("Boss")))
+        {
+            // Try to find what we hit and damage it
+            BossController boss = other.GetComponentInParent<BossController>();
+            EnemyController enemy = other.GetComponentInParent<EnemyController>();
+
+            if (boss != null) boss.TakeDamage(projectileDamage);
+            if (enemy != null) enemy.TakeDamage(projectileDamage);
+
+            // Tell the UI
+            if (BattleUIManager.Instance != null && referenceData is PlayerActiveData playerData)
+            {
+                BattleUIManager.Instance.AddDamage(playerData.currentClassType, projectileDamage);
+            }
+            ReturnToPool();
+        }
+
+        // Dummy logic
+        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && (hitDummyTag || hitDummyLayer))
         {
             DummyController dummy = other.GetComponentInParent<DummyController>();
-
-            if (dummy != null)
-            {
-                Debug.LogWarning("DUMMY HIT!");
-                dummy.TakeDamage(10);
-            }
-            else
-            {
-                Debug.LogWarning("DUMMY NULL!");
-            }
-
-             ReturnToPool();
+            if (dummy != null) dummy.TakeDamage(10);
+            ReturnToPool();
         }
 
         //if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)
