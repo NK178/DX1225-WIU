@@ -90,14 +90,12 @@ public class AttackHandler : MonoBehaviour
             Collider[] hitColliders = Physics.OverlapBox(detectors.transform.position, detectors.transform.localScale / 2);
             for (int j = 0; j < hitColliders.Length; j++)
             {
-                if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss || colliderType == ColliderType.NPC))
+                if (hitColliders[j].TryGetComponent<PlayerController>(out var player) && (colliderType == ColliderType.Boss))
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
                     // POSSIBLE PROBLEM!
                     if (detectors.transform.parent.TryGetComponent<BossController>(out var tempBoss))
                         player.TakeDamage(tempBoss.ActiveData.currentAttack);
-                    else if (detectors.transform.parent.TryGetComponent<EnemyController>(out var tempNPC))
-                        player.TakeDamage(tempNPC.ActiveData.currentAttack);
                     else Debug.LogError("A Fake Player hit Boss?");
                     DisableCollider(detectors.name);
                     //handle stuff like particles and whatnot 
@@ -105,7 +103,19 @@ public class AttackHandler : MonoBehaviour
                     detectors.GetComponentInParent<BossController>().HandleTriggerParticles(contactPoint);
                     continue;
                 }
-                else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) &&  colliderType == ColliderType.Player)
+                else if (hitColliders[j].TryGetComponent<PlayerController>(out var n_player) && (colliderType == ColliderType.NPC))
+                {
+                    Debug.Log(detectors.name + " HIT PLAYER");
+                    if (detectors.transform.parent.TryGetComponent<EnemyController>(out var tempNPC))
+                        n_player.TakeDamage(tempNPC.ActiveData.currentAttack);
+                    else Debug.LogError("A Fake Player hit Enemy?");
+                    DisableCollider(detectors.name);
+                    //handle stuff like particles and whatnot 
+                    //Vector3 contactPoint = hitColliders[j].ClosestPoint(detectors.transform.position);
+                    //detectors.GetComponentInParent<EnemyController>().HandleTriggerParticles(contactPoint);
+                    continue;
+                }
+                else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
@@ -113,7 +123,7 @@ public class AttackHandler : MonoBehaviour
                     if (BattleUIManager.Instance != null)
                         BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack);
                     else Debug.LogError("A Fake Player hit Boss?");
-                        DisableCollider(detectors.name);
+                    DisableCollider(detectors.name);
                     continue;
                 }
                 else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)

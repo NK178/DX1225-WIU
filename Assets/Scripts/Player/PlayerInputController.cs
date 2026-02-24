@@ -209,7 +209,7 @@ public class PlayerInputController : MonoBehaviour
 
         if (jumpAction == null) return;
 
-        if (jumpAction.WasPressedThisFrame() && !activeData.isJumping)
+        if (jumpAction.IsPressed() && !activeData.isJumping)
         {
             activeData.jumpVel.y = JumpVelocity;
             activeData.isMoving = true;
