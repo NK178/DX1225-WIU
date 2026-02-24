@@ -16,6 +16,8 @@ public class ItemSpawner : MonoBehaviour
     public bool isActive = true;
     private bool spawnFruit = false;
 
+    private int totalItemCount = 0; 
+
     private IEnumerator spawnerCoroutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -68,6 +70,7 @@ public class ItemSpawner : MonoBehaviour
         int randomFruitIndex = Random.Range(0, spawnableItemList.Count);
 
         GameObject fruit = Instantiate(spawnableItemList[randomFruitIndex], spawnPosition, Quaternion.identity);
+        //PickupableItem item = fruit
 
     }
 
@@ -80,4 +83,11 @@ public class ItemSpawner : MonoBehaviour
 
         spawnFruit = true; 
     }
+
+
+    private void OnItemPickedUp()
+    {
+        totalItemCount--;
+    }
+
 }
