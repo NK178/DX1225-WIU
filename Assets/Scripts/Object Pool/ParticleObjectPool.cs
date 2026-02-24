@@ -55,6 +55,19 @@ public class ParticleObjectPool : MonoBehaviour, IObjectPool
         StartCoroutine(ReleaseImpactEffect(effect, particleLifetime));
     }
 
+
+    //This one to get reference pro strats 
+    public void SpawnImpactEffect(Vector3 position, Vector3 normal, ref GameObject reference)
+    {
+        GameObject effect = particlePool.Get();
+        effect.transform.position = position;
+        effect.transform.rotation = Quaternion.LookRotation(normal);
+        reference = effect; 
+        // Triggers the pool to take it back after 3 seconds
+        StartCoroutine(ReleaseImpactEffect(effect, particleLifetime));
+    }
+
+
     private IEnumerator ReleaseImpactEffect(GameObject objectRef, float delay)
     {
         yield return new WaitForSeconds(delay);

@@ -6,6 +6,13 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private DataHolder dataHolder; 
     [SerializeField] private BoxCollider boxCollider;
+    [SerializeField] private SphereCollider sphereColldier;
+
+
+    [SerializeField] private float sphereRadius;
+    [SerializeField] private float gravityPullStrength;
+
+    [SerializeField] private GameObject inventoryPanel;  
     [SerializeField] private InventoryUI inventoryUI;
 
     private List<ItemData> itemDataList; 
@@ -26,9 +33,9 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        activeData.isInventoryOpen = false; 
+        activeData.isInventoryOpen = false;
 
-        inventoryUI.gameObject.SetActive(false);
+        inventoryPanel.gameObject.SetActive(false);
 
         if (Instance == null)
         {
@@ -40,14 +47,45 @@ public class InventoryManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inventoryUI.gameObject.SetActive(activeData.isInventoryOpen);
-
+        inventoryPanel.gameObject.SetActive(activeData.isInventoryOpen);
+        HandleGravityPull();
     }
 
+
+    public void HandleGravityPull()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, sphereRadius);
+        foreach (var collider in hitColliders)
+        {
+            if (collider.CompareTag("Item"))
+            {
+                Debug.Log("Item Found");
+
+                //add a force to pull said object to me
+                float distanceFromPlayer = (collider.transform.position - transform.position).magnitude;
+                Vector3 directionToPlayer = (collider.transform.position - transform.position).normalized;
+                float percentage = 1 - (distanceFromPlayer / sphereRadius);
+                percentage = Mathf.Max(0, percentage);
+                float currentStrength = percentage * gravityPullStrength;
+                Vector3 velocity = -directionToPlayer * currentStrength  * Time.deltaTime;
+
+                collider.gameObject.GetComponentInParent<PickupableItem>().AddPullForce(velocity);
+            }
+        }
+    }
 
     public void UseItemFunction(ItemData item)
     {
         item.ItemFunction();
+        //remove from the list 
+        foreach (ItemData itemData in itemDataList)
+        {
+            if (itemData.itemType == item.itemType)
+            {
+                itemDataList.Remove(itemData);
+                break; 
+            }
+        }
     }
 
 
@@ -61,8 +99,10 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log("PICKED UP ITEM");
 
                 itemDataList.Add(pickUpItem.GetItemData());
-
+                
                 inventoryUI.UpdateItemUI(pickUpItem.GetItemData());
+
+                pickUpItem.InvokePickUpEvent();
 
                 Destroy(other.transform.parent.gameObject);
             }

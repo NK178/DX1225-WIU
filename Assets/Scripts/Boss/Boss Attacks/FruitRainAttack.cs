@@ -22,6 +22,7 @@ public class FruitRainAttack : BossAttacks
     private float randomSpawnDelay;
 
     private GameObject playerRef;
+    private GameObject fruitSpawn; 
 
     public override void ExecuteAttack(BossActiveData activeData)
     {
@@ -36,8 +37,10 @@ public class FruitRainAttack : BossAttacks
 
 
         playerRef = GameObject.FindWithTag("Player");
-
+        fruitSpawn = GameObject.Find("FruitAttackSpawn");
         debugTest = true;
+
+        activeData.isAttacking = true;
     }
     
 
@@ -82,38 +85,17 @@ public class FruitRainAttack : BossAttacks
                 Vector3 fireForce = CalculateForce(targetPosition);
 
                 activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.FRUIT_CHUNKS;
-
                 activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPoint, Vector3.up, fireForce, 0);
                 activeData.isObjectPoolTriggered = true;
                 activeData.isObjectPoolTriggered = false;
+
+
+
+                //Debug.Log("FRUIT SPAWN WORLD: " + fruitSpawn.transform.position);
+                //activeData.objectPoolSpawnData = new ObjectPoolSpawnData(fruitSpawn.transform.position, Vector3.up, fireForce, 0);
+
             }
         }
-
-
-        //if (canFire && debugTest)
-        //{
-        //    timer = 0;
-        //    canFire = false;
-        //    //debugTest = false;
-
-        //    //randomSpawnDelay = -1;
-        //    randomSpawnDelay = Random.Range(spawnDelayMin, spawnDelayMax);
-
-        //    Vector3 fireForce = CalculateForce(playerRef.transform.position);
-
-        //    activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.FRUIT_CHUNKS;
-
-
-        //    Debug.Log("FIRE FORCE: " + fireForce);
-        //    //activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPoint, fireForce.normalized, 0, fireForce.magnitude);
-
-        //    activeData.objectPoolSpawnData = new ObjectPoolSpawnData(spawnPoint, Vector3.up, fireForce, 0);
-
-        //    activeData.isObjectPoolTriggered = true;
-        //}
-
-
-
     }
 
 

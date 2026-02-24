@@ -53,7 +53,7 @@ public class BossAnimator : MonoBehaviour
     {
         Debug.Log("ANIM STATE CHANGED");
         string targetAnimation = ((BossActiveData.BossAnimStates)GetAnimState()).ToString();
-        Debug.Log("ANIMATION: " + targetAnimation);
+        Debug.Log("ANIMATION: " + targetAnimation); 
 
 
         if (activeData.BAnimState == BossActiveData.BossAnimStates.IDLE && !activeData.isMoving)
@@ -78,12 +78,12 @@ public class BossAnimator : MonoBehaviour
             {
                 case BossActiveData.BossAnimStates.KNIFE_ATTACK:
                     DEBUGAttackHandler.EnableCollider("KnifeCollider");
-                    activeData.isAttacking = false;
+                    //activeData.isAttacking = false;
                     //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.HANDSWIPE_ATTACK:
                     DEBUGAttackHandler.EnableCollider("HandCollider");
-                    activeData.isAttacking = false;
+                    //activeData.isAttacking = false;
                     //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.TRIPLEKNIFE_ATTACK:
@@ -92,7 +92,7 @@ public class BossAnimator : MonoBehaviour
                     break;
                 case BossActiveData.BossAnimStates.HANDSLAM_ATTACK:
                     DEBUGAttackHandler.EnableCollider("HandCollider");
-                    activeData.isAttacking = false;
+                    //activeData.isAttacking = false;
                     //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
@@ -101,7 +101,7 @@ public class BossAnimator : MonoBehaviour
                     break;
                 case BossActiveData.BossAnimStates.CLAWGRAB_ATTACK:
                     DEBUGAttackHandler.EnableCollider("ClawCollider");
-                    activeData.isAttacking = false;
+                    //activeData.isAttacking = false;
                     //animator.CrossFadeInFixedTime(targetAnimation, 0.2f);
                     break;
                 case BossActiveData.BossAnimStates.SUGARCANEMISSILES_ATTACK:

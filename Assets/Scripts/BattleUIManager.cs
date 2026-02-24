@@ -4,29 +4,36 @@ using TMPro;
 
 public class BattleUIManager : MonoBehaviour
 {
+    // Singleton instance for easy global access
     public static BattleUIManager Instance;
-
+    public CanvasGroup mainCanvasGroup;
     [Header("Boss UI")]
     public Slider bossHealthSlider;
 
-    [Header("Player HP Bars")]
-    public RectTransform activePos;
-    public RectTransform inactivePos;
-    public CanvasGroup mandarinHPGroup;
-    public CanvasGroup dragonFruitHPGroup;
+    [Header("Player Radial HP (In/Out Animation)")]
+    public Image fighterRadialHP;
+    public CanvasGroup fighterRadialGroup;
+    public RectTransform fighterRadialRect;
 
-    [Header("UI Animation Settings")]
-    public float swapSpeed = 10f;
-    private bool isMandarinActive = false;
-            
-    [Header("Cooldowns")]
+    public Image rangerRadialHP;
+    public CanvasGroup rangerRadialGroup;
+    public RectTransform rangerRadialRect;
+
+    public float activeRingScale = 1f;
+    public float inactiveRingScale = 0.85f;
+    public float slideSpeed = 12f;
+    private bool isRangerActive = false;
+
+    [Header("Cooldowns (Static Grid)")]
+    public Image swordCooldownImage;
+    public Image parryCooldownImage;
     public Image rollCooldownImage;
     public Image laserCooldownImage;
 
     [Header("Damage Stats")]
     public TextMeshProUGUI damageTrackerText;
-    private float mandarinDamage = 0;
-    private float dragonFruitDamage = 0;
+    private float fighterDamage = 0;
+    private float rangerDamage = 0;
 
     private void Awake()
     {
@@ -34,58 +41,57 @@ public class BattleUIManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    private void Start()
+    private void Start() => UpdateDamageTrackerUI();
+
+    private void Update() => AnimateRadialRings();
+
+    private void AnimateRadialRings()
     {
-        UpdateDamageTrackerUI();
+        if (fighterRadialGroup == null || rangerRadialGroup == null) return;
+
+        float fighterTargetAlpha = isRangerActive ? 0.4f : 1f;
+        float rangerTargetAlpha = isRangerActive ? 1f : 0.4f;
+
+        Vector3 fighterTargetScale = isRangerActive ? new Vector3(inactiveRingScale, inactiveRingScale, 1f) : new Vector3(activeRingScale, activeRingScale, 1f);
+        Vector3 rangerTargetScale = isRangerActive ? new Vector3(activeRingScale, activeRingScale, 1f) : new Vector3(inactiveRingScale, inactiveRingScale, 1f);
+
+        fighterRadialGroup.alpha = Mathf.Lerp(fighterRadialGroup.alpha, fighterTargetAlpha, Time.deltaTime * slideSpeed);
+        rangerRadialGroup.alpha = Mathf.Lerp(rangerRadialGroup.alpha, rangerTargetAlpha, Time.deltaTime * slideSpeed);
+
+        fighterRadialRect.localScale = Vector3.Lerp(fighterRadialRect.localScale, fighterTargetScale, Time.deltaTime * slideSpeed);
+        rangerRadialRect.localScale = Vector3.Lerp(rangerRadialRect.localScale, rangerTargetScale, Time.deltaTime * slideSpeed);
+
+        if (isRangerActive) rangerRadialRect.SetAsLastSibling();
+        else fighterRadialRect.SetAsLastSibling();
     }
 
-    private void Update()
-    {
-        AnimateHPBars();
-    }
-
-    private void AnimateHPBars()
-    {
-        if (mandarinHPGroup == null || dragonFruitHPGroup == null) return;
-
-        RectTransform mandarinRect = mandarinHPGroup.GetComponent<RectTransform>();
-        RectTransform dragonFruitRect = dragonFruitHPGroup.GetComponent<RectTransform>();
-
-        Vector3 mandarinTargetPos = isMandarinActive ? activePos.anchoredPosition : inactivePos.anchoredPosition;
-        Vector3 dragonTargetPos = isMandarinActive ? inactivePos.anchoredPosition : activePos.anchoredPosition;
-
-        float mandarinTargetAlpha = isMandarinActive ? 1f : 0.5f;
-        float dragonTargetAlpha = isMandarinActive ? 0.5f : 1f;
-
-        mandarinRect.anchoredPosition = Vector3.Lerp(mandarinRect.anchoredPosition, mandarinTargetPos, Time.deltaTime * swapSpeed);
-        dragonFruitRect.anchoredPosition = Vector3.Lerp(dragonFruitRect.anchoredPosition, dragonTargetPos, Time.deltaTime * swapSpeed);
-
-        mandarinHPGroup.alpha = Mathf.Lerp(mandarinHPGroup.alpha, mandarinTargetAlpha, Time.deltaTime * swapSpeed);
-        dragonFruitHPGroup.alpha = Mathf.Lerp(dragonFruitHPGroup.alpha, dragonTargetAlpha, Time.deltaTime * swapSpeed);
-    }
-
+    // Called by PlayerInputController when swapping characters
     public void SwapActivePlayerUI(CLASSTYPE activeClass)
     {
-        isMandarinActive = (activeClass == CLASSTYPE.RANGED);
+        isRangerActive = (activeClass == CLASSTYPE.RANGED);
     }
 
-    public void UpdateCooldownUI(Image abilityIcon, float currentCooldownTimer, float maxCooldown)
+    // Called by PlayerController when taking damage
+    public void UpdatePlayerHealthUI(float currentHP, float maxHP, CLASSTYPE classType)
     {
-        if (abilityIcon != null)
-        {
-            abilityIcon.fillAmount = 1f - (currentCooldownTimer / maxCooldown);
-        }
+        // Fills the full 360-degree white circle based on damage
+        float fillRatio = currentHP / maxHP;
+
+        if (classType == CLASSTYPE.MELEE && fighterRadialHP != null) fighterRadialHP.fillAmount = fillRatio;
+        else if (classType == CLASSTYPE.RANGED && rangerRadialHP != null) rangerRadialHP.fillAmount = fillRatio;
     }
+
+    // Called by FighterMechanics and RangerMechanics in their Update loops
+    public void UpdateCooldownUI(Image abilityIcon, float currentTimer, float maxCooldown)
+    {
+        if (abilityIcon != null) abilityIcon.fillAmount = 1f - (currentTimer / maxCooldown);
+    }
+
+    // Called by GenericProjectile and AttackHandler when hitting enemies
     public void AddDamage(CLASSTYPE classSource, float amount)
     {
-        if (classSource == CLASSTYPE.RANGED)
-        {
-            mandarinDamage += amount;
-        }
-        else if (classSource == CLASSTYPE.MELEE)
-        {
-            dragonFruitDamage += amount;
-        }
+        if (classSource == CLASSTYPE.RANGED) rangerDamage += amount;
+        else if (classSource == CLASSTYPE.MELEE) fighterDamage += amount;
 
         UpdateDamageTrackerUI();
     }
@@ -94,8 +100,18 @@ public class BattleUIManager : MonoBehaviour
     {
         if (damageTrackerText != null)
         {
-            float total = mandarinDamage + dragonFruitDamage;
-            damageTrackerText.text = $"Mandarin: {mandarinDamage}\nDragonFruit: {dragonFruitDamage}\n<color=yellow>TOTAL: {total}</color>";
+            float total = fighterDamage + rangerDamage;
+            damageTrackerText.text = $"Fighter: {fighterDamage}\nRanger: {rangerDamage}\n<color=yellow>TOTAL: {total}</color>";
+        }
+    }
+
+    public void ToggleUI(bool isVisible)
+    {
+        if (mainCanvasGroup != null)
+        {
+            mainCanvasGroup.alpha = isVisible ? 1f : 0f;
+            mainCanvasGroup.interactable = isVisible;
+            mainCanvasGroup.blocksRaycasts = isVisible;
         }
     }
 }

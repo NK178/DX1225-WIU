@@ -19,9 +19,15 @@ public class BossController : MonoBehaviour
 {
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private BossAnimator animator;
+    [SerializeField] private BossClassData bossData;
 
     [SerializeField] private List<AttackPhaseData> attackPhaseData;
     private BossActiveData activeData;
+    public BossActiveData ActiveData
+    {
+        get { return activeData; }
+        private set { activeData = value; }
+    }
 
     [Header("Debugging")]
     [SerializeField] private BossAttacks DEBUGAttackData;
@@ -37,6 +43,14 @@ public class BossController : MonoBehaviour
     [SerializeField] private Color damageColor;
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
+
+
+    //the actual phases
+    private int waveIndex = 0;
+    private bool shouldStartBoss = false;
+    private bool shouldRandomizeAttack = false;
+
+    private BossAttacks activeBossAttack; 
 
     private void Start()
     {
@@ -64,7 +78,15 @@ public class BossController : MonoBehaviour
         DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
         DebugEnableAttack = false;
-        HP = 100;
+        activeData.currentHealth = bossData.maxHealth;
+        activeData.currentAttack = bossData.damage;
+
+        // Set true for now 
+        shouldStartBoss = true;
+
+        waveIndex = 0;
+        activeData.BossPhase = 0;
+        shouldRandomizeAttack = true;
 
         // Debug to check what phases have what attacks
         //for (int i = 0; i < attackPhaseData.Count; i++)
@@ -74,28 +96,87 @@ public class BossController : MonoBehaviour
         //        Debug.Log("Phase " + attackPhaseData[i].phaseNo + " : " + attackPhaseData[i]._atks[j].name);
         //    }
         //}
-        HandleAttack();
+        //HandleAttack();
     }
+
+
 
     private void Update()
     {
-        //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
-        //{
-        //    //Debug.Log(attackPhaseData[0]._atks[i]);
-        //}
-
-        if (HP <= 70 && activeData.BossPhase == 0)
+        if (shouldStartBoss)
         {
-            activeData.BossPhase++;
-        }
+            Debug.LogWarning("SHLD RANDOM: " + shouldRandomizeAttack);
+            if (shouldRandomizeAttack)
+            {
+                SelectAttackPhase();
+                StartCoroutine(AttackDurationCoroutine());
+                activeBossAttack.ExecuteAttack(activeData);
+            }
 
-        if (debugRunning) {
+            if (activeBossAttack != null)
+            {
+                activeBossAttack.UpdateAttack(activeData);
+            }
 
-            //DEBUGAttackData.UpdateAttack(activeData);
-            //DEBUGAttackData.ExecuteAttack(activeData);
+
+            if (activeData.currentHealth <= 70 && activeData.BossPhase == 0)
+            {
+                activeData.BossPhase++;
+            }
         }
-        HandleAttack();
     }
+
+    int debugAttackInt = 0;
+
+    private void SelectAttackPhase()
+    {
+        Debug.Log("SELECTED ATTACK");
+        //randomize the attack 
+        int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
+        int randomAttackIndex = Random.Range(0, attackListCount);
+        shouldRandomizeAttack = false;
+
+        if (debugAttackInt < attackListCount - 1)
+            debugAttackInt++;
+        else
+            debugAttackInt = 0;
+        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
+    }
+
+    private IEnumerator AttackDurationCoroutine()
+    {
+        //shld prob set a attack duration somewhere here 
+        yield return new WaitForSeconds(5f);
+        Debug.Log("RANDOMIZE ATTACK AGAIN");
+        shouldRandomizeAttack = true;
+
+    }
+
+
+
+    //private void Update()
+    //{
+    //    //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
+    //    //{
+    //    //    //Debug.Log(attackPhaseData[0]._atks[i]);
+    //    //}
+
+    //    if (HP <= 70 && activeData.BossPhase == 0)
+    //    {
+    //        activeData.BossPhase++;
+    //    }
+
+    //    if (debugRunning) {
+
+    //        //DEBUGAttackData.UpdateAttack(activeData);
+    //        //DEBUGAttackData.ExecuteAttack(activeData);
+    //    }
+    //    //HandleAttack();
+
+    //    attackPhaseData[activeData.BossPhase]._atks[0].UpdateAttack(activeData);
+    //    attackPhaseData[activeData.BossPhase]._atks[1].UpdateAttack(activeData);
+    //}
 
 
     public void HandleMove()
@@ -106,8 +187,8 @@ public class BossController : MonoBehaviour
 
     public void HandleAttack()
     {
-        //if (!DebugEnableAttack)
-            //StartCoroutine(DebugAttacking());
+        if (!DebugEnableAttack)
+            StartCoroutine(DebugAttacking());
     }
 
     private IEnumerator DebugAttacking()
@@ -129,6 +210,10 @@ public class BossController : MonoBehaviour
     {
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
+        if (BattleUIManager.Instance != null && bossData != null)
+        {
+            BattleUIManager.Instance.bossHealthSlider.value = activeData.currentHealth / bossData.maxHealth;
+        }
     }
 
     private IEnumerator TakeDamageEffect()
@@ -150,9 +235,11 @@ public class BossController : MonoBehaviour
 
     public void HandleTriggerParticles(Vector3 hitPoint)
     {
+        Debug.Log("ANIM: " + activeData.BAnimState);
         switch (activeData.BAnimState)
         {
             case BossActiveData.BossAnimStates.FLYSWATTER_ATTACK:
+                Debug.Log("FLY SWATTER PARTICLE");
                 activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_ELECTRICSPARK;
                 activeData.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
                 activeData.isObjectPoolTriggered = true;

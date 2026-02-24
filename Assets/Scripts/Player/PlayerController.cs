@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using System.Collections;
 
 //can be reused with player as well
 [System.Serializable]
@@ -21,12 +20,22 @@ public class PlayerController : MonoBehaviour
 
 
     private PlayerActiveData activeData;
+    public PlayerActiveData ActiveData
+    {
+        get { return activeData; }
+        private set { activeData = value; }
+    }
 
     [Header("OnHitVFX")]
     [SerializeField] private Renderer objectRenderer;
     [SerializeField] private Color damageColor;
 
     private Color originalColor;
+
+    //For healing 
+    private bool enablePlayerEffect = false;
+    private float particleOffset = 1f;
+    private GameObject activePlayerParticle = null;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,26 +72,64 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = false;
         }
 
+        if (enablePlayerEffect && activeData.referenceParticle != null)
+        {
+            if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT)
+            {
+                activeData.referenceParticle.transform.position = transform.position + Vector3.up * -particleOffset;
+                if (!activeData.referenceParticle.gameObject.activeInHierarchy)
+                    enablePlayerEffect = false;
+            }
+            else if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT)
+            {
+                activeData.referenceParticle.transform.position = transform.position;
+            }
+            else if (activeData.spawnableType == ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT)
+            {
+                activeData.referenceParticle.transform.position = transform.position;
+                activeData.referenceParticle.transform.rotation = Quaternion.LookRotation(transform.forward);
+            }
+        }
+        else
+        {
+            Debug.Log("PLAYER EFFECT DONE");
+            enablePlayerEffect = false;
+        }
+
     }
-
-
 
     //Testing function since no animation move
     void DebugHandleMove()
     {
-        if (activeData == null || !activeData.isMoving)
+        if (activeData == null)
+            return;
+        if (!characterController.isGrounded)
+        {
+            activeData.isMoving = true;
+            activeData.jumpVel.y -= 9.81f * Time.deltaTime * 3f;
+        }
+        else if (!activeData.isJumping)
+        {
+            activeData.jumpVel.y = 0;
+        }
+        activeData.isJumping = !characterController.isGrounded;
+
+        if (!activeData.isMoving)
             return;
 
         // reads whatever speed the active class (or a dodge roll) has set
-        float moveSpeed = activeData.currentMoveSpeed;
+        float moveSpeed = activeData.currentMoveSpeed * activeData.currentSpeedMultiplier;
 
         // Movement changed a bit to fit
         Vector3 moveDirection = activeData.moveDirection.y * transform.forward + activeData.moveDirection.x * transform.right;
         //Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
+        //if (characterController.isGrounded)
 
-        Vector3 velocity = moveDirection.normalized * moveSpeed * Time.deltaTime;
+
+        Vector3 velocity = (moveDirection.normalized * moveSpeed + activeData.jumpVel) * Time.deltaTime;
 
         characterController.Move(velocity);
+        //Debug.Log(velocity);
     }
 
     public void SetCurrentHealth(float newHealth)
@@ -96,18 +143,36 @@ public class PlayerController : MonoBehaviour
         return activeData.currentHealth;
     }
 
+    public void TriggerHealingEffect()
+    {
+        float offset = 1f;
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position + Vector3.up * -offset, Vector3.forward);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
+    }
+
     public void SetDamageMultiplier(float damageMulti)
     {
         activeData.currentDamageMultiplier = damageMulti;
         StartCoroutine(DamageEffectCoroutine());
-        Debug.Log("PLAYER CURRENT MULTIPLIER: " + activeData.currentDamageMultiplier);
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DAMAGEEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position, Vector3.up);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
     }
 
     public void SetSpeedMultiplier(float speedMulti)
     {
-        activeData.currentMoveSpeed = speedMulti;
+        activeData.currentSpeedMultiplier = speedMulti;
         StartCoroutine(SpeedEffectCoroutine());
-
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SMOKESOURCEEFFECT;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(transform.position, transform.forward);
+        activeData.isObjectPoolTriggered = true;
+        enablePlayerEffect = true;
+        ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
         Debug.Log("PLAYER SPEED MULTI: " + activeData.currentMoveSpeed);
     }
 
@@ -120,17 +185,17 @@ public class PlayerController : MonoBehaviour
     private IEnumerator SpeedEffectCoroutine()
     {
         yield return new WaitForSeconds(speedEffectDuration);
-        activeData.currentMoveSpeed = 1f;
+        activeData.currentSpeedMultiplier = 1f;
     }
-    //public float GetCurrentHealth()
-    //{
-    //    //return 
-    //}
 
     public void TakeDamage(float Damage)
     {
         activeData.currentHealth -= Damage;
         StartCoroutine(TakeDamageEffect());
+        if (BattleUIManager.Instance != null)
+        {
+            BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
+        }
     }
     private IEnumerator TakeDamageEffect()
     {

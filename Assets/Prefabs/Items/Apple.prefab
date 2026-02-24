@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2175584058607681199}
   - component: {fileID: 1522791796403330243}
   - component: {fileID: 903083713290340258}
-  - component: {fileID: 4063198529271577475}
   - component: {fileID: 1366335952608204580}
+  - component: {fileID: 7799006578754558564}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Item
@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 771782684453379827}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalPosition: {x: -0, y: -0.347, z: 0}
+  m_LocalScale: {x: 40, y: 40, z: 40}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1588052484008756768}
@@ -42,7 +42,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 771782684453379827}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -3645058858012553506, guid: 2537811c1b8bf404684d302a6aca6458, type: 3}
 --- !u!23 &903083713290340258
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2921a46cbfe210147a360d2b1224baf7, type: 2}
+  - {fileID: 2100000, guid: a87b00345c171194ca86e83778dec12b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -91,27 +91,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &4063198529271577475
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771782684453379827}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1366335952608204580
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -139,6 +118,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &7799006578754558564
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771782684453379827}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.02
+  m_Center: {x: 5.937175e-11, y: 0.0127499895, z: 0.00032725744}
 --- !u!1 &9010729294903223671
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,4 +185,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupableItem
   itemData: {fileID: 11400000, guid: c4eb028019f00a94986ce6f94d076e3b, type: 2}
-  meshFilter: {fileID: 1522791796403330243}
+  spriteObject: {fileID: 771782684453379827}
+  rotationSpeed: 50

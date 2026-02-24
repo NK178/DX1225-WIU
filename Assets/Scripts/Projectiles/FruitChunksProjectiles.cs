@@ -7,7 +7,6 @@ public class FruitChunksProjectile : GenericProjectile
     [SerializeField] private float disintergateSpeed = 2f;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Collider thisCollider;
-    [SerializeField] private LayerMask ignoreLayerAfterCollision; 
     [SerializeField] private LayerMask raycastTargetLayer;
 
     [SerializeField] private float raycastDistance;

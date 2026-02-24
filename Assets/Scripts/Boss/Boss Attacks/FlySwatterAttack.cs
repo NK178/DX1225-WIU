@@ -25,8 +25,11 @@ public class FlySwatterAttack : BossAttacks
         attackDelayTime = Random.Range(attackDelayMin, attackDelayMax);
         timer = 0f;
         shouldAttack = hasAttacked = false;
+        activeData.BAnimState = _attack;
+        activeData.isAttacking = true;
     }
 
+    //This fuction is useless 
     public override void UpdateAttack(BossActiveData activeData)
     {
 
@@ -42,8 +45,8 @@ public class FlySwatterAttack : BossAttacks
             Debug.Log("FLY SWAT ATTACK");
             hasAttacked = true;
 
-            activeData.BAnimState = _attack;
-            activeData.isAttacking = true;
+            //activeData.BAnimState = _attack;
+            //activeData.isAttacking = true;
 
         }
 

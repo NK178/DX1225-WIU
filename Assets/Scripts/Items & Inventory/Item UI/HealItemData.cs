@@ -16,6 +16,7 @@ public class HealItemData : ItemData
         {
             float newHealth = player.GetCurrentHealth() + addHealth;
             player.SetCurrentHealth(newHealth);
+            player.TriggerHealingEffect();
         }
     }
 }
