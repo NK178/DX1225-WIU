@@ -1,3 +1,4 @@
+using System.Reflection;
 using UnityEngine;
 
 public class OrbProjectile : MonoBehaviour
@@ -8,6 +9,7 @@ public class OrbProjectile : MonoBehaviour
     [SerializeField] private GameObject spawnEffect;
     [SerializeField] private EnemySpawner spawner;
 
+    private static GameObject sharedEffectInstance;
     private bool hasSpawned = false;
 
     public void SetSpawner(EnemySpawner spawnerRef)
@@ -39,12 +41,34 @@ public class OrbProjectile : MonoBehaviour
             spawner.RegisterEnemy(enemyController);
 
         //Effect if there is one
-        if (spawnEffect != null)
+        //if (spawnEffect != null)
+        //{
+        //    Instantiate(spawnEffect, transform.position, Quaternion.identity);
+        //}
+
+        HandleEffect();
+        Destroy(gameObject);
+    }
+
+    private void HandleEffect()
+    {
+        if (spawnEffect == null) return;
+
+        if (sharedEffectInstance == null)
         {
-            Instantiate(spawnEffect, transform.position, Quaternion.identity);
+            sharedEffectInstance = Instantiate(spawnEffect);
+            sharedEffectInstance.SetActive(false);
         }
 
-        Destroy(gameObject);
+        sharedEffectInstance.transform.position = transform.position;
+        sharedEffectInstance.SetActive(true);
+
+        ParticleSystem ps = sharedEffectInstance.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Clear();
+            ps.Play();
+        }
     }
         
     private void OnTriggerEnter(Collider other)
@@ -54,7 +78,6 @@ public class OrbProjectile : MonoBehaviour
             hasSpawned = true;
             Debug.Log("ENEMY SPAWN!");
             SpawnEnemy();
-            Destroy(gameObject);
         }
     }
 }

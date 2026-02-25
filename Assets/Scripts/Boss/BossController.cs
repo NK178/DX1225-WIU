@@ -82,7 +82,7 @@ public class BossController : MonoBehaviour
         activeData.currentAttack = bossData.damage;
 
         // Set true for now     
-        shouldStartBoss = false;
+        shouldStartBoss = true;
 
         waveIndex = 0;
         activeData.BossPhase = 0;
@@ -115,7 +115,13 @@ public class BossController : MonoBehaviour
 
             if (activeBossAttack != null)
             {
+                Debug.Log("BOSS ATTACK: " + activeBossAttack.name);
                 activeBossAttack.UpdateAttack(activeData);
+            }
+            else
+            {
+                Debug.Log("BOSS ATTACK NULL" );
+
             }
 
 
@@ -136,12 +142,14 @@ public class BossController : MonoBehaviour
         int randomAttackIndex = Random.Range(0, attackListCount);
         shouldRandomizeAttack = false;
 
+        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
+
         if (debugAttackInt < attackListCount - 1)
             debugAttackInt++;
         else
             debugAttackInt = 0;
-        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
-        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
+
     }
 
     private IEnumerator AttackDurationCoroutine()
@@ -152,7 +160,6 @@ public class BossController : MonoBehaviour
         shouldRandomizeAttack = true;
 
     }
-
 
 
     //private void Update()
