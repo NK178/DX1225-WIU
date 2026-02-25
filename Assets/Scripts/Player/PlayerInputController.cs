@@ -305,7 +305,6 @@ public class PlayerInputController : MonoBehaviour
         if (camZoomAction == null) return;
         float dir = -camZoomAction.ReadValue<Vector2>().y;
         if (dir == 0) return;
-        Debug.Log(dir);
         if (camZoom == 0f)
         {
             cinemachineCamera.CameraDistance += dir;
