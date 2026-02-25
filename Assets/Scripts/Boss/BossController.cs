@@ -145,10 +145,10 @@ public class BossController : MonoBehaviour
         //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
         activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
 
-        if (debugAttackInt < attackListCount - 1)
-            debugAttackInt++;
-        else
-            debugAttackInt = 0;
+        //if (debugAttackInt < attackListCount - 1)
+        //    debugAttackInt++;
+        //else
+        //    debugAttackInt = 0;
 
     }
 
