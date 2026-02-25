@@ -66,6 +66,7 @@ public class ObjectPoolManager : MonoBehaviour
         PARTICLE_DAMAGEEFFECT,
         PARTICLE_SMOKESOURCEEFFECT,
         RUBBERBAND_BULLETS,
+        ROLLINGPIN,
         NUM_TYPES
     }
 
