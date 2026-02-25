@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f49017440b08ed14b9df39d1fe39b1a9
+guid: 1f9e18ea664a7f34fbc704371aa30ff9
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -8,12 +8,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: StingrayPBS1
-    second: {fileID: 2100000, guid: 2dcf24fb96912cf41935d5ef598a7d61, type: 2}
+    second: {fileID: 2100000, guid: fe7c561076796ed41a9eb74d5df4a34f, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: blenderStingrayPBS
-    second: {fileID: 2100000, guid: ca6978a115e8e3e42a0a8bac26843bed, type: 2}
+      name: StingrayPBS2
+    second: {fileID: 2100000, guid: c5a456a838f8d8e47b2033591007a8c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: weapons_ASCI_StingrayPBS1
+    second: {fileID: 2100000, guid: 24465d8567ef0e444b89a52933601a2b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -32,7 +37,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -104,13 +109,13 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 1
+    hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
