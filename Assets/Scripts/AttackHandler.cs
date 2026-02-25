@@ -125,7 +125,7 @@ public class AttackHandler : MonoBehaviour
                         BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     else Debug.LogError("A Fake Player hit Boss?");
                     DisableCollider(detectors.name);
-                    CineMachineImpulseMan.Instance.testFunc();
+                    CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.CAMSHAKE);
                     Debug.Log("Hit Shake Screen");
                     continue;
                 }
