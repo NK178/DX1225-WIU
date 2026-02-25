@@ -12,6 +12,8 @@ public class KnifeChopAttack : BossAttacks
     private bool shouldAttack = false;
     private bool hasAttacked = false;
 
+    GameObject player = null;
+
     public override void ExecuteAttack(BossActiveData activeData)
     {
 
@@ -21,6 +23,8 @@ public class KnifeChopAttack : BossAttacks
         //{
         //    atkHandler.EnableCollider("FlySwatterCollider");
         //}
+
+        player = GameObject.FindWithTag("Player");
 
         attackDelayTime = Random.Range(attackDelayMin, attackDelayMax);
         timer = 0f;
@@ -44,8 +48,13 @@ public class KnifeChopAttack : BossAttacks
             Debug.Log("KNIFE ATTACK LESGO");
             hasAttacked = true;
 
+            Vector3 knifeHitPosition = new Vector3(player.transform.position.x,
+                                                   player.transform.position.y,
+                                                   player.transform.position.z);
+            activeData.knifeHitPosition = knifeHitPosition; 
             activeData.BAnimState = _attack;
             activeData.isAttacking = true;
+
         }
 
     }

@@ -1,6 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
+
+
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
 // Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
@@ -45,12 +48,18 @@ public class BossController : MonoBehaviour
     private Color originalColor;
 
 
+    [SerializeField] private TwoBoneIKConstraint knifeHandConstraint;
+
+
     //the actual phases
     private int waveIndex = 0;
     private bool shouldStartBoss = false;
     private bool shouldRandomizeAttack = false;
 
-    private BossAttacks activeBossAttack; 
+    private BossAttacks activeBossAttack;
+
+    private bool IKEnabled = false;
+
 
     private void Start()
     {
@@ -128,6 +137,18 @@ public class BossController : MonoBehaviour
             if (activeData.currentHealth <= 70 && activeData.BossPhase == 0)
             {
                 activeData.BossPhase++;
+            }
+
+            if (IKEnabled)
+            {
+                knifeHandConstraint.weight = 1f;
+
+                var knifeHand = knifeHandConstraint.data;
+                knifeHand.target.position = activeData.knifeHitPosition;
+            }
+            else
+            {
+                knifeHandConstraint.weight = 0f;
             }
         }
     }
@@ -268,5 +289,49 @@ public class BossController : MonoBehaviour
 
         }
     }
+
+
+
+    public void ToggleIK(int condition)
+    {
+        if (condition == 1)
+            IKEnabled = true;
+        else if (condition == 0)
+            IKEnabled = false;
+        Debug.Log("TOGGLE IK: " + IKEnabled);
+    }
+
+    void LateUpdate()
+    {
+        // Force weight after Animator updates
+        //if (IKEnabled)
+        //{
+        //    knifeHandConstraint.weight = 1f;
+
+        //    var knifeHand = knifeHandConstraint.data;
+        //    knifeHand.target.position = activeData.knifeHitPosition;
+
+
+        //    //rightArmIK.weight = 1f;
+        //    //leftArmIK.weight = 1f;
+
+        //    ////temp for now, later when doing arm moving, put in a better place
+        //    //var rightArmData = rightArmIK.data;
+        //    //rightArmData.target.position = playerData.rightHandGrabPos;
+
+        //    //var leftArmData = leftArmIK.data;
+        //    //leftArmData.target.position = playerData.leftHandGrabPos;
+
+        //    //Debug.Log(playerData.leftHandGrabPos + "L: " + leftArmData.target.position);
+
+        //}
+        //else
+        //{
+        //    knifeHandConstraint.weight = 0f;
+        //    //rightArmIK.weight = 0f;
+        //    //leftArmIK.weight = 0f;
+        //}
+    }
+
 
 }
