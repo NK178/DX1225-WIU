@@ -40,11 +40,11 @@ public class CineMachineImpulseMan : MonoBehaviour
 
     private void Start()
     {
-        if (shakeAction == null)
-        {
-            shakeAction = playerInput.actions["Debugging"];
-            shakeAction?.Enable();
-        }
+        //if (shakeAction == null)
+        //{
+        //    shakeAction = playerInput.actions["Debugging"];
+        //    shakeAction?.Enable();
+        //}
 
         if (Instance == null)
         {
@@ -53,22 +53,21 @@ public class CineMachineImpulseMan : MonoBehaviour
             {
                 impulseSources[(int)camEffects[i].Effect] = camEffects[i].impulseSource;
             }
-            Instance = new CineMachineImpulseMan(impulseSources, shakeAction);
+            Instance = new CineMachineImpulseMan(impulseSources);
         }
     }
 
-    public CineMachineImpulseMan(CinemachineImpulseSource[] camEffects, InputAction shakeAction)
+    public CineMachineImpulseMan(CinemachineImpulseSource[] camEffects)
     {
         this.impulseSources = camEffects;
-        this.shakeAction = shakeAction;
     }
 
     private void Update()
     {
-        if (shakeAction.WasPressedThisFrame())
-        {
-            GenerateEffect(EFFECT.HEAVYCAMSHAKE);
-        }
+        //if (shakeAction.WasPressedThisFrame())
+        //{
+        //    GenerateEffect(EFFECT.HEAVYCAMSHAKE);
+        //}
     }
 
     public void GenerateEffect(EFFECT effect)
