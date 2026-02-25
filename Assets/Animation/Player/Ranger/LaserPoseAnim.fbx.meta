@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ddb34f260ec0d8543953ea58c1734d68
+guid: a5b9afa5a9146fd4bbd9583e0fd3e2cb
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -8,6 +8,16 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Antonio_Texture
+    second: {fileID: 2100000, guid: ec6693991821f5f4485b98659dfca813, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gun_Weapon_v2_StingrayPBS1
+    second: {fileID: 2100000, guid: ec6693991821f5f4485b98659dfca813, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gun_Weapon_v3_StingrayPBS1
     second: {fileID: 2100000, guid: ec6693991821f5f4485b98659dfca813, type: 2}
   materials:
     materialImportMode: 2
@@ -27,14 +37,43 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: LaserPoseAnim
+      takeName: LaserPoseAnim
+      internalID: 715789231928587963
+      firstFrame: 1
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -337,7 +376,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
     - name: transform1
       parentName: Antonio_chan
-      position: {x: -0.008063936, y: -0.0026746278, z: 0.021517891}
+      position: {x: -0.008063936, y: -0.0026746276, z: 0.021517891}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 18.097923, y: 13.278159, z: 13.278159}
     - name: R_eye
@@ -442,7 +481,7 @@ ModelImporter:
       scale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
     - name: L_jnt_thumb1
       parentName: L_jnt_wrist
-      position: {x: -0.0005358295, y: -0.00015078216, z: 0.0007}
+      position: {x: -0.0005358295, y: -0.00015078214, z: 0.0007}
       rotation: {x: 0.31682822, y: -0.58534044, z: -0.6686524, w: 0.33151236}
       scale: {x: 1.0000001, y: 1.0000002, z: 1.0000004}
     - name: L_jnt_thumb2
@@ -452,7 +491,7 @@ ModelImporter:
       scale: {x: 1.0000001, y: 1.0000002, z: 1.0000005}
     - name: L_jnt_thumb3
       parentName: L_jnt_thumb2
-      position: {x: 3.3660572e-18, y: 0.00050093385, z: 8.98115e-19}
+      position: {x: 3.3660568e-18, y: 0.00050093385, z: 8.98115e-19}
       rotation: {x: -0.0000000073038753, y: -0.0000000039424597, z: 0.12281574, w: 0.9924295}
       scale: {x: 1.0000001, y: 1.0000004, z: 1.0000007}
     - name: R_jnt_clavicle
@@ -517,7 +556,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
     - name: jnt_leaf12
       parentName: jnt_leaf11
-      position: {x: -6.6234297e-16, y: 0.0021220117, z: -1.2757703e-18}
+      position: {x: -6.6234297e-16, y: 0.0021220115, z: -1.2757703e-18}
       rotation: {x: 0.046949092, y: -0.000048407706, z: 0.0000022752095, w: 0.9988974}
       scale: {x: 1, y: 1, z: 1}
     - name: jnt_leaf13
@@ -552,11 +591,11 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: ddb34f260ec0d8543953ea58c1734d68, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

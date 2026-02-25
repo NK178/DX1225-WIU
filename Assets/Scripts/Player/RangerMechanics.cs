@@ -5,14 +5,21 @@ public class RangerMechanics : BaseClassMechanics
 {
     [Header("References")]
     [SerializeField] private Transform firePoint;
-    [SerializeField] private LineRenderer laserLine;
+    [SerializeField] private GameObject laserPrefab;
     [SerializeField] private TargetingSystem targetingSystem;
     public RangerClassData rangerData;
 
-    [Header("Visuals & Animation")]
-    [SerializeField] private Animator animator;
+    [Header("Avatars & Animators")]
+    [SerializeField] private GameObject armedAvatar;
+    [SerializeField] private Animator armedAnimator;
+
+    [SerializeField] private GameObject unarmedAvatar;
+    [SerializeField] private Animator unarmedAnimator;
+
+    private Animator currentAnimator;
+
+    [Header("Visuals")]
     [SerializeField] private Transform characterMesh;
-    [SerializeField] private float rollRotationSpeed = 800f;
 
     private float nextAttackTime;
     private float nextLaserTime;
@@ -21,10 +28,14 @@ public class RangerMechanics : BaseClassMechanics
 
     private bool isRolling;
     private bool isFiringLaser;
+    private bool shootLeftHandNext = true;
+    private float nextLaserDamageTime;
+    public float laserDamageTickRate = 0.2f;
 
     private void Start()
     {
-        if (laserLine != null) laserLine.enabled = false;
+        if (laserPrefab != null) laserPrefab.SetActive(false);
+        SwapToArmed(false); // Start the game with guns out
     }
 
     private void Update()
@@ -37,11 +48,17 @@ public class RangerMechanics : BaseClassMechanics
             float rollRemaining = Mathf.Max(0, nextRollTime - Time.time);
             BattleUIManager.Instance.UpdateCooldownUI(BattleUIManager.Instance.rollCooldownImage, rollRemaining, rollCooldown);
         }
+
+        // Continuously send the movement speed to whichever Animator is active
+        if (currentAnimator != null && activeData != null)
+        {
+            currentAnimator.SetFloat("Speed", activeData.moveDirection.magnitude);
+        }
     }
 
     private void LateUpdate()
     {
-        if (isFiringLaser && laserLine != null && firePoint != null && rangerData != null)
+        if (isFiringLaser && laserPrefab != null && firePoint != null && rangerData != null)
         {
             Vector3 fireDirection = firePoint.forward;
 
@@ -50,17 +67,54 @@ public class RangerMechanics : BaseClassMechanics
                 fireDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
             }
 
-            laserLine.SetPosition(0, firePoint.position);
+            laserPrefab.transform.position = firePoint.position;
+            laserPrefab.transform.rotation = Quaternion.LookRotation(fireDirection);
 
+            float hitDistance = rangerData.laserRange;
             Ray ray = new Ray(firePoint.position, fireDirection);
+
             if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
             {
-                laserLine.SetPosition(1, hit.point);
+                hitDistance = hit.distance;
+
+                if (Time.time >= nextLaserDamageTime)
+                {
+                    Collider other = hit.collider;
+
+                    // Look for the controllers just like GenericProjectile does
+                    BossController boss = other.GetComponentInParent<BossController>();
+                    EnemyController enemy = other.GetComponentInParent<EnemyController>();
+
+                    float damageToDeal = rangerData.damage * activeData.currentDamageMultiplier;
+                    bool dealtDamage = false;
+
+                    if (boss != null)
+                    {
+                        boss.TakeDamage(damageToDeal);
+                        dealtDamage = true;
+                    }
+                    if (enemy != null)
+                    {
+                        enemy.TakeDamage(damageToDeal);
+                        dealtDamage = true;
+                    }
+                   
+                    if (dealtDamage && BattleUIManager.Instance != null && activeData is PlayerActiveData playerData)
+                    {
+                        BattleUIManager.Instance.AddDamage(playerData.currentClassType, damageToDeal);
+                    }
+
+                    // Reset the timer so it waits 0.2 seconds before hitting again
+                    nextLaserDamageTime = Time.time + laserDamageTickRate;
+                }
             }
-            else
-            {
-                laserLine.SetPosition(1, firePoint.position + fireDirection * rangerData.laserRange);
-            }
+
+            // Stretch the prefab to the hit distance
+            laserPrefab.transform.localScale = new Vector3(
+                laserPrefab.transform.localScale.x,
+                laserPrefab.transform.localScale.y,
+                hitDistance
+            );
         }
     }
 
@@ -70,16 +124,76 @@ public class RangerMechanics : BaseClassMechanics
         {
             activeData.currentMoveSpeed = rangerData.moveSpeed;
             activeData.currentClassType = rangerData.classType;
+
+            SwapToArmed(true);
         }
     }
+
+    // ==========================================
+    // AVATAR SWAPPING 
+    // ==========================================
+
+    private void SwapToUnarmed(string animationToPlay)
+    {
+        if (armedAvatar != null) armedAvatar.SetActive(false);
+        if (unarmedAvatar != null) unarmedAvatar.SetActive(true);
+
+        currentAnimator = unarmedAnimator;
+
+        if (currentAnimator != null) currentAnimator.Play(animationToPlay, 0, 0f);
+    }
+
+    private void SwapToArmed(bool playDrawAnimation)
+    {
+        if (unarmedAvatar != null) unarmedAvatar.SetActive(false);
+        if (armedAvatar != null) armedAvatar.SetActive(true);
+
+        currentAnimator = armedAnimator;
+
+        if (playDrawAnimation && currentAnimator != null)
+        {
+            currentAnimator.Play("BringUpGun", 0, 0f);
+        }
+    }
+
+    // ==========================================
+    // COMBAT & ABILITIES
+    // ==========================================
 
     public override void HandleAttack()
     {
         if (Time.time >= nextAttackTime && !isRolling && !isFiringLaser && rangerData != null)
         {
-            ShootSeed();
+            if (currentAnimator != null)
+            {
+                if (shootLeftHandNext)
+                {
+                    currentAnimator.Play("AkimboShootingLeftOnly", 0, 0f);
+                }
+                else
+                {
+                    currentAnimator.Play("AkimboShootingRightOnly", 0, 0f);
+                }
+            }
+
+            shootLeftHandNext = !shootLeftHandNext;
             nextAttackTime = Time.time + rangerData.attackCooldown;
         }
+    }
+
+    public void AE_ShootSeed()
+    {
+        ShootSeed();
+    }
+
+    public void AE_PlayFootstep()
+    {
+        if (AudioManager.instance != null) AudioManager.instance.Play("Footstep");
+    }
+
+    public void AE_EnableLaser()
+    {
+        if (laserPrefab != null) laserPrefab.SetActive(true);
     }
 
     private void ShootSeed()
@@ -115,7 +229,6 @@ public class RangerMechanics : BaseClassMechanics
             nextRollTime = Time.time + rollCooldown;
             if (AudioManager.instance != null) AudioManager.instance.Play("RangerRoll");
             StartCoroutine(RollRoutine());
-            
         }
     }
 
@@ -124,31 +237,45 @@ public class RangerMechanics : BaseClassMechanics
         isRolling = true;
         float originalSpeed = rangerData.moveSpeed;
 
-        if (animator != null) animator.SetBool("IsRolling", true);
-
-        activeData.currentMoveSpeed = originalSpeed * rangerData.rollSpeedMultiplier;
-
-        float timer = 0f;
-        while (timer < rangerData.rollDuration)
+        if (activeData != null)
         {
-            timer += Time.deltaTime;
+            activeData.isInvincible = true;
+            activeData.isRolling = true;
 
-            if (characterMesh != null && activeData.isMoving)
+            // Determine roll direction (Current input, or straight forward if standing still)
+            Vector2 rollDir = activeData.moveDirection;
+            if (rollDir.magnitude < 0.1f)
             {
-                characterMesh.Rotate(Vector3.right, rollRotationSpeed * Time.deltaTime, Space.Self);
+                rollDir = new Vector2(0, 1);
             }
 
-            yield return null;
+            // Force the capsule to move in this direction
+            activeData.moveDirection = rollDir.normalized;
+            activeData.isMoving = true;
         }
 
-        activeData.currentMoveSpeed = originalSpeed;
-        if (animator != null) animator.SetBool("IsRolling", false);
+        SwapToUnarmed("stand to roll");
 
+        // Apply the speed boost
+        activeData.currentMoveSpeed = originalSpeed * rangerData.rollSpeedMultiplier;
+
+        // Wait for the animation to finish
+        yield return new WaitForSeconds(rangerData.rollDuration);
+
+        // Reset speed and visuals
+        activeData.currentMoveSpeed = originalSpeed;
         if (characterMesh != null) characterMesh.localRotation = Quaternion.identity;
+
+        SwapToArmed(true);
+
+        if (activeData != null)
+        {
+            activeData.isInvincible = false;
+            activeData.isRolling = false;
+        }
 
         isRolling = false;
     }
-
     public override void HandleAbility()
     {
         if (Time.time >= nextLaserTime && !isFiringLaser && !isRolling && rangerData != null)
@@ -156,24 +283,25 @@ public class RangerMechanics : BaseClassMechanics
             nextLaserTime = Time.time + rangerData.laserCooldown;
             if (AudioManager.instance != null) AudioManager.instance.Play("RangerLaser");
             StartCoroutine(LaserRoutine());
-           
         }
     }
 
     private IEnumerator LaserRoutine()
     {
         isFiringLaser = true;
-        if (laserLine != null) laserLine.enabled = true;
+
+        SwapToUnarmed("LaserState");
 
         float timer = 0f;
-
         while (timer < rangerData.laserDuration)
         {
             timer += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
 
-        if (laserLine != null) laserLine.enabled = false;
+        if (laserPrefab != null) laserPrefab.SetActive(false);
+
+        SwapToArmed(true);
         isFiringLaser = false;
     }
 }
