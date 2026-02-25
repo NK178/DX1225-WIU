@@ -99,7 +99,7 @@ public class RangerMechanics : BaseClassMechanics
         activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
             firePoint.position,
             firePoint.forward,
-            rangerData.damage,
+            rangerData.damage * activeData.currentDamageMultiplier,
             rangerData.seedLaunchForce
         );
 

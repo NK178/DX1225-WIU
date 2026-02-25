@@ -1,8 +1,10 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.MeshOperations;
+using UnityEngine.Rendering;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -35,18 +37,32 @@ public class PlayerInputController : MonoBehaviour
 
     //Inventory (Ains) 
     private InputAction inventoryAction; 
-
+    /// <summary>
+    /// Camera (Klaus)
+    /// playerTransform set to the Player Controller
+    /// cameraTransform set to the cameraHolder / playerInputManager 
+    /// (Basically whatever CineMachine Third Person is targetting)
+    /// upCamLimit (0 - 90), Looking downwards, Bird's Eye View
+    /// downCamLimit (360 - 270) Looking upwards, Worm's Eye View
+    /// </summary>
     [Header("Camera")]
-    // Camera (Klaus)
-    // playerTransform set to the Player Controller
-    // cameraTransform set to the cameraHolder / playerInputManager 
-    // (Basically whatever CineMachine Third Person is targetting)
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private CinemachineThirdPersonFollow cinemachineCamera;
+    [SerializeField, Range(0,89)] private float upCamLimit;
+    [SerializeField, Range(271,360)] private float downCamLimit;
     private InputAction cameraAction;
     private float tempCameraY;
     private InputAction camZoomAction;
+    private InputAction camChange;
+    private enum CAMTYPE
+    {
+        THIRD_PERSON = 0,
+        FREE_LOOK,
+        SPLINE_DOLLY,
+    }
+    private CAMTYPE camtype;
+    [SerializeField] private GameObject[] cams = new GameObject[2];
 
     // Targeting Actions
     private InputAction lockOnAction;
@@ -116,6 +132,9 @@ public class PlayerInputController : MonoBehaviour
 
         inventoryAction = playerInput.actions.FindAction("Inventory");
         inventoryAction?.Enable();
+
+        camChange = playerInput.actions.FindAction("CamSwap");
+        camChange?.Enable();
     }
 
     void Update()
@@ -132,6 +151,22 @@ public class PlayerInputController : MonoBehaviour
             if (BattleUIManager.Instance != null)
             {
                 BattleUIManager.Instance.ToggleUI(!activeData.isInventoryOpen);
+            }
+        }
+
+        if (camChange.WasPressedThisFrame())
+        {
+            if (camtype == CAMTYPE.THIRD_PERSON)
+            {
+                camtype = CAMTYPE.FREE_LOOK;
+                cams[0].SetActive(false);
+                cams[1].SetActive(true);
+            }
+            else if (camtype == CAMTYPE.FREE_LOOK)
+            {
+                camtype = CAMTYPE.THIRD_PERSON;
+                cams[0].SetActive(true);
+                cams[1].SetActive(false);
             }
         }
     }
@@ -200,6 +235,14 @@ public class PlayerInputController : MonoBehaviour
 
         if (direction.magnitude > 0)
         {
+            if (camtype == CAMTYPE.FREE_LOOK)
+            {
+                // Modify the move direction according to where the camera is facing
+                direction = Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up) * direction;
+                // Rotate the character facing towards the move direction
+                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+                transform.parent.localRotation = Quaternion.RotateTowards(transform.parent.localRotation, targetRotation, 2f);
+            }
             activeData.moveDirection = direction;
             activeData.isMoving = true;
         }
@@ -231,16 +274,24 @@ public class PlayerInputController : MonoBehaviour
         if (cameraAction == null && cameraTransform == null && playerTransform == null) return;
         if (activeData.isInventoryOpen) return;
         HandleCamZoom();
-        Vector2 dir = cameraAction.ReadValue<Vector2>();
-        if (dir.magnitude <= 0) return;
-        //Debug.Log(cameraTransform.eulerAngles.x);
-        tempCameraY = cameraTransform.eulerAngles.x + 180f;
-        tempCameraY += -dir.y * 0.1f;
-        tempCameraY = Mathf.Clamp(tempCameraY, 180f, 180f + 89f);
-        tempCameraY -= 180f;
-        cameraTransform.eulerAngles = new Vector3(tempCameraY,cameraTransform.eulerAngles.y,cameraTransform.eulerAngles.z);
-        playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
-        //cameraTransform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
+        if (camtype == CAMTYPE.THIRD_PERSON)
+        {
+            Vector2 dir = cameraAction.ReadValue<Vector2>();
+            if (dir.magnitude <= 0) return;
+            tempCameraY = cameraTransform.localEulerAngles.x;
+            tempCameraY += -dir.y * 0.1f;
+            // My own version of clamp
+            // Clamp can't work since I need to stay in the 1st and 4th quadrants, 0-89 degress and 360-270 degrees
+            if (!(tempCameraY < upCamLimit || tempCameraY > downCamLimit))
+            {
+                if (tempCameraY < 180f)
+                    tempCameraY = upCamLimit;
+                else
+                    tempCameraY = downCamLimit;
+            }
+            cameraTransform.localEulerAngles = new Vector3(tempCameraY,cameraTransform.localEulerAngles.y,cameraTransform.localEulerAngles.z);
+            playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
+        }
     }
 
     // Klaus
