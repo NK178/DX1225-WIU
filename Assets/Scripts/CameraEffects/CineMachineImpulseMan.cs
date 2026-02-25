@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -10,17 +11,24 @@ using UnityEngine.InputSystem;
 /// </summary>
 /// 
 
-// TO:DO CREATE ENUM? (AINSLEY WANTS TO DO SO)
-// SCRIPTABLE OBJ
+// make a enum variable everytime you make a new effect
+public enum EFFECT
+{
+    HEAVYCAMSHAKE = 0,
+    CAMSHAKE,
+}
 
 [System.Serializable]
-public struct camEffect
+struct camEffect
 {
-    public CinemachineImpulseSource test;
+    public EFFECT Effect;
+    public CinemachineImpulseSource impulseSource;
 }
 
 public class CineMachineImpulseMan : MonoBehaviour
 {
+    // Trying this method, Inspired by actions[string] way of calling (Calling the index as an enum)
+    private CinemachineImpulseSource[] impulseSources;
     [SerializeField] private List<camEffect> camEffects;
 
     [Header("Debugging")]
@@ -32,33 +40,39 @@ public class CineMachineImpulseMan : MonoBehaviour
 
     private void Start()
     {
-        shakeAction = playerInput.actions["Debugging"];
-        shakeAction?.Enable();
+        //if (shakeAction == null)
+        //{
+        //    shakeAction = playerInput.actions["Debugging"];
+        //    shakeAction?.Enable();
+        //}
 
         if (Instance == null)
         {
-            Instance = new CineMachineImpulseMan(camEffects, playerInput, shakeAction);
+            impulseSources = new CinemachineImpulseSource[Enum.GetValues(typeof(EFFECT)).Length];
+            for (int i = 0; i < camEffects.Count; i++)
+            {
+                impulseSources[(int)camEffects[i].Effect] = camEffects[i].impulseSource;
+            }
+            Instance = new CineMachineImpulseMan(impulseSources);
         }
     }
 
-    public CineMachineImpulseMan(List<camEffect> camEffects, PlayerInput playerInput, InputAction shakeAction)
+    public CineMachineImpulseMan(CinemachineImpulseSource[] camEffects)
     {
-        this.camEffects = camEffects;
-        this.playerInput = playerInput;
-        this.shakeAction = shakeAction;
+        this.impulseSources = camEffects;
     }
 
     private void Update()
     {
-        if (shakeAction.WasPressedThisFrame())
-        {
-            testFunc();
-        }
+        //if (shakeAction.WasPressedThisFrame())
+        //{
+        //    GenerateEffect(EFFECT.HEAVYCAMSHAKE);
+        //}
     }
 
-    public void testFunc()
+    public void GenerateEffect(EFFECT effect)
     {
-        camEffects[0].test.GenerateImpulse();
+        impulseSources[(int)effect].GenerateImpulse();
         Debug.Log("SHAKE SCREEN!");
     }
 }

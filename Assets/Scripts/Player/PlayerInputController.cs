@@ -3,6 +3,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.MeshOperations;
+using UnityEngine.Rendering;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -35,15 +36,20 @@ public class PlayerInputController : MonoBehaviour
 
     //Inventory (Ains) 
     private InputAction inventoryAction; 
-
+    /// <summary>
+    /// Camera (Klaus)
+    /// playerTransform set to the Player Controller
+    /// cameraTransform set to the cameraHolder / playerInputManager 
+    /// (Basically whatever CineMachine Third Person is targetting)
+    /// upCamLimit (0 - 90), Looking downwards, Bird's Eye View
+    /// downCamLimit (360 - 270) Looking upwards, Worm's Eye View
+    /// </summary>
     [Header("Camera")]
-    // Camera (Klaus)
-    // playerTransform set to the Player Controller
-    // cameraTransform set to the cameraHolder / playerInputManager 
-    // (Basically whatever CineMachine Third Person is targetting)
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private CinemachineThirdPersonFollow cinemachineCamera;
+    [SerializeField, Range(0,89)] private float upCamLimit;
+    [SerializeField, Range(271,360)] private float downCamLimit;
     private InputAction cameraAction;
     private float tempCameraY;
     private InputAction camZoomAction;
@@ -233,14 +239,20 @@ public class PlayerInputController : MonoBehaviour
         HandleCamZoom();
         Vector2 dir = cameraAction.ReadValue<Vector2>();
         if (dir.magnitude <= 0) return;
-        //Debug.Log(cameraTransform.eulerAngles.x);
-        tempCameraY = cameraTransform.eulerAngles.x + 180f;
+        tempCameraY = cameraTransform.localEulerAngles.x;
         tempCameraY += -dir.y * 0.1f;
-        tempCameraY = Mathf.Clamp(tempCameraY, 180f, 180f + 89f);
-        tempCameraY -= 180f;
-        cameraTransform.eulerAngles = new Vector3(tempCameraY,cameraTransform.eulerAngles.y,cameraTransform.eulerAngles.z);
+        // My own version of clamp
+        // Clamp can't work since I need to stay in the 1st and 4th quadrants, 0-89 degress and 360-270 degrees
+        if (!(tempCameraY < upCamLimit || tempCameraY > downCamLimit))
+        {
+            Debug.Log("BOO");
+            if (tempCameraY < 180f)
+                tempCameraY = upCamLimit;
+            else
+                tempCameraY = downCamLimit;
+        }
+        cameraTransform.localEulerAngles = new Vector3(tempCameraY,cameraTransform.localEulerAngles.y,cameraTransform.localEulerAngles.z);
         playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
-        //cameraTransform.eulerAngles += new Vector3(-dir.y, 0) * 0.1f;
     }
 
     // Klaus
