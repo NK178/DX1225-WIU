@@ -153,7 +153,7 @@ public class ObjectPoolManager : MonoBehaviour
 
             GameObject referenceGameobject = null;
             PlayerActiveData playerActiveData = null;
-            playerActiveData = (PlayerActiveData)baseActiveData;
+            //playerActiveData = (PlayerActiveData)baseActiveData;
 
             if (!particleMap.ContainsKey(baseActiveData.spawnableType))
             {

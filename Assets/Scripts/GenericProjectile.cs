@@ -112,8 +112,10 @@ public class GenericProjectile : MonoBehaviour
         // Player shoots the Boss or Enemy
         if (spawnerType == DataHolder.DATATYPE.PLAYER && (hitEnemy || other.CompareTag("Boss")))
         {
-            if (other.gameObject.CompareTag("PlayerBullet"))
-            {
+            //if (other.gameObject.CompareTag("PlayerBullet"))
+            //{
+
+            Debug.LogError("HITTING ENEMY!");
                 // Try to find what we hit and damage it
                 BossController boss = other.GetComponentInParent<BossController>();
                 EnemyController enemy = other.GetComponentInParent<EnemyController>();
@@ -127,7 +129,7 @@ public class GenericProjectile : MonoBehaviour
                     BattleUIManager.Instance.AddDamage(playerData.currentClassType, projectileDamage);
                 }
                 ReturnToPool();
-            }
+            //}
         }
 
         // Dummy logic
@@ -155,7 +157,7 @@ public class GenericProjectile : MonoBehaviour
                     Debug.LogError("PLAYER NULL!");
                 }
             }
-            else if (hitDummyLayer || hitDummyTag)
+            else if (hitDummyLayer)
             {
                 DummyController dummy = other.GetComponentInParent<DummyController>();
                 if (dummy != null) dummy.TakeDamage(10);

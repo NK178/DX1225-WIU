@@ -56,7 +56,7 @@ MonoBehaviour:
   amplitude: 0.1
   frequency: 2
   useLocalSpace: 1
-  flightTime: 1.5
+  flightTime: 3
 --- !u!1 &2793169211811161558
 GameObject:
   m_ObjectHideFlags: 0

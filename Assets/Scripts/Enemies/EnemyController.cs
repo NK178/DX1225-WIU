@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private ENEMYCLASSTYPE enemyType;
 
-    [SerializeField] private MeleeEnemyClassData knifeData;
+    [SerializeField] private MeleeEnemyClassData meleeData;
     [SerializeField] private RangedEnemyClassData rangerData;
 
     private Vector3 currentVelocity = Vector3.zero;
@@ -85,7 +85,7 @@ public class EnemyController : MonoBehaviour
         //Casting it to access wanderDestination/currentState
         //activeData = dataHolder.activeData as EnemyActiveData;
 
-        if (activeData != null)
+        if (activeData != null) 
         {
             //Set the initial wander destination based on where the enemy was placed
             activeData.wanderDestination = transform.position;
@@ -95,17 +95,19 @@ public class EnemyController : MonoBehaviour
 
             if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
             {
-                activeData.currentHealth = knifeData.maxHealth;
-                activeData.currentAttack = knifeData.damage;
+                activeData.dataType = DataHolder.DATATYPE.MELEE_ENEMY;
+                activeData.currentHealth = meleeData.maxHealth;
+                activeData.currentAttack = meleeData.damage;
             }
             else if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
             {
+                activeData.dataType = DataHolder.DATATYPE.RANGED_ENEMY;
                 activeData.currentHealth = rangerData.maxHealth;
                 activeData.currentAttack = rangerData.damage;
             }
         }
 
-        //originalColor = objectRenderer.material.color;
+        originalColor = objectRenderer.material.color;
     }
 
     void Update()
@@ -118,9 +120,9 @@ public class EnemyController : MonoBehaviour
 
         if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
         {
-            activeData.currentMoveSpeed = knifeData.moveSpeed;
-            detectionRadius = knifeData.detectionRadius;
-            stopDistance = knifeData.stopDistance;
+            activeData.currentMoveSpeed = meleeData.moveSpeed;
+            detectionRadius = meleeData.detectionRadius;
+            stopDistance = meleeData.stopDistance;
         }
         else if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
         {
