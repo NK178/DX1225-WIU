@@ -66,6 +66,7 @@ public class ObjectPoolManager : MonoBehaviour
         PARTICLE_DAMAGEEFFECT,
         PARTICLE_SMOKESOURCEEFFECT,
         RUBBERBAND_BULLETS,
+        ROLLINGPIN,
         NUM_TYPES
     }
 
@@ -74,6 +75,7 @@ public class ObjectPoolManager : MonoBehaviour
     [SerializeField] private ProjectileObjectPool rangerSeedSpawner;
     [SerializeField] private ProjectileObjectPool fruitChunkSpawner;
     [SerializeField] private ProjectileObjectPool rubberBandSpawner;
+    [SerializeField] private ProjectileObjectPool rollingPinSpawner;
     [SerializeField] private ParticleObjectPool sugarcaneSplashEffectSpawner;
     [SerializeField] private ParticleObjectPool fruitSplashEffectSpawner;
     [SerializeField] private ParticleObjectPool woodSplinterEffectSpawner;
@@ -99,6 +101,7 @@ public class ObjectPoolManager : MonoBehaviour
         if (rangerSeedSpawner != null) particleMap[SPAWNABLE_TYPES.RANGER_SEED] = rangerSeedSpawner;
         if (fruitChunkSpawner != null) particleMap[SPAWNABLE_TYPES.FRUIT_CHUNKS] = fruitChunkSpawner;
         if (rubberBandSpawner != null) particleMap[SPAWNABLE_TYPES.RUBBERBAND_BULLETS] = rubberBandSpawner;
+        if (rollingPinSpawner != null) particleMap[SPAWNABLE_TYPES.ROLLINGPIN] = rollingPinSpawner;
         if (sugarcaneSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH] = sugarcaneSplashEffectSpawner;
         if (fruitSplashEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_FRUITSPLASH] = fruitSplashEffectSpawner;
         if (woodSplinterEffectSpawner != null) particleMap[SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER] = woodSplinterEffectSpawner;
@@ -152,8 +155,8 @@ public class ObjectPoolManager : MonoBehaviour
             float launchForce = baseActiveData.objectPoolSpawnData.launchForce;
 
             GameObject referenceGameobject = null;
-            PlayerActiveData playerActiveData = null;
-            //playerActiveData = (PlayerActiveData)baseActiveData;
+            PlayerActiveData playerActiveData = null;   
+            playerActiveData = baseActiveData as PlayerActiveData;
 
             if (!particleMap.ContainsKey(baseActiveData.spawnableType))
             {
@@ -170,6 +173,9 @@ public class ObjectPoolManager : MonoBehaviour
                     break;
                 case SPAWNABLE_TYPES.SUGARCANE_MISSILES:
                     particleMap[SPAWNABLE_TYPES.SUGARCANE_MISSILES].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
+                    break;
+                case SPAWNABLE_TYPES.ROLLINGPIN:
+                    particleMap[SPAWNABLE_TYPES.ROLLINGPIN].SpawnKinematicProjectiles(spawnPos, spawnNormal, baseActiveData, damage);
                     break;
                 case SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH:
                     particleMap[SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH].SpawnImpactEffect(spawnPos, spawnNormal);

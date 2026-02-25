@@ -8,6 +8,8 @@ public class FighterMechanics : BaseClassMechanics
     private float AtkCDTimer;
     private float ParryCDTimer;
 
+    [SerializeField] private Animator animator;
+
     private void Update()
     {
         if (BattleUIManager.Instance != null && fighterClassData != null)
@@ -35,6 +37,7 @@ public class FighterMechanics : BaseClassMechanics
         if (Time.time < AtkCDTimer) return;
 
         AtkCDTimer = Time.time + fighterClassData.AtkCD;
+        animator.CrossFadeInFixedTime("Take 001", 0.2f);
         SwordHandler.EnableCollider("Sword");
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterAttack");
     }

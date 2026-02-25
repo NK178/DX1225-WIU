@@ -176,6 +176,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CamSwap",
+                    "type": "Button",
+                    "id": "29e59962-7954-41c9-bfc0-788cbdda85d7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -671,6 +680,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Debugging",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6547192b-dd66-49f9-91a3-094ac0c7d8ed",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CamSwap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
