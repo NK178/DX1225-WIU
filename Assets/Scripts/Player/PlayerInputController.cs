@@ -10,8 +10,9 @@ public class PlayerInputController : MonoBehaviour
 {
     [Header("Character Mechanics")]
     [SerializeField] private FighterMechanics fighterMechanics;
-    [SerializeField] private RangerMechanics rangerMechanics; 
-
+    [SerializeField] private RangerMechanics rangerMechanics;
+    [SerializeField] private GameObject fighterVisuals;
+    [SerializeField] private GameObject rangerVisuals;
     private BaseClassMechanics currentMechanics;
 
     [Header("Core Data")]
@@ -197,30 +198,34 @@ public class PlayerInputController : MonoBehaviour
         {
             rangerHP = activeData.currentHealth;
             currentMechanics = fighterMechanics;
+
+            if (rangerVisuals != null) rangerVisuals.SetActive(false);
+            if (fighterVisuals != null) fighterVisuals.SetActive(true);
+
             currentMechanics.EquipClass();
             activeData.currentHealth = fighterHP;
             activeData.maxHealth = fighterMechanics.fighterClassData.maxHealth;
             activeData.currentAttack = fighterMechanics.fighterClassData.damage;
             Debug.Log("Swapped to DragonFruit (Fighter)!");
             if (AudioManager.instance != null) AudioManager.instance.Play("SwapFighter");
-            //Debug.Log("currentHealth: " + activeData.currentHealth);
-            //Debug.Log("fighterHP: " + fighterHP);
-            //Debug.Log("rangerHP: " + rangerHP);
         }
         else if (newClass == CLASSTYPE.RANGED)
         {
             fighterHP = activeData.currentHealth;
             currentMechanics = rangerMechanics;
+
+            if (fighterVisuals != null) fighterVisuals.SetActive(false);
+            if (rangerVisuals != null) rangerVisuals.SetActive(true);
+
             currentMechanics.EquipClass();
+
             activeData.currentHealth = rangerHP;
             activeData.maxHealth = rangerMechanics.rangerData.maxHealth;
             activeData.currentAttack = rangerMechanics.rangerData.damage;
             Debug.Log("Swapped to Mandarin (Ranger)!");
             if (AudioManager.instance != null) AudioManager.instance.Play("SwapRanger");
-            //Debug.Log("currentHealth: " + activeData.currentHealth);
-            //Debug.Log("fighterHP: " + fighterHP);
-            //Debug.Log("rangerHP: " + rangerHP);
         }
+
         if (BattleUIManager.Instance != null)
         {
             BattleUIManager.Instance.SwapActivePlayerUI(newClass);
@@ -229,6 +234,9 @@ public class PlayerInputController : MonoBehaviour
 
     void HandleMove()
     {
+
+        if (activeData != null && activeData.isRolling) return;
+
         if (moveAction == null) return;
 
         Vector2 direction = moveAction.ReadValue<Vector2>();
