@@ -80,7 +80,11 @@ public class PlayerController : MonoBehaviour
         }
 
         HandlePlayerParticles();
-
+        if (UnityEngine.InputSystem.Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            Debug.LogWarning("DEBUG: Ouch! Taking 25 damage!");
+            TakeDamage(25f);
+        }
     }
 
 
@@ -203,13 +207,36 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float Damage)
     {
-        //if (activeData.isDefensive)
-        //{
-        //    return;
-        //}
+       
+        if (activeData.isDead || activeData.isInvincible) return;
+
         activeData.currentHealth -= Damage;
+
+      
+        if (activeData.currentHealth <= 0)
+        {
+            PlayerInputController inputController = GetComponentInParent<PlayerInputController>();
+
+            if (inputController == null)
+            {
+                inputController = FindFirstObjectByType<PlayerInputController>();
+            }
+
+            if (inputController != null)
+            {
+                Debug.LogWarning("DEATH SIGNAL SENT!");
+                inputController.HandleCharacterDeath();
+            }
+            else
+            {
+                Debug.LogError("CRITICAL ERROR: Could not find PlayerInputController!");
+            }
+        }
+
         StartCoroutine(TakeDamageEffect());
+
         if (AudioManager.instance != null) AudioManager.instance.Play("PlayerTakeDamage");
+
         if (BattleUIManager.Instance != null)
         {
             BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
