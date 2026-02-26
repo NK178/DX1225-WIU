@@ -9,6 +9,9 @@ public class PlayerActiveData : BaseActiveData
     public bool isJumping;
 
     public bool isDefensive;
+    public bool isInvincible;
+    public bool isRolling;
+    public bool isDead;
 
     public CLASSTYPE currentClassType;
 
