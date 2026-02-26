@@ -99,5 +99,4 @@ public class PlayerActiveData : BaseActiveData
         currentSpeedMultiplier = 1f;
         activeParticleList =  new List<ParticleData>();
     }
-
 }

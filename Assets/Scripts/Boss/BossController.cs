@@ -55,7 +55,8 @@ public class BossController : MonoBehaviour
 
     public bool debugRunning = false;
 
-    [SerializeField] private Renderer objectRenderer;
+    //[SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Material objectRenderer;
     [SerializeField] private Color damageColor;
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
@@ -89,7 +90,8 @@ public class BossController : MonoBehaviour
             return;
         }
 
-        originalColor = objectRenderer.material.color;
+        objectRenderer.SetColor("_EmissionColor", new Color(0, 0, 0));
+        originalColor = objectRenderer.GetColor("_EmissionColor");
         //Set to idle 
         activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
         activeData.isMoving = false;
@@ -314,13 +316,13 @@ public class BossController : MonoBehaviour
     private IEnumerator TakeDamageEffect()
     {
         // Set to damage color instantly
-        objectRenderer.material.color = damageColor;
+        objectRenderer.SetColor("_EmissionColor", damageColor);
         // Gradually transition back to the original color over time
         float elapsedTime = 0f;
         while (elapsedTime < damageEffectDuration)
         {
-            objectRenderer.material.color = Color.Lerp(damageColor,
-            originalColor, elapsedTime / damageEffectDuration);
+            objectRenderer.SetColor("_EmissionColor", Color.Lerp(damageColor,
+            originalColor, elapsedTime / damageEffectDuration));
             elapsedTime += Time.deltaTime;
             yield return null;
 
@@ -331,7 +333,7 @@ public class BossController : MonoBehaviour
             //objectRenderer.material.SetColor("_BaseColor", lerpDamageColor);
         }
         // Ensure the final color is reset to the original
-        objectRenderer.material.color = originalColor;
+        objectRenderer.SetColor("_EmissionColor", originalColor);
     }
 
     public void HandleTriggerParticles(Vector3 hitPoint)

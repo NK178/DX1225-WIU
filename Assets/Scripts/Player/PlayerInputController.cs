@@ -250,11 +250,8 @@ public class PlayerInputController : MonoBehaviour
         if (moveAction == null) return;
 
         Vector2 direction = moveAction.ReadValue<Vector2>();
-
         if (direction.magnitude > 0)
         {
-            if (activeData.isAttacking && currentMechanics == fighterMechanics && activeData.currentPlayerState < PlayerActiveData.PlayersAnimStates.FIGHTER_RTL_SLASH)
-                direction = new Vector2(0, 0);
             if (camtype == CAMTYPE.FREE_LOOK)
             {
                 // REALLY BOOTLEG VER (6 directional only)
@@ -264,13 +261,11 @@ public class PlayerInputController : MonoBehaviour
             }
             activeData.moveDirection = direction;
             activeData.isMoving = true;
-            activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.WALK;
         }
         else
         {   
             activeData.moveDirection = Vector2.zero;
             activeData.isMoving = activeData.isJumping;
-            activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.IDLE;
         }
 
         if (jumpAction == null) return;
