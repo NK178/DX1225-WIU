@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: ROLLINGPINATTACK
   m_EditorClassIdentifier: Assembly-CSharp::RollingPinAttack
   _attack: 9
-  attackDelayMin: 2
-  attackDelayMax: 5
+  defaultDuration: 1.5
+  activeDuration: 4.4222455
+  attackDelayMin: 1
+  attackDelayMax: 2

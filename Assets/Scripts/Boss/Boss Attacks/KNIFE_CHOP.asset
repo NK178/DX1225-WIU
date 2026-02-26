@@ -9,7 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1b3fd5eaf7c14b4793d3099a83afd35, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a5e56eeb441a4f4ca13a9e65531087a, type: 3}
   m_Name: KNIFE_CHOP
-  m_EditorClassIdentifier: Assembly-CSharp::BossAttacks
+  m_EditorClassIdentifier: Assembly-CSharp::KnifeChopAttack
   _attack: 1
+  defaultDuration: 4
+  activeDuration: 0
+  attackDelayMin: 1
+  attackDelayMax: 3
