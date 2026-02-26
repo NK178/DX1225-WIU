@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 9065056809211535953}
   - component: {fileID: 3414996206940942542}
   - component: {fileID: 2230531766017126594}
-  - component: {fileID: 2775550598418899180}
   - component: {fileID: 8011402919438380869}
+  - component: {fileID: -1258947571412202983}
   - component: {fileID: 5676147814258480553}
   m_Layer: 6
   m_Name: Enemy Knife Charger
@@ -101,46 +101,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DataHolder
   dataType: 1
---- !u!114 &2775550598418899180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2072051332501917476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4e2840986d9c684e9f4d17a0d42bf8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  dataHolder: {fileID: 2230531766017126594}
-  enemyType: 0
-  meleeData: {fileID: 11400000, guid: eedbf79559444674dbdd340ab3866eef, type: 2}
-  rangerData: {fileID: 11400000, guid: 518896d79f0d0d24c82318508f3c74e2, type: 2}
-  enemyAnimator: {fileID: 8011402919438380869}
-  acceleration: 5
-  deceleration: 8
-  rotationSpeed: 5
-  arrivalRadius: 1.5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  minAttackCooldown: 0.5
-  maxAttackCooldown: 5
-  minDistance: 2
-  maxDistance: 15
-  firePoint: {fileID: 0}
-  edgeDetectionRadius: 2
-  edgeSlowdownRadius: 4
-  edgeAvoidanceStrength: 5
-  dissolvePropertyName: DissolveValue
-  dissolveDuration: 2
-  dissolveStartValue: -1
-  dissolveEndValue: 0.7
-  targetMaterial: {fileID: 0}
-  objectRenderer: {fileID: 0}
-  damageColor: {r: 0, g: 0, b: 0, a: 0}
-  damageEffectDuration: 0
 --- !u!114 &8011402919438380869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,6 +114,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimator
   animator: {fileID: 5336039454520584682}
+--- !u!114 &-1258947571412202983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072051332501917476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0088efeea925c144a216dfaa40f92b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemyController
+  dataHolder: {fileID: 2230531766017126594}
+  enemyAnimator: {fileID: 8011402919438380869}
+  acceleration: 5
+  rotationSpeed: 5
+  arrivalRadius: 1.5
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  edgeDetectionRadius: 2
+  edgeSlowdownRadius: 4
+  objectRenderer: {fileID: 479708126438843873}
+  damageColor: {r: 1, g: 0, b: 0, a: 0}
+  damageEffectDuration: 0.15
+  dissolvePropertyName: DissolveValue
+  dissolveDuration: 2
+  dissolveStartValue: -1
+  dissolveEndValue: 0.7
+  meleeData: {fileID: 11400000, guid: eedbf79559444674dbdd340ab3866eef, type: 2}
 --- !u!195 &5676147814258480553
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -239,6 +229,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5376726374554755760}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5201974643428831063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5736163317233324736}
+  - component: {fileID: 2706738819853914972}
+  m_Layer: 0
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5736163317233324736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5201974643428831063}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.035, z: -0.0005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4029689245146506441}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &2706738819853914972
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5201974643428831063}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.005
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5968704684447496500
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +314,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4029689245146506441}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 79.211845, y: 0, z: 0}
 --- !u!33 &2604306504772063531
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -338,6 +381,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4029689245146506441}
   - component: {fileID: 5336039454520584682}
+  - component: {fileID: 891975341964365004}
   m_Layer: 0
   m_Name: knife_model
   m_TagString: Untagged
@@ -360,6 +404,7 @@ Transform:
   m_Children:
   - {fileID: 6227407489849091331}
   - {fileID: 4058295482742804110}
+  - {fileID: 5736163317233324736}
   m_Father: {fileID: 3005134665421337357}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5336039454520584682
@@ -384,6 +429,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &891975341964365004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6780948021018361797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6f76fc078251f4fbdcc7ab6748ecd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackHandler
+  attackColliders:
+  - obj: {fileID: 2706738819853914972}
+    name: Knife Charge
+  colliderType: 1
 --- !u!1 &7558525819141022616
 GameObject:
   m_ObjectHideFlags: 0

@@ -366,6 +366,9 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  objectRenderer: {fileID: 8929218620348112535}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.15
 --- !u!1 &1034106204815984537
 GameObject:
   m_ObjectHideFlags: 0

@@ -140,6 +140,28 @@ public class AttackHandler : MonoBehaviour
                     DisableCollider(detectors.name);
                     continue;
                 }
+                else if (hitColliders[j].TryGetComponent<EnemySpawner>(out var enemySpawner) && colliderType == ColliderType.Player)
+                {
+                    Debug.Log(detectors.name + " HIT SPAWNER");
+                    if (gameObject.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
+                    {
+                        enemySpawner.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
+                    }
+
+                    DisableCollider(detectors.name);
+                    continue;
+                }
+                else if (hitColliders[j].TryGetComponent<DummyController>(out var dummy) && colliderType == ColliderType.Player)
+                {
+                    Debug.Log(detectors.name + " HIT DUMMY");
+                    if (gameObject.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
+                    {
+                        dummy.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
+                    }
+
+                    DisableCollider(detectors.name);
+                    continue;
+                }
                 //need one for environment (No problem, -Klaus)
                 else if (hitColliders[j].CompareTag("Environment") && colliderType == ColliderType.Environment)
                 {

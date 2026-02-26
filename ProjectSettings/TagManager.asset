@@ -15,6 +15,7 @@ TagManager:
   - Item
   - SpawningOrb
   - PlayerBullet
+  - Spawner
   layers:
   - Default
   - TransparentFX
@@ -31,7 +32,7 @@ TagManager:
   - TutorialLevel
   - MinionLevel
   - BossLevel
-  - 
+  - Spawner
   - 
   - 
   - 

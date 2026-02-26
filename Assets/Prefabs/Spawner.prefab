@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2193692137200069667}
   - component: {fileID: 587497436161497069}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Spawner
-  m_TagString: Untagged
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c98a8694517b98248882996c1d056688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  currentHealth: 0
   spawnerOrb: {fileID: 5435221534752810611, guid: 41e7f918e095edf4da90af7465e3bc26, type: 3}
   spawner: {fileID: 6317682825807055164}
   firePoint: {fileID: 1382682371327270625}
@@ -57,6 +58,9 @@ MonoBehaviour:
   frequency: 2
   useLocalSpace: 1
   flightTime: 3
+  coreCube: {fileID: 6317682825807055164}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageEffectDuration: 0.2
 --- !u!1 &2793169211811161558
 GameObject:
   m_ObjectHideFlags: 0
@@ -69,7 +73,7 @@ GameObject:
   - component: {fileID: 892303344768904229}
   - component: {fileID: 8872721661972287167}
   - component: {fileID: 1761607036818365867}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +184,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1382682371327270625}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +218,7 @@ GameObject:
   - component: {fileID: 1065388519557343664}
   - component: {fileID: 6564786425237557487}
   - component: {fileID: 1202777477903583025}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Top Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +333,7 @@ GameObject:
   - component: {fileID: 2589939448437436237}
   - component: {fileID: 4792524972320051955}
   - component: {fileID: 2416976411128256582}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: SpawnerCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

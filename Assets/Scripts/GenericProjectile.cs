@@ -99,6 +99,9 @@ public class GenericProjectile : MonoBehaviour
 
         bool hitFloor = other.CompareTag("Floor");
 
+        bool hitSpawnerTag = other.CompareTag("Spawner");
+        bool hitSpawnerLayer = other.gameObject.layer == LayerMask.NameToLayer("Spawner");
+
         // Enemy/Boss shoots the Player
         if ((spawnerType == DataHolder.DATATYPE.BOSS_ENEMY || spawnerType == DataHolder.DATATYPE.RANGED_ENEMY) && hitPlayer)
         {
@@ -129,7 +132,7 @@ public class GenericProjectile : MonoBehaviour
         }
 
         // Dummy logic
-        if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && (hitDummyTag || hitDummyLayer))
+        if (spawnerType == DataHolder.DATATYPE.PLAYER && (hitDummyTag || hitDummyLayer))
         {
             DummyController dummy = other.GetComponentInParent<DummyController>();
             if (dummy != null) dummy.TakeDamage(10);
@@ -150,6 +153,14 @@ public class GenericProjectile : MonoBehaviour
                 Debug.LogError("PLAYER NULL!");
             }
 
+            ReturnToPool();
+        }
+
+        if (spawnerType == DataHolder.DATATYPE.PLAYER && (hitSpawnerLayer || hitSpawnerTag))
+        {
+            Debug.Log("ENEMY HIT SPAWNER");
+            EnemySpawner spawner = other.GetComponentInParent<EnemySpawner>();
+            if (spawner != null) spawner.TakeDamage(10);
             ReturnToPool();
         }
 
