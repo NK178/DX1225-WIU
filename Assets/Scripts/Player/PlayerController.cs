@@ -207,6 +207,10 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float Damage)
     {
+        if (activeData.isDefensive)
+        {
+            return;
+        }
        
         if (activeData.isDead || activeData.isInvincible) return;
 

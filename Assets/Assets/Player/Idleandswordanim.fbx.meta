@@ -49,7 +49,7 @@ ModelImporter:
       name: Fighter_Idle
       takeName: Take 001
       internalID: 1827226128182048838
-      firstFrame: 0
+      firstFrame: 2
       lastFrame: 109
       wrapMode: 0
       orientationOffsetY: 0

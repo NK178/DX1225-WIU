@@ -1,47 +1,33 @@
-using System.Collections.Generic;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
-public enum FighterState
-{
-    IDLE = 0,
-    WALK,
-    ATTACK1,
-    ATTACK2, 
-    ATTACK3,
-    ABILITY,
-    DEFENSIVE,
-}
-
-[System.Serializable]
-public struct FighterAvatar
-{
-    public FighterState State;
-    public Avatar avatar;
-}
 
 public class FighterMechanics : BaseClassMechanics
 {
     public FighterClassData fighterClassData;
-    [SerializeField] private AttackHandler SwordHandler;
+    //[SerializeField] private AttackHandler SwordHandler;
 
     private float AtkCDTimer;
     private float ParryCDTimer;
     private int combo;
 
     [SerializeField] private Animator animator;
-    [SerializeField] private List<FighterAvatar> FightAvas;
-    [HideInInspector] public FighterAvatar[] FighterAvatars;
-    public Avatar currentAvatar;
-    private AnimatorStateInfo stateInfo;
+
+    private bool isWalkLooping;
+
+    private List<IEnumerator> _attackQueue = new List<IEnumerator>();
+    [SerializeField] private List<String> Atks;
 
     private void Start()
     {
-        FighterAvatars = new FighterAvatar[Enum.GetValues(typeof(FighterState)).Length];
-        for (int i = 0; i < FightAvas.Count; i++)
-        {
-            FighterAvatars[(int)FightAvas[i].State].avatar = FightAvas[i].avatar;
-        }
+        //FighterAvatars = new FighterAvatar[Enum.GetValues(typeof(FighterState)).Length];
+        //for (int i = 0; i < FightAvas.Count; i++)
+        //{
+        //    FighterAvatars[(int)FightAvas[i].State].avatar = FightAvas[i].avatar;
+        //}
+        isWalkLooping = false;
+        
     }
 
     private void Update()
@@ -55,6 +41,29 @@ public class FighterMechanics : BaseClassMechanics
             // Animate Parry Shield UI
             float parryRemaining = Mathf.Max(0, ParryCDTimer - Time.time);
             BattleUIManager.Instance.UpdateCooldownUI(BattleUIManager.Instance.parryCooldownImage, parryRemaining, fighterClassData.parryCD);
+        }
+
+        // Weird way of doing things (Prevent a constant call of moving)
+        if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.WALK && !isWalkLooping)
+        {
+            animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+            activeData.isAttacking = false;
+            activeData.isDefensive = false;
+            isWalkLooping = true;
+        }
+        else if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.IDLE && isWalkLooping)
+        {
+            animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+            activeData.isAttacking = false;
+            activeData.isDefensive = false;
+            isWalkLooping = false;
+        }
+
+        if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.FIGHTER_SHEATH)
+        {
+            animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+            activeData.isAttacking = false;
+            activeData.isDefensive = false;
         }
     }
 
@@ -72,39 +81,18 @@ public class FighterMechanics : BaseClassMechanics
 
         AtkCDTimer = Time.time + fighterClassData.AtkCD;
 
-        if (animator != null)
-        {
-            switch(combo)
-            {
-                case 0:
-                    currentAvatar = FighterAvatars[(int)FighterState.ATTACK1].avatar;
-                    animator.avatar = currentAvatar;
-                    animator.CrossFadeInFixedTime("Fighter_RtL_Slash", 0.2f);
-                    combo++;
-                    break;
-                case 1:
-                    currentAvatar = FighterAvatars[(int)FighterState.IDLE].avatar;
-                    animator.avatar = currentAvatar;
-                    animator.CrossFadeInFixedTime("Fighter_LtR_Slash", 0.2f);
-                    combo++;
-                    break;
-                case 2:
-                    //currentAvatar = FighterAvatars[(int)FighterState.IDLE].avatar;
-                    //animator.avatar = currentAvatar;
-                    animator.CrossFadeInFixedTime("Fighter_Thrust", 0.2f);
-                    combo = 0;
-                    break;
-            }
-        }
-            SwordHandler.EnableCollider("Sword");
+        if (animator != null) StartCoroutine(PerformAttack());
+        //SwordHandler.EnableCollider("Sword");
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterAttack");
     }
 
     public override void HandleDefense()
     {
         if (Time.time < ParryCDTimer) return;
+        activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_DEFENSIVE;
         activeData.isDefensive = true;
-        if (animator != null) animator.CrossFadeInFixedTime("Fighter_Block", 0.2f);
+        if (animator != null) animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+        //if (animator != null) animator.CrossFadeInFixedTime("Fighter_Block", 0.2f);
         ParryCDTimer = Time.time + fighterClassData.parryCD;
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterParry");
         Debug.Log("Parry Executed!");
@@ -113,7 +101,68 @@ public class FighterMechanics : BaseClassMechanics
     public override void HandleAbility()
     {
         // Slash logic
-        if (animator != null) animator.CrossFadeInFixedTime("Fighter_Ability", 0.2f);
+        activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_ABILITY;
+        if (animator != null) animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+        //if (animator != null) animator.CrossFadeInFixedTime("Fighter_Ability", 0.2f);
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterAbility");
     }
+
+    private IEnumerator PerformAttack()
+    {
+        switch (combo)
+        {
+            case 0:
+                activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_RTL_SLASH;
+                animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+                //combo++;
+                break;
+            case 1:
+                activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_LTR_SLASH;
+                animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+                //combo++;
+                break;
+            case 2:
+                activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_THRUST;
+                animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+                //combo = 0;
+                break;
+        }
+        activeData.isAttacking = true;
+        combo++;
+        while (!IsCurrentAnimationReadyForNextStep((activeData.currentPlayerState + combo + 2).ToString()))
+        //while (!IsCurrentAnimationReadyForNextStep(_playerData._attackNames[_attackStep - 1]))
+        {
+            yield return null;
+        }
+        if (combo >= _attackQueue.Count || combo >= 4)
+        {
+            ResetCombo();
+        }
+        else
+        {
+            //ChangeState
+            StartCoroutine(_attackQueue[combo]);
+        }
+    }
+    private bool IsCurrentAnimationReadyForNextStep(string name)
+    {
+        // Check if the current animation has played enough to transition
+        AnimatorStateInfo stateInfo =
+        animator.GetCurrentAnimatorStateInfo(0);
+        return stateInfo.normalizedTime >= 1f &&
+        stateInfo.IsName(name); // Adjust based on when you want to allow transitions
+    }
+    private void ResetCombo()
+    {
+        _attackQueue.Clear();
+        activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_SHEATH;
+        combo = 0;
+        activeData.isAttacking = false;
+    }
+
+    // No time
+    //public void SetIsAttacking(bool isIt)
+    //{
+    //    activeData.isAttacking = isIt;
+    //}
 }

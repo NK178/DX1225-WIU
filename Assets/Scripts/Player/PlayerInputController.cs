@@ -40,6 +40,7 @@ public class PlayerInputController : MonoBehaviour
 
     //Inventory (Ains) 
     private InputAction inventoryAction; 
+
     /// <summary>
     /// Camera (Klaus)
     /// playerTransform set to the Player Controller
@@ -255,8 +256,8 @@ public class PlayerInputController : MonoBehaviour
 
         if (direction.magnitude > 0)
         {
-            if (activeData.isAttacking && currentMechanics == fighterMechanics)
-                return;
+            if (activeData.isAttacking && currentMechanics == fighterMechanics && activeData.currentPlayerState < PlayerActiveData.PlayersAnimStates.FIGHTER_RTL_SLASH)
+                direction = new Vector2(0, 0);
             if (camtype == CAMTYPE.FREE_LOOK)
             {
                 // REALLY BOOTLEG VER (6 directional only)
@@ -266,15 +267,19 @@ public class PlayerInputController : MonoBehaviour
             }
             activeData.moveDirection = direction;
             activeData.isMoving = true;
+            activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.WALK;
         }
         else
         {   
             activeData.moveDirection = Vector2.zero;
             activeData.isMoving = activeData.isJumping;
+            activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.IDLE;
         }
 
         if (jumpAction == null) return;
 
+        if (activeData.isAttacking && currentMechanics == fighterMechanics && activeData.currentPlayerState < PlayerActiveData.PlayersAnimStates.FIGHTER_RTL_SLASH)
+            return;
         if (jumpAction.IsPressed() && !activeData.isJumping)
         {
             activeData.jumpVel.y = JumpVelocity;

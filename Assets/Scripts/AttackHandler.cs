@@ -94,7 +94,7 @@ public class AttackHandler : MonoBehaviour
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
                     // POSSIBLE PROBLEM!
-                    if (detectors.transform.parent.TryGetComponent<BossController>(out var tempBoss))
+                    if (gameObject.TryGetComponent<BossController>(out var tempBoss))
                         player.TakeDamage(tempBoss.ActiveData.currentAttack);
                     else Debug.LogError("A Fake Boss hit Player?");
                     DisableCollider(detectors.name);
@@ -107,7 +107,7 @@ public class AttackHandler : MonoBehaviour
                 else if (hitColliders[j].TryGetComponent<PlayerController>(out var n_player) && (colliderType == ColliderType.NPC))
                 {
                     Debug.Log(detectors.name + " HIT PLAYER");
-                    if (detectors.transform.parent.TryGetComponent<EnemyController>(out var tempNPC))
+                    if (gameObject.TryGetComponent<EnemyController>(out var tempNPC))
                         n_player.TakeDamage(tempNPC.ActiveData.currentAttack);
                     else Debug.LogError("A Fake Enemy hit Player?");
                     DisableCollider(detectors.name);
@@ -119,7 +119,7 @@ public class AttackHandler : MonoBehaviour
                 else if (hitColliders[j].TryGetComponent<BossController>(out var Boss) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT BOSS");
-                    if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
+                    if (gameObject.TryGetComponent<PlayerController>(out var tempPlayer))
                         Boss.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     else Debug.LogError("A Fake Player hit Boss?");
                     if (BattleUIManager.Instance != null)
@@ -132,7 +132,7 @@ public class AttackHandler : MonoBehaviour
                 else if (hitColliders[j].TryGetComponent<EnemyController>(out var Enemy) && colliderType == ColliderType.Player)
                 {
                     Debug.Log(detectors.name + " HIT ENEMY");
-                    if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
+                    if (gameObject.TryGetComponent<PlayerController>(out var tempPlayer))
                         Enemy.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
                     else Debug.LogError("A Fake Player hit Enemy?");
                     if (BattleUIManager.Instance != null)

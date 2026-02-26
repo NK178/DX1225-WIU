@@ -43,7 +43,6 @@ public class BaseActiveData
     public float currentHealth;
     public float maxHealth;
 
-
     //New stuff 
     public DATATYPE dataType;
 
