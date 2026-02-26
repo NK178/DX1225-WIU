@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 public class BattleUIManager : MonoBehaviour
 {
     // Singleton instance for easy global access
     public static BattleUIManager Instance;
     public CanvasGroup mainCanvasGroup;
+
     [Header("Boss UI")]
     public Slider bossHealthSlider;
 
@@ -32,8 +33,8 @@ public class BattleUIManager : MonoBehaviour
 
     [Header("Damage Stats")]
     public TextMeshProUGUI damageTrackerText;
-    private float fighterDamage = 0;
-    private float rangerDamage = 0;
+    public float fighterDamage = 0;
+    public float rangerDamage = 0;
 
     [Header("Player Portraits")]
     public Image centerPortraitImage;
@@ -122,6 +123,25 @@ public class BattleUIManager : MonoBehaviour
             mainCanvasGroup.alpha = isVisible ? 1f : 0f;
             mainCanvasGroup.interactable = isVisible;
             mainCanvasGroup.blocksRaycasts = isVisible;
+        }
+    }
+
+    public void TriggerVictory()
+    {
+        PersistentCombatStats.totalFighterDamage = BattleUIManager.Instance.fighterDamage;
+        PersistentCombatStats.totalRangerDamage = BattleUIManager.Instance.rangerDamage;
+
+        // Load the winning scene
+        SceneManager.LoadScene("WinScene");
+    }
+
+    public void UpdateBossHealthUI(float currentHP, float maxHP)
+    {
+        if (bossHealthSlider != null)
+        {
+          
+            bossHealthSlider.maxValue = maxHP;
+            bossHealthSlider.value = currentHP;
         }
     }
 }
