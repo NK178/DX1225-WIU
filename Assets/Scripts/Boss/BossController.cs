@@ -98,6 +98,7 @@ public class BossController : MonoBehaviour
         //Debug 
         DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
+        activeData.maxHealth = bossData.maxHealth;
         activeData.currentHealth = activeData.maxHealth;
         if (BattleUIManager.Instance != null)
         {
