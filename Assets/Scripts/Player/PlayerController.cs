@@ -66,6 +66,8 @@ public class PlayerController : MonoBehaviour
         DebugHandleMove();
 
 
+        Debug.Log("CURRENT HP: " + activeData.currentHealth);
+
         if (activeData.isInventoryOpen)
         {
             Cursor.lockState = CursorLockMode.None;
