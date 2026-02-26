@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System.Collections;
+using UnityEditor.ShaderGraph.Internal;
 
 [System.Serializable]
 public enum ENEMYCLASSTYPE
@@ -19,6 +20,8 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private MeleeEnemyClassData meleeData;
     [SerializeField] private RangedEnemyClassData rangerData;
+
+    [SerializeField] private EnemyAnimator enemyAnimator;
 
     private Vector3 currentVelocity = Vector3.zero;
 
@@ -45,8 +48,18 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float edgeAvoidanceStrength = 5f;
     private bool isNearEdge = false;
 
+    [Header("Death Settings")]
+    [SerializeField] private string dissolvePropertyName = "DissolveValue";
+    [SerializeField] private float dissolveDuration = 2.0f;
+    [SerializeField] private float dissolveStartValue = -1f; // Solid
+    [SerializeField] private float dissolveEndValue = 0.7f;  // Invisible
+    [SerializeField] private Material targetMaterial;
+
     private float lastAttackTime;
     private float stopDistance;
+
+    private bool isDead = false;
+    private bool isAttacking = false;
 
     private EnemyActiveData activeData;
     public EnemyActiveData ActiveData
@@ -105,6 +118,12 @@ public class EnemyController : MonoBehaviour
                 activeData.currentHealth = rangerData.maxHealth;
                 activeData.currentAttack = rangerData.damage;
             }
+
+            if (objectRenderer != null)
+            {
+                targetMaterial = objectRenderer.material;
+                originalColor = targetMaterial.color;
+            }
         }
 
         originalColor = objectRenderer.material.color;
@@ -112,6 +131,8 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return;
+
         HandleMove();
     }
     private void HandleMove()
@@ -176,6 +197,12 @@ public class EnemyController : MonoBehaviour
             //If player is out of range/gone return back to wandering 
             activeData.targetPlayer = null;
             activeData.currentState = EnemyActiveData.AIState.WANDERING;
+        }
+
+        if (enemyAnimator != null && agent != null)
+        {
+            bool moving = agent.hasPath && agent.velocity.magnitude > 0.1f && !agent.isStopped;
+            enemyAnimator.SetMoving(moving);
         }
 
         switch (activeData.currentState)
@@ -417,15 +444,38 @@ public class EnemyController : MonoBehaviour
         agent.stoppingDistance = stopDistance;
         agent.SetDestination(activeData.targetPlayer.position);
 
+        //Calculate the real distance to the player
+        float realDistance = Vector3.Distance(transform.position, activeData.targetPlayer.position);
+
+        //Manually rotate to face the player 
+        Vector3 directionToPlayer = (activeData.targetPlayer.position - transform.position).normalized;
+        directionToPlayer.y = 0f;
+
+        if (directionToPlayer != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        bool pathReady = !agent.pathPending;
         bool inAttackRange = !agent.pathPending && agent.remainingDistance <= stopDistance;
 
         if (inAttackRange)
         {
-            agent.isStopped = true;
-            HandleAttack();
-        }
+            if (realDistance > stopDistance + 0.2f)
+            {
+                agent.isStopped = false;
+                return;
+            }
 
-        // Rotation is handled by the agent automatically
+            agent.isStopped = true;
+
+            float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+            if (angleToPlayer < 15f)
+            {
+                HandleAttack();
+            }
+        }
     }
 
     private void HandleAttack()
@@ -437,10 +487,17 @@ public class EnemyController : MonoBehaviour
         else if (activeData.enemyClassType == ENEMYCLASSTYPE.MELEE)
         {
             //MELEE ATTACK
+            transform.LookAt(new Vector3(activeData.targetPlayer.position.x, transform.position.y, activeData.targetPlayer.position.z));
+
             Debug.Log("MELEE ATTACK!");
+            if (!isAttacking)
+            {
+                enemyAnimator.TriggerAttack();
+                isAttacking = false;
+            }
+
         }
     }
-
     private void ShootRubberBand()
     {
         if (firePoint == null || activeData.targetPlayer == null)
@@ -488,8 +545,7 @@ public class EnemyController : MonoBehaviour
 
         if (activeData.currentHealth <= 0)
         {
-            onEnemyDied?.Invoke();
-            Destroy(gameObject);
+            StartCoroutine(HandleDeath());
         }
     }
 
@@ -534,6 +590,37 @@ public class EnemyController : MonoBehaviour
         return false;
     }
 
+    public void SetAttack(bool attack)
+    {
+        isAttacking = attack;
+    }
+
+    private IEnumerator HandleDeath()
+    {
+        isDead = true;
+        onEnemyDied?.Invoke();
+
+        agent.isStopped = true;
+        agent.enabled = false;
+
+        if (enemyAnimator != null) enemyAnimator.enabled = false;
+
+        float elapsedTime = 0f;
+        while (elapsedTime < dissolveDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float normalizedTime = elapsedTime / dissolveDuration;
+            float currentDissolve = Mathf.Lerp(dissolveStartValue, dissolveEndValue, normalizedTime);
+
+            // Use the cached unique material
+            targetMaterial.SetFloat(dissolvePropertyName, currentDissolve);
+
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         
@@ -551,50 +638,50 @@ public class EnemyController : MonoBehaviour
     //    Gizmos.DrawWireSphere(transform.position, stopDistance);
     //}
 
-    //private void OnDrawGizmosSelected()
-    //{
-    //    // 1. Detection Radius (Yellow)
-    //    Gizmos.color = Color.yellow;
-    //    Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    private void OnDrawGizmosSelected()
+    {
+        // 1. Detection Radius (Yellow)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-    //    // 2. Stop/Attack Radius (Red)
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(transform.position, stopDistance);
+        // 2. Stop/Attack Radius (Red)
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, stopDistance);
 
-    //    // --- New Distance-Based Combat Visualization ---
+        // --- New Distance-Based Combat Visualization ---
 
-    //    if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
-    //    {
-    //        // 3. Min Distance (Cyan) - Fastest Fire Rate starts here
-    //        Gizmos.color = Color.cyan;
-    //        Gizmos.DrawWireSphere(transform.position, minDistance);
+        if (activeData.enemyClassType == ENEMYCLASSTYPE.RANGED)
+        {
+            // 3. Min Distance (Cyan) - Fastest Fire Rate starts here
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, minDistance);
 
-    //        // 4. Max Distance (Blue) - Slowest Fire Rate starts here
-    //        Gizmos.color = Color.blue;
-    //        Gizmos.DrawWireSphere(transform.position, maxDistance);
+            // 4. Max Distance (Blue) - Slowest Fire Rate starts here
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, maxDistance);
 
-    //        // 5. Visual line to Player + Dynamic Data Label
-    //        if (activeData != null && activeData.targetPlayer != null)
-    //        {
-    //            float dist = Vector3.Distance(transform.position, activeData.targetPlayer.position);
+            // 5. Visual line to Player + Dynamic Data Label
+            if (activeData != null && activeData.targetPlayer != null)
+            {
+                float dist = Vector3.Distance(transform.position, activeData.targetPlayer.position);
 
-    //            // Calculate what the cooldown WOULD be right now
-    //            float factor = Mathf.InverseLerp(minDistance, maxDistance, dist);
-    //            float currentCD = Mathf.Lerp(minAttackCooldown, maxAttackCooldown, factor);
+                // Calculate what the cooldown WOULD be right now
+                float factor = Mathf.InverseLerp(minDistance, maxDistance, dist);
+                float currentCD = Mathf.Lerp(minAttackCooldown, maxAttackCooldown, factor);
 
-    //            // Draw a line to the player
-    //            Gizmos.color = Color.white;
-    //            Gizmos.DrawLine(transform.position, activeData.targetPlayer.position);
+                // Draw a line to the player
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(transform.position, activeData.targetPlayer.position);
 
-    //            // Draw a label in the Scene View (Requires UnityEditor namespace)
-    //            #if UNITY_EDITOR
-    //            string info = $"Distance: {dist:F1}m\nNext CD: {currentCD:F2}s";
-    //            UnityEditor.Handles.Label(transform.position + Vector3.up * 2f, info);
-    //            #endif
-    //        }
-    //    }
+                // Draw a label in the Scene View (Requires UnityEditor namespace)
+                #if UNITY_EDITOR
+                string info = $"Distance: {dist:F1}m\nNext CD: {currentCD:F2}s";
+                UnityEditor.Handles.Label(transform.position + Vector3.up * 2f, info);
+                #endif  
+            }
+        }
 
-    //}
+    }
 
     #endregion
 }

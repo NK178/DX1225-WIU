@@ -17,5 +17,5 @@ MonoBehaviour:
   attackSpeed: 0
   moveSpeed: 2.5
   detectionRadius: 10
-  stopDistance: 5
+  stopDistance: 2.5
   enemyClassType: 0
