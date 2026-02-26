@@ -75,6 +75,11 @@ public class RangedEnemyController : EnemyController
         lastAttackTime = Time.time;
     }
 
+    protected override string[] GetDamageSounds()
+    {
+        return new string[] { "RangerHurt" };
+    }
+
     protected new void OnDrawGizmosSelected()
     {
         base.OnDrawGizmosSelected();

@@ -125,6 +125,16 @@ public class BossController : MonoBehaviour
 
     private void Update()
     {
+
+        if (activeData.currentHealth <= 0)
+        {
+            isBossActive = false;
+            activeData.isBossActive = isBossActive;
+            bossModel.gameObject.SetActive(false);
+            GameManager.Instance.OpenExitMap();
+        }
+
+
         if (!isBossActive)
             return;
 
@@ -137,6 +147,8 @@ public class BossController : MonoBehaviour
 
         if (activeBossAttack != null)
             activeBossAttack.UpdateAttack(activeData);
+
+
     }
 
     private void SelectAndStartAttack()
