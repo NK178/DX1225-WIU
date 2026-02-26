@@ -11,8 +11,6 @@ public class GenericProjectile : MonoBehaviour
     protected float projectileDamage;
     protected ProjectileObjectPool myPool;
 
-
-    ///////TESTING 
     protected BaseActiveData referenceData;
 
     public void SetPool(ProjectileObjectPool pool)
@@ -28,7 +26,6 @@ public class GenericProjectile : MonoBehaviour
         // Ensures the projectile doesn't last forever if shot into the void
         StartCoroutine(LifetimeRoutine());
     }
-
 
     virtual public void Initialize(BaseActiveData activeData, float damageAmount)
     {
@@ -62,33 +59,11 @@ public class GenericProjectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //bool hitEnemy = collision.gameObject.CompareTag("Enemy");
-        //bool hitPlayer = collision.gameObject.CompareTag("Player");
-        //bool hitEnvironment = collision.gameObject.CompareTag("Environment");
-
-        //if (spawnerType == DataHolder.DATATYPE.PLAYER && hitEnemy)
-        //{
-        //    Debug.Log($"Hit Enemy for {projectileDamage} damage!");
-        //    ReturnToPool();
-        //}
-        //else if ((spawnerType == DataHolder.DATATYPE.RANGED_ENEMY || spawnerType == DataHolder.DATATYPE.BOSS_ENEMY) && hitPlayer)
-        //{
-        //    Debug.Log($"Hit Player for {projectileDamage} damage!");
-        //    ReturnToPool();
-        //}
-
-        //if (hitEnvironment)
-        //{
-        //    ReturnToPool();
-        //}
+        // (Left intentional empty block for your future collision logic)
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //bool hitEnemy = other.CompareTag("Enemy");
-        //bool hitEnvironment = other.CompareTag("Environment");
-
-
         bool hitPlayer = other.CompareTag("Player");
 
         bool hitDummyTag = other.CompareTag("Dummy");
@@ -123,10 +98,10 @@ public class GenericProjectile : MonoBehaviour
             if (boss != null) boss.TakeDamage(projectileDamage);
             if (enemy != null) enemy.TakeDamage(projectileDamage);
 
-            // Tell the UI
-            if (BattleUIManager.Instance != null && referenceData is PlayerActiveData playerData)
+            // --- FIXED: Tell the UI without relying on referenceData! ---
+            if (BattleUIManager.Instance != null)
             {
-                BattleUIManager.Instance.AddDamage(playerData.currentClassType, projectileDamage);
+                BattleUIManager.Instance.AddDamage(CLASSTYPE.RANGED, projectileDamage);
             }
             ReturnToPool();
         }
@@ -172,28 +147,5 @@ public class GenericProjectile : MonoBehaviour
                 ReturnToPool();
             }
         }
-
-        //if (spawnerType == DataHolder.DATATYPE.RANGED_ENEMY && hitDummy)
-        //{
-
-        //    DummyController dummy = other.GetComponentInParent<DummyController>();
-
-        //    if (dummy != null)
-        //    {
-        //        Debug.LogWarning("DUMMY HIT!");
-        //        dummy.TakeDamage(10);
-        //    }
-        //    else
-        //    {
-        //        Debug.LogWarning("DUMMY NULL!");
-        //    }
-
-        //    ReturnToPool();
-        //}
-        //if (hitEnvironment)
-        //{
-        //    ReturnToPool();
-        //}
     }
-
 }
