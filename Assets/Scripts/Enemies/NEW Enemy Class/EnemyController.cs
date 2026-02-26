@@ -1,6 +1,7 @@
-using UnityEngine.AI;
-using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class EnemyController : MonoBehaviour
 {
@@ -127,6 +128,8 @@ public abstract class EnemyController : MonoBehaviour
     protected abstract void HandleMove();
     protected abstract void HandleAttack();
 
+    protected abstract string[] GetDamageSounds();
+
     protected void HandleWander(float speed)
     {
         agent.stoppingDistance = arrivalRadius;
@@ -234,6 +237,14 @@ public abstract class EnemyController : MonoBehaviour
     {
         if (isDead) return;
         activeData.currentHealth -= damage;
+
+        string[] sounds = GetDamageSounds();
+        if (sounds != null && sounds.Length > 0)
+        {
+            string randomHit = sounds[Random.Range(0, sounds.Length)];
+            AudioManager.instance.Play(randomHit);
+        }
+
         StartCoroutine(TakeDamageEffect());
 
         if (activeData.currentHealth <= 0)

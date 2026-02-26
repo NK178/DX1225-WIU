@@ -79,7 +79,16 @@ public class FruitChunksProjectile : GenericProjectile
             Debug.Log($"Hit player for {projectileDamage} damage!");
 
             CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.SMALLSHAKE);
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
 
+            if (player != null)
+            {
+                player.TakeDamage(10);
+            }
+            else
+            {
+                Debug.Log("PLAYER NULL");
+            }
         }
 
 

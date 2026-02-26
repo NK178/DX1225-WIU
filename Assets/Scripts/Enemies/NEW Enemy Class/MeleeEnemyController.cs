@@ -50,6 +50,11 @@ public class MeleeEnemyController : EnemyController
         }
     }
 
+    protected override string[] GetDamageSounds()
+    {
+        return new string[] { "KnifeHurt1", "KnifeHurt2", "KnifeHurt3" };
+    }
+
     protected new void OnDrawGizmosSelected()
     {
         base.OnDrawGizmosSelected();
