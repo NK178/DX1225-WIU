@@ -25,6 +25,7 @@ public class BossAnimatorHelper : MonoBehaviour
     void Start()
     {
         activeData = (BossActiveData)dataHolder.activeData;
+
     }
 
     // Update is called once per frame
@@ -130,7 +131,19 @@ public class BossAnimatorHelper : MonoBehaviour
 
     public void ToggleKnifeCollider(int condition)
     {
-        AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+        GameObject[] bossRefs = GameObject.FindGameObjectsWithTag("Boss");
+
+        AttackHandler atkHandler = null; 
+    
+
+        foreach(GameObject refs in bossRefs)
+        {
+            atkHandler = refs.GetComponent<AttackHandler>();
+
+            if (atkHandler != null)
+                return;
+        }
+
         if (atkHandler != null)
         {
             if (condition == 1)
@@ -138,6 +151,15 @@ public class BossAnimatorHelper : MonoBehaviour
             if (condition == 0)
                 atkHandler.DisableCollider("KnifeCollider");
         }
+
+        //AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+        //if (atkHandler != null)
+        //{
+        //    if (condition == 1)
+        //        atkHandler.EnableCollider("KnifeCollider");
+        //    if (condition == 0)
+        //        atkHandler.DisableCollider("KnifeCollider");
+        //}
     }
 
 }

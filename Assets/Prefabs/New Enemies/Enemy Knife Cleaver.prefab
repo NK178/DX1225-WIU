@@ -366,7 +366,7 @@ MonoBehaviour:
   edgeSlowdownRadius: 4
   objectRenderer: {fileID: 8902840383406449855}
   damageColor: {r: 0, g: 0, b: 0, a: 0}
-  damageEffectDuration: 0
+  damageEffectDuration: 0.15
   dissolvePropertyName: DissolveValue
   dissolveDuration: 2
   dissolveStartValue: -1
