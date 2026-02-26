@@ -49,8 +49,9 @@ public class BossController : MonoBehaviour
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
 
-    [SerializeField] private float minIdleTime; 
-    [SerializeField] private float maxIdleTime; 
+    //[SerializeField] private float minIdleTime; 
+    //[SerializeField] private float maxIdleTime;
+    [SerializeField] private GameObject bossModel;
 
     //the actual phases
     private int waveIndex = 0;
@@ -97,6 +98,8 @@ public class BossController : MonoBehaviour
         waveIndex = 0;
         activeData.BossPhase = 0;
         shouldRandomizeAttack = true;
+
+        activeData.isBossActive = isBossActive; 
 
     }
 
@@ -146,7 +149,13 @@ public class BossController : MonoBehaviour
         }
 
         if (activeData.currentHealth == 0)
+        {
             isBossActive = false;
+            activeData.isBossActive = isBossActive;
+            bossModel.gameObject.SetActive(false);
+            GameManager.Instance.OpenExitMap();
+        }
+
     }
 
     int debugAttackInt = 0;
@@ -181,6 +190,9 @@ public class BossController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (activeData.currentHealth == 0)
+            return; 
+
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
         if (AudioManager.instance != null) AudioManager.instance.Play("BossTakeDamage");

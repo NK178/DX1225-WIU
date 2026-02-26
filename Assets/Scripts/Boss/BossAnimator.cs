@@ -42,6 +42,8 @@ public class BossAnimator : MonoBehaviour
         {
             if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
                 animState = "BossKnifeAttack";
+            else if (activeData.BAnimState == BossActiveData.BossAnimStates.HANDSLAM_ATTACK)
+                animState = "BossHandSlam";
         }
         return animState;
     }

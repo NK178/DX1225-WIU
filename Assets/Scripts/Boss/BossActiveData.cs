@@ -24,11 +24,13 @@ public class BossActiveData : BaseActiveData
     //public bool isAttacking;
 
     public Vector3 knifeHitPosition;
+    public bool isBossActive = false;
 
     public BossAnimStates BAnimState;
     public int BossPhase;
     public BossActiveData()
     {
+        isBossActive = false;
         isMoving = true;
         isAttacking = false;
         BossPhase = 0;

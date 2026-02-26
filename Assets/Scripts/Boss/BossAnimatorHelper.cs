@@ -62,4 +62,31 @@ public class BossAnimatorHelper : MonoBehaviour
         activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
         activeData.isAttacking = false;
     }
+
+
+    public void ToggleLeftHand(int condition)
+    {
+        AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+        if (atkHandler != null)
+        {
+            if (condition == 1)
+                atkHandler.EnableCollider("LeftHandCollider");
+            if (condition == 0)
+                atkHandler.DisableCollider("LeftHandCollider");
+        }
+    }
+
+
+    public void ToggleRightHand(int condition)
+    {
+        AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+        if (atkHandler != null)
+        {
+            if (condition == 1)
+                atkHandler.EnableCollider("RightHandCollider");
+            if (condition == 0)
+                atkHandler.DisableCollider("RightHandCollider");
+        }
+    }
+
 }
