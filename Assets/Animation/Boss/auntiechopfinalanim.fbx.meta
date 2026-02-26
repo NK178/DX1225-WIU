@@ -3,7 +3,12 @@ guid: f8c2ad2703e7845429f0818394040d53
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StingrayPBS1
+    second: {fileID: 2100000, guid: 889a9911865b7f24ab8c80518a1008fc, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -16,7 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private CharacterController characterController;
 
-    [SerializeField] private float damageEffectDuration; 
+    [SerializeField] private float damageEffectDuration;
+    [SerializeField] private float damageAbilityDuration;
     [SerializeField] private float speedEffectDuration; 
 
     private PlayerActiveData activeData;
@@ -27,9 +28,9 @@ public class PlayerController : MonoBehaviour
     }
 
     [Header("OnHitVFX")]
-    [SerializeField] private Material objectRenderer;
+    [SerializeField] private Material[] objectRenderer = new Material[2];
     [SerializeField] private Color damageColor;
-
+    private int MorR; // Melee or Ranger
     private Color originalColor;
 
     //For healing 
@@ -50,8 +51,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PLAYER DATA NOT FOUND");
             return;
         }
+        MorR = 0;
+        objectRenderer[0].SetColor("_EmissionColor", new Color(0, 0, 0));
+        objectRenderer[1].SetColor("_EmissionColor", new Color(0, 0, 0));
 
-        originalColor = objectRenderer.GetColor("_EmissionColor");
+        originalColor = objectRenderer[0].GetColor("_EmissionColor");
 
         //activeParticleList = new List<ParticleData>();    
 
@@ -87,6 +91,11 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning("DEBUG: Ouch! Taking 25 damage!");
             TakeDamage(25f);
         }
+
+        if (activeData.currentClassType == CLASSTYPE.MELEE)
+            MorR = 0;
+        else
+            MorR = 1;
     }
 
 
@@ -144,6 +153,14 @@ public class PlayerController : MonoBehaviour
         //Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
         //if (characterController.isGrounded)
 
+        if (activeData.currentPlayerState >= PlayersAnimStates.FIGHTER_RTL_SLASH)
+        {
+            return;
+        }
+        else if (moveDirection != new Vector3(0,0,0))
+        {
+            activeData.currentPlayerState = PlayersAnimStates.WALK;
+        }
 
         Vector3 velocity = (moveDirection.normalized * moveSpeed + activeData.jumpVel) * Time.deltaTime;
 
@@ -197,7 +214,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DamageEffectCoroutine()
     {
-        yield return new WaitForSeconds(damageEffectDuration);
+        yield return new WaitForSeconds(damageAbilityDuration);
         activeData.currentDamageMultiplier = 1f;
     }
 
@@ -211,6 +228,7 @@ public class PlayerController : MonoBehaviour
     {
         if (activeData.isDefensive)
         {
+            activeData.isDefensive = false;
             return;
         }
        
@@ -251,18 +269,18 @@ public class PlayerController : MonoBehaviour
     private IEnumerator TakeDamageEffect()
     {
         // Set to damage color instantly
-        objectRenderer.SetColor("_EmissionColor", damageColor);
+        objectRenderer[MorR].SetColor("_EmissionColor", damageColor);
         // Gradually transition back to the original color over time
         float elapsedTime = 0f;
         while (elapsedTime < damageEffectDuration)
         {
-            objectRenderer.SetColor("_EmissionColor", Color.Lerp(damageColor,
+            objectRenderer[MorR].SetColor("_EmissionColor", Color.Lerp(damageColor,
             originalColor, elapsedTime / damageEffectDuration));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         // Ensure the final color is reset to the original
-        objectRenderer.SetColor("_EmissionColor", originalColor);
+        objectRenderer[MorR].SetColor("_EmissionColor", originalColor);
     }
 
 }

@@ -17,6 +17,10 @@ public class FighterMechanics : BaseClassMechanics
     private bool isWalkLooping;
 
     private List<IEnumerator> _attackQueue = new List<IEnumerator>();
+    private bool isSheathing;
+
+
+    [SerializeField] private PlayerActiveData.PlayersAnimStates StateChecker;
 
     private void Start()
     {
@@ -26,6 +30,7 @@ public class FighterMechanics : BaseClassMechanics
         //    FighterAvatars[(int)FightAvas[i].State].avatar = FightAvas[i].avatar;
         //}
         isWalkLooping = false;
+        isSheathing = false;
         
     }
 
@@ -43,12 +48,19 @@ public class FighterMechanics : BaseClassMechanics
         }
 
         // Weird way of doing things (Prevent a constant call of moving)
+        if(activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.WALK || activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.IDLE)
+        {
+            activeData.isAttacking = false;
+            activeData.isDefensive = false;
+        }
+
         if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.WALK && !isWalkLooping)
         {
             animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
             activeData.isAttacking = false;
             activeData.isDefensive = false;
             isWalkLooping = true;
+            isSheathing = false;
         }
         else if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.IDLE && isWalkLooping)
         {
@@ -56,14 +68,20 @@ public class FighterMechanics : BaseClassMechanics
             activeData.isAttacking = false;
             activeData.isDefensive = false;
             isWalkLooping = false;
+            isSheathing = false;
         }
 
-        if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.FIGHTER_SHEATH)
+        if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.FIGHTER_SHEATH && !isSheathing)
         {
             animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
+            //activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.IDLE;
             activeData.isAttacking = false;
             activeData.isDefensive = false;
+            //isWalkLooping = true;
+            isSheathing = true;
         }
+
+        StateChecker = activeData.currentPlayerState;
     }
 
     public override void EquipClass()
@@ -108,6 +126,8 @@ public class FighterMechanics : BaseClassMechanics
 
     private IEnumerator PerformAttack()
     {
+        isSheathing = false;
+        isWalkLooping = true;
         switch (combo)
         {
             case 0:
@@ -128,12 +148,11 @@ public class FighterMechanics : BaseClassMechanics
         }
         activeData.isAttacking = true;
         combo++;
-        while (!IsCurrentAnimationReadyForNextStep((activeData.currentPlayerState + combo + 2).ToString()))
-        //while (!IsCurrentAnimationReadyForNextStep(_playerData._attackNames[_attackStep - 1]))
+        while (!IsCurrentAnimationReadyForNextStep((activeData.currentPlayerState).ToString()))
         {
             yield return null;
         }
-        if (combo >= _attackQueue.Count || combo >= 4)
+        if (combo >= _attackQueue.Count || combo >= 3)
         {
             ResetCombo();
         }
