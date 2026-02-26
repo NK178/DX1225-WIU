@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SUGARCANE_MISSILE
   m_EditorClassIdentifier: Assembly-CSharp::SugarcaneMissilesAttack
   _attack: 8
+  defaultDuration: 10
+  activeDuration: 0
   debugStartHeight: 7
   spawnDelay: 0.5
   ringRadius: 5

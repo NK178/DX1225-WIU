@@ -3,8 +3,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "FruitRainAttack", menuName = "Bossing/FruitRainAttack")]
 public class FruitRainAttack : BossAttacks
 {
-
-    [SerializeField] private float attackDuration;
     [SerializeField] private Vector3 spawnPoint;
 
     [SerializeField] private float spawnDelayMin;
@@ -41,6 +39,8 @@ public class FruitRainAttack : BossAttacks
         debugTest = true;
 
         activeData.isAttacking = true;
+
+        activeDuration = defaultDuration + randomSpawnDelay;
     }
     
 

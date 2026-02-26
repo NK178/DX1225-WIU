@@ -1,6 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using Unity.VisualScripting;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
 // Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
@@ -10,10 +11,26 @@ struct AttackPhaseData
 {
     // Phase 1 2 3
     // Attack Scriptable Object
+    public float healthPercentage;
     public int phaseNo;
-    public List<BossAttacks> _atks;
+    public List<BossAttacks> _atks; 
     //public BossAttacks _atks;
 }
+
+//struct AttackChanceData
+//{
+//    public float at
+//    public BossAttacks _atks
+
+//    // Phase 1 2 3
+//    // Attack Scriptable Object
+//    public float healthPercentage;
+//    public int phaseNo;
+//    public List<BossAttacks> _atks;
+//    //public BossAttacks _atks;
+//}
+
+
 
 public class BossController : MonoBehaviour
 {
@@ -35,7 +52,6 @@ public class BossController : MonoBehaviour
 
     public float HP;
     public float ATK;
-    private bool DebugEnableAttack;
 
     public bool debugRunning = false;
 
@@ -44,13 +60,18 @@ public class BossController : MonoBehaviour
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
 
+    //[SerializeField] private float minIdleTime; 
+    //[SerializeField] private float maxIdleTime;
+    [SerializeField] private GameObject bossModel;
 
     //the actual phases
     private int waveIndex = 0;
-    private bool shouldStartBoss = false;
+    private bool isBossActive = false;
     private bool shouldRandomizeAttack = false;
 
-    private BossAttacks activeBossAttack; 
+    private BossAttacks activeBossAttack;
+
+    private bool shouldTriggerActive = false;
 
     private void Start()
     {
@@ -77,62 +98,63 @@ public class BossController : MonoBehaviour
         //Debug 
         DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
-        DebugEnableAttack = false;
         activeData.currentHealth = bossData.maxHealth;
         activeData.currentAttack = bossData.damage;
 
         // Set true for now     
-        shouldStartBoss = true;
+        isBossActive = true;
 
         waveIndex = 0;
         activeData.BossPhase = 0;
         shouldRandomizeAttack = true;
 
-        // Debug to check what phases have what attacks
-        //for (int i = 0; i < attackPhaseData.Count; i++)
-        //{
-        //    for (int j = 0; j < attackPhaseData[i]._atks.Count; j++)
-        //    {
-        //        Debug.Log("Phase " + attackPhaseData[i].phaseNo + " : " + attackPhaseData[i]._atks[j].name);
-        //    }
-        //}
-        //HandleAttack();
-    }
+        activeData.isBossActive = isBossActive;
 
+        bossModel.gameObject.SetActive(false);
+
+        //if (isBossActive)
+        //    SelectAndStartAttack(); 
+
+    }
 
 
     private void Update()
     {
-        if (shouldStartBoss)
+        if (!isBossActive)
+            return;
+
+
+        if (shouldTriggerActive)
         {
-            Debug.LogWarning("SHLD RANDOM: " + shouldRandomizeAttack);
-            if (shouldRandomizeAttack)
-            {
-                SelectAttackPhase();
-                StartCoroutine(AttackDurationCoroutine());
-                activeBossAttack.ExecuteAttack(activeData);
-            }
-
-            if (activeBossAttack != null)
-            {
-                Debug.Log("BOSS ATTACK: " + activeBossAttack.name);
-                activeBossAttack.UpdateAttack(activeData);
-            }
-            else
-            {
-                Debug.Log("BOSS ATTACK NULL" );
-
-            }
-
-
-            if (activeData.currentHealth <= 70 && activeData.BossPhase == 0)
-            {
-                activeData.BossPhase++;
-            }
+            SelectAndStartAttack();
+            shouldTriggerActive = false;
         }
+
+        if (activeBossAttack != null)
+            activeBossAttack.UpdateAttack(activeData);
     }
 
-    int debugAttackInt = 0;
+    private void SelectAndStartAttack()
+    {
+        float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+
+        if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage)
+        {
+            activeData.BossPhase++;
+        }
+
+        SelectAttackPhase();
+        activeBossAttack.ExecuteAttack(activeData);
+        StartCoroutine(AttackDurationCoroutine(activeBossAttack.activeDuration));
+    }
+
+    private IEnumerator AttackDurationCoroutine(float attackDuration)
+    {
+        yield return new WaitForSeconds(attackDuration);
+        activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
+        activeData.isAttacking = false;
+        SelectAndStartAttack(); // chain the next attack from here
+    }
 
     private void SelectAttackPhase()
     {
@@ -141,80 +163,110 @@ public class BossController : MonoBehaviour
         int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
         int randomAttackIndex = Random.Range(0, attackListCount);
         shouldRandomizeAttack = false;
+        
 
-        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
-        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
 
-        if (debugAttackInt < attackListCount - 1)
-            debugAttackInt++;
-        else
-            debugAttackInt = 0;
-
-    }
-
-    private IEnumerator AttackDurationCoroutine()
-    {
-        //shld prob set a attack duration somewhere here 
-        yield return new WaitForSeconds(5f);
-        Debug.Log("RANDOMIZE ATTACK AGAIN");
-        shouldRandomizeAttack = true;
+        //if (debugAttackInt < attackListCount - 1)
+        //    debugAttackInt++;
+        //else
+        //    debugAttackInt = 0;
 
     }
+
+
 
 
     //private void Update()
     //{
-    //    //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
+
+    //    if (!isBossActive)
+    //        return;
+
+    //    float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+
+    //    if (shouldRandomizeAttack)
+    //    {
+    //        if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage)
+    //        {
+    //            Debug.Log("NEXT PHASE");
+    //            activeData.BossPhase++;
+    //        }
+
+    //        SelectAttackPhase();
+    //        if (activeData.BAnimState == BossActiveData.BossAnimStates.SUGARCANEMISSILES_ATTACK)
+    //            Debug.Log("SUGARCANE");
+    //        float attackTime = activeBossAttack.activeDuration;
+    //        StartCoroutine(AttackDurationCoroutine(attackTime));
+    //        activeBossAttack.ExecuteAttack(activeData);
+    //    }
+
+    //    if (activeBossAttack != null)
+    //    {
+    //        activeBossAttack.UpdateAttack(activeData);
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("NULL ATTACK");
+    //    }
+    //        //if (activeData.isAttacking)
+    //        //{
+    //        //    if (shouldRandomizeAttack)
+    //        //    {
+    //        //        SelectAttackPhase();
+    //        //        StartCoroutine(AttackDurationCoroutine());
+    //        //        activeBossAttack.ExecuteAttack(activeData);
+    //        //    }
+
+    //        //    if (activeBossAttack != null)
+    //        //    {
+    //        //        activeBossAttack.UpdateAttack(activeData);
+    //        //    }
+    //        //}
+
+
+    //    //    float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+    //    //Debug.Log("HP: " + bossHealthPercentage + "CURR: " + activeData.currentHealth + " MAX: " + bossData.maxHealth);
+
+    //    //Debug.Log("SHOULD RANDOMIZE: " + shouldRandomizeAttack);
+    //    //if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage && shouldRandomizeAttack)
     //    //{
-    //    //    //Debug.Log(attackPhaseData[0]._atks[i]);
+    //    //    Debug.Log("NEXT PHASE");
+    //    //    activeData.BossPhase++;
     //    //}
 
-    //    if (HP <= 70 && activeData.BossPhase == 0)
+
+    //    if (activeData.currentHealth == 0)
     //    {
-    //        activeData.BossPhase++;
+    //        isBossActive = false;
+    //        activeData.isBossActive = isBossActive;
+    //        bossModel.gameObject.SetActive(false);
+    //        GameManager.Instance.OpenExitMap();
     //    }
 
-    //    if (debugRunning) {
+    //}
 
-    //        //DEBUGAttackData.UpdateAttack(activeData);
-    //        //DEBUGAttackData.ExecuteAttack(activeData);
-    //    }
-    //    //HandleAttack();
+    //int debugAttackInt = 0;
 
-    //    attackPhaseData[activeData.BossPhase]._atks[0].UpdateAttack(activeData);
-    //    attackPhaseData[activeData.BossPhase]._atks[1].UpdateAttack(activeData);
+
+    //private IEnumerator AttackDurationCoroutine(float attackDuration)
+    //{
+    //    //shld prob set a attack duration somewhere here 
+    //    yield return new WaitForSeconds(attackDuration);
+    //    Debug.Log("RANDOMIZE ATTACK AGAIN");
+    //    shouldRandomizeAttack = true;
+    //    activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
+    //    activeData.isAttacking = false;
+
     //}
 
 
-    public void HandleMove()
-    {
-
-        //Debug.Log((BossActiveData.BossAnimStates)animator.GetAnimState()); // Check what Anim it is at
-    }
-
-    public void HandleAttack()
-    {
-        if (!DebugEnableAttack)
-            StartCoroutine(DebugAttacking());
-    }
-
-    private IEnumerator DebugAttacking()
-    {
-        DebugEnableAttack = true;
-        //GameObject obj = attackColliders[Random.Range(0,attackColliders.Count)].obj;
-        //Collider obj = attackColliders[Random.Range(0, attackColliders.Count)].obj;
-        //Collider obj = attackColliders[Random.Range(0, attackColliders.Count)].obj;
-        //attackPhaseData[activeData.BossPhase]._atks[Random.Range(0, attackPhaseData[activeData.BossPhase]._atks.Count)].ExecuteAttack(activeData);
-        attackPhaseData[activeData.BossPhase]._atks[0].ExecuteAttack(activeData);
-        attackPhaseData[activeData.BossPhase]._atks[1].ExecuteAttack(activeData);
-        //EnableCollider(obj.name);
-        yield return new WaitForSeconds(3.0f);
-        //DisableCollider(obj.name);
-        DebugEnableAttack = false;
-    }
-
     public void TakeDamage(float damage)
     {
+        if (activeData.currentHealth == 0)
+            return; 
+
         activeData.currentHealth -= damage;
         StartCoroutine(TakeDamageEffect());
         if (AudioManager.instance != null) AudioManager.instance.Play("BossTakeDamage");
@@ -236,6 +288,12 @@ public class BossController : MonoBehaviour
             originalColor, elapsedTime / damageEffectDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
+
+            //Color lerpDamageColor = Color.Lerp(damageColor,
+            //originalColor, elapsedTime / damageEffectDuration);
+            //elapsedTime += Time.deltaTime;
+
+            //objectRenderer.material.SetColor("_BaseColor", lerpDamageColor);
         }
         // Ensure the final color is reset to the original
         objectRenderer.material.color = originalColor;
@@ -269,4 +327,9 @@ public class BossController : MonoBehaviour
         }
     }
 
+    public void TriggerBossStart()
+    {
+        bossModel.gameObject.SetActive(true);
+        shouldTriggerActive = true;
+    }
 }

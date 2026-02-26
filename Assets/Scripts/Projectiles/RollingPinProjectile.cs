@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RollingPinProjectile : MonoBehaviour
+public class RollingPinProjectile : GenericProjectile
 {
 
     [SerializeField] private float rollingPinMoveSpeed;
@@ -20,9 +20,51 @@ public class RollingPinProjectile : MonoBehaviour
 
     void Update()
     {
-        transform.position += transform.forward * rollingPinMoveSpeed * Time.deltaTime;
+        transform.position += -transform.up * rollingPinMoveSpeed * Time.deltaTime;
 
         modelRotX += rollingPinRotateSpeed * Time.deltaTime;
         model.transform.localRotation = Quaternion.Euler(modelRotX, modelRotY, modelRotZ);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //bool hitEnemy = other.CompareTag("Enemy");
+        bool hitEnvironment = other.CompareTag("Environment");
+        bool hitPlayer = other.CompareTag("Player");
+
+        Vector3 hitPoint = transform.position;
+        Vector3 hitNormal = Vector3.up;
+        if (Physics.Raycast(transform.position, -transform.forward, out RaycastHit hit, 3f))
+        {
+            hitPoint = hit.point;
+            hitNormal = hit.normal;
+        }
+
+        if (hitPlayer)
+        {
+            //IMpluse
+            //bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
+            //bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+            //bossActive.isObjectPoolTriggered = true;
+
+            CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.CAMSHAKE); 
+            ReturnToPool();
+        }
+
+        //if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
+        //{
+        //    Debug.Log($"Hit player for {projectileDamage} damage!");
+        //    ReturnToPool();
+        //}
+
+
+        //if (hitEnvironment)
+        //{
+        //    //spawn particles
+        //    bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
+        //    bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
+        //    bossActive.isObjectPoolTriggered = true;
+        //    ReturnToPool();
+        //}
     }
 }

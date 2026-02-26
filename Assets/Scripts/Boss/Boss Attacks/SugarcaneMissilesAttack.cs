@@ -26,6 +26,9 @@ public class SugarcaneMissilesAttack : BossAttacks
         activeData.isAttacking = true;
 
         timer = 0f;
+
+
+        activeDuration = defaultDuration + spawnDelay;
     }
 
     public override void UpdateAttack(BossActiveData activeData)

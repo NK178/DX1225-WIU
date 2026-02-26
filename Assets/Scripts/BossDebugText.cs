@@ -31,18 +31,18 @@ public class BossDebugText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        text.gameObject.SetActive(true);
+        string bossText = "Boss HP: " + activeData.currentHealth + "\nBoss Phase: " + activeData.BossPhase + "\n" + "Boss Attack: " + activeData.BAnimState.ToString();
+        text.text = bossText;
 
-        if (activeData.isAttacking)
-        {
-            text.gameObject.SetActive(true);
-            string bossText = "Boss Phase: " + activeData.BossPhase + "\n" + "Boss Attack: " + activeData.BAnimState.ToString();
-            text.text = bossText;   
-        }
-        else
-        {
-            text.gameObject.SetActive(false);
-        }
+        //if (activeData.isAttacking)
+        //{
+
+        //}
+        //else
+        //{
+        //    text.gameObject.SetActive(false);
+        //}
 
     }
 }
