@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using Unity.VisualScripting;
 
 
 
@@ -13,6 +14,7 @@ struct AttackPhaseData
 {
     // Phase 1 2 3
     // Attack Scriptable Object
+    public float healthPercentage;
     public int phaseNo;
     public List<BossAttacks> _atks;
     //public BossAttacks _atks;
@@ -47,13 +49,12 @@ public class BossController : MonoBehaviour
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
 
-    [SerializeField] Transform knifeHandTarget;
-    [SerializeField] private TwoBoneIKConstraint knifeHandConstraint;
-
+    [SerializeField] private float minIdleTime; 
+    [SerializeField] private float maxIdleTime; 
 
     //the actual phases
     private int waveIndex = 0;
-    private bool shouldStartBoss = false;
+    private bool isBossActive = false;
     private bool shouldRandomizeAttack = false;
 
     private BossAttacks activeBossAttack;
@@ -91,71 +92,61 @@ public class BossController : MonoBehaviour
         activeData.currentAttack = bossData.damage;
 
         // Set true for now     
-        shouldStartBoss = true;
+        isBossActive = true;
 
         waveIndex = 0;
         activeData.BossPhase = 0;
         shouldRandomizeAttack = true;
 
-        // Debug to check what phases have what attacks
-        //for (int i = 0; i < attackPhaseData.Count; i++)
-        //{
-        //    for (int j = 0; j < attackPhaseData[i]._atks.Count; j++)
-        //    {
-        //        Debug.Log("Phase " + attackPhaseData[i].phaseNo + " : " + attackPhaseData[i]._atks[j].name);
-        //    }
-        //}
-        //HandleAttack();
     }
 
 
 
     private void Update()
     {
-        if (shouldStartBoss)
+
+        if (!isBossActive)
+            return;
+
+
+        if (shouldRandomizeAttack)
         {
-            Debug.LogWarning("SHLD RANDOM: " + shouldRandomizeAttack);
-            if (shouldRandomizeAttack)
-            {
-                SelectAttackPhase();
-                StartCoroutine(AttackDurationCoroutine());
-                activeBossAttack.ExecuteAttack(activeData);
-            }
-
-            if (activeBossAttack != null)
-            {
-                Debug.Log("BOSS ATTACK: " + activeBossAttack.name);
-                activeBossAttack.UpdateAttack(activeData);
-            }
-            else
-            {
-                Debug.Log("BOSS ATTACK NULL" );
-
-            }
-
-
-            if (activeData.currentHealth <= 70 && activeData.BossPhase == 0)
-            {
-                activeData.BossPhase++;
-            }
-
-            //if (IKEnabled)
-            //{
-            //    knifeHandConstraint.weight = 1f;
-            //    knifeHandTarget.position = activeData.knifeHitPosition;
-
-            //    //var knifeHand =
-            //    ////knifeHand.target.position = activeData.knifeHitPosition;
-            //    //knifeHandConstraint.data.target.position = activeData.knifeHitPosition;
-
-            //    Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
-
-            //}
-            //else
-            //{
-            //    knifeHandConstraint.weight = 0f;
-            //}
+            SelectAttackPhase();
+            StartCoroutine(AttackDurationCoroutine());
+            activeBossAttack.ExecuteAttack(activeData);
         }
+
+        if (activeBossAttack != null)
+        {
+            activeBossAttack.UpdateAttack(activeData);
+        }
+        //if (activeData.isAttacking)
+        //{
+        //    if (shouldRandomizeAttack)
+        //    {
+        //        SelectAttackPhase();
+        //        StartCoroutine(AttackDurationCoroutine());
+        //        activeBossAttack.ExecuteAttack(activeData);
+        //    }
+
+        //    if (activeBossAttack != null)
+        //    {
+        //        activeBossAttack.UpdateAttack(activeData);
+        //    }
+        //}
+
+
+        float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+        Debug.Log("HP: " + bossHealthPercentage + "CURR: " + activeData.currentHealth + " MAX: " + bossData.maxHealth);
+
+        if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage)
+        {
+            Debug.Log("NEXT PHASE");
+            activeData.BossPhase++;
+        }
+
+        if (activeData.currentHealth == 0)
+            isBossActive = false;
     }
 
     int debugAttackInt = 0;
@@ -171,10 +162,10 @@ public class BossController : MonoBehaviour
         //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
         activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
 
-        //if (debugAttackInt < attackListCount - 1)
-        //    debugAttackInt++;
-        //else
-        //    debugAttackInt = 0;
+        if (debugAttackInt < attackListCount - 1)
+            debugAttackInt++;
+        else
+            debugAttackInt = 0;
 
     }
 
@@ -187,57 +178,6 @@ public class BossController : MonoBehaviour
 
     }
 
-
-    //private void Update()
-    //{
-    //    //for (int i = 0; i < attackPhaseData[0]._atks.Count; i++)
-    //    //{
-    //    //    //Debug.Log(attackPhaseData[0]._atks[i]);
-    //    //}
-
-    //    if (HP <= 70 && activeData.BossPhase == 0)
-    //    {
-    //        activeData.BossPhase++;
-    //    }
-
-    //    if (debugRunning) {
-
-    //        //DEBUGAttackData.UpdateAttack(activeData);
-    //        //DEBUGAttackData.ExecuteAttack(activeData);
-    //    }
-    //    //HandleAttack();
-
-    //    attackPhaseData[activeData.BossPhase]._atks[0].UpdateAttack(activeData);
-    //    attackPhaseData[activeData.BossPhase]._atks[1].UpdateAttack(activeData);
-    //}
-
-
-    public void HandleMove()
-    {
-
-        //Debug.Log((BossActiveData.BossAnimStates)animator.GetAnimState()); // Check what Anim it is at
-    }
-
-    public void HandleAttack()
-    {
-        if (!DebugEnableAttack)
-            StartCoroutine(DebugAttacking());
-    }
-
-    private IEnumerator DebugAttacking()
-    {
-        DebugEnableAttack = true;
-        //GameObject obj = attackColliders[Random.Range(0,attackColliders.Count)].obj;
-        //Collider obj = attackColliders[Random.Range(0, attackColliders.Count)].obj;
-        //Collider obj = attackColliders[Random.Range(0, attackColliders.Count)].obj;
-        //attackPhaseData[activeData.BossPhase]._atks[Random.Range(0, attackPhaseData[activeData.BossPhase]._atks.Count)].ExecuteAttack(activeData);
-        attackPhaseData[activeData.BossPhase]._atks[0].ExecuteAttack(activeData);
-        attackPhaseData[activeData.BossPhase]._atks[1].ExecuteAttack(activeData);
-        //EnableCollider(obj.name);
-        yield return new WaitForSeconds(3.0f);
-        //DisableCollider(obj.name);
-        DebugEnableAttack = false;
-    }
 
     public void TakeDamage(float damage)
     {
@@ -300,49 +240,4 @@ public class BossController : MonoBehaviour
 
         }
     }
-
-
-
-    //public void ToggleIK(int condition)
-    //{
-    //    if (condition == 1)
-    //        IKEnabled = true;
-    //    else if (condition == 0)
-    //        IKEnabled = false;
-    //    Debug.Log("TOGGLE IK: " + IKEnabled);
-    //}
-
-    void LateUpdate()
-    {
-        // Force weight after Animator updates
-        //if (IKEnabled)
-        //{
-        //    knifeHandConstraint.weight = 1f;
-
-        //    var knifeHand = knifeHandConstraint.data;
-        //    knifeHand.target.position = activeData.knifeHitPosition;
-
-
-        //    //rightArmIK.weight = 1f;
-        //    //leftArmIK.weight = 1f;
-
-        //    ////temp for now, later when doing arm moving, put in a better place
-        //    //var rightArmData = rightArmIK.data;
-        //    //rightArmData.target.position = playerData.rightHandGrabPos;
-
-        //    //var leftArmData = leftArmIK.data;
-        //    //leftArmData.target.position = playerData.leftHandGrabPos;
-
-        //    //Debug.Log(playerData.leftHandGrabPos + "L: " + leftArmData.target.position);
-
-        //}
-        //else
-        //{
-        //    knifeHandConstraint.weight = 0f;
-        //    //rightArmIK.weight = 0f;
-        //    //leftArmIK.weight = 0f;
-        //}
-    }
-
-
 }

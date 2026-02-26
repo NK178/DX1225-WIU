@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: KNIFE_CHOP
   m_EditorClassIdentifier: Assembly-CSharp::KnifeChopAttack
   _attack: 1
-  attackDelayMin: 2
-  attackDelayMax: 5
+  attackDelayMin: 5
+  attackDelayMax: 10

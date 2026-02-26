@@ -26,7 +26,7 @@ public class BossAnimatorHelper : MonoBehaviour
         if (IKEnabled)
         {
             knifeHandConstraint.weight = 1f;
-            knifeHandTarget.position = activeData.knifeHitPosition;
+            knifeHandTarget.position = activeData.knifeHitPosition; 
             Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
 
         }
@@ -43,16 +43,23 @@ public class BossAnimatorHelper : MonoBehaviour
         {
             IKEnabled = true;
             
-            if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
-            {
-                Debug.Log("ROTATE KNIFE");
-                Vector3 directionVector = (handTip.transform.position - knifeHandTarget.position).normalized;
-                knifeHandTarget.rotation = Quaternion.LookRotation(directionVector);
-            }
+            //if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
+            //{
+            //    Debug.Log("ROTATE KNIFE");
+            //    Vector3 directionVector = (handTip.transform.position - knifeHandTarget.position).normalized;
+            //    knifeHandTarget.rotation = Quaternion.LookRotation(directionVector);
+            //}
 
         }
         else if (condition == 0)
             IKEnabled = false;
         Debug.Log("TOGGLE IK: " + IKEnabled);
+    }
+
+
+    public void SetAnimBackIdle()
+    {
+        activeData.BAnimState = BossActiveData.BossAnimStates.IDLE;
+        activeData.isAttacking = false;
     }
 }
