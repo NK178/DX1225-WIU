@@ -80,7 +80,11 @@ public class PlayerController : MonoBehaviour
         }
 
         HandlePlayerParticles();
-
+        if (UnityEngine.InputSystem.Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            Debug.LogWarning("DEBUG: Ouch! Taking 25 damage!");
+            TakeDamage(25f);
+        }
     }
 
 
@@ -203,17 +207,32 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float Damage)
     {
-        //if (activeData.isDefensive)
-        //{
-        //    return;
-        //}
+        if (activeData.isInvincible)
+        {
+            Debug.Log("Dodged the attack!");
+            return;
+        }
+
         activeData.currentHealth -= Damage;
+
+        if (activeData.currentHealth <= 0)
+        {
+            PlayerInputController inputController = GetComponent<PlayerInputController>();
+            if (inputController != null)
+            {
+                inputController.HandleCharacterDeath();
+            }
+        }
+
         StartCoroutine(TakeDamageEffect());
+
         if (AudioManager.instance != null) AudioManager.instance.Play("PlayerTakeDamage");
+
         if (BattleUIManager.Instance != null)
         {
             BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
         }
+
     }
     private IEnumerator TakeDamageEffect()
     {

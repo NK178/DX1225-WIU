@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -56,6 +58,9 @@ public class PlayerInputController : MonoBehaviour
     private float tempCameraY;
     private InputAction camZoomAction;
     private InputAction camChange;
+
+    [SerializeField] private CanvasGroup fadeToBlackGroup;
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
     private enum CAMTYPE
     {
         THIRD_PERSON = 0,
@@ -140,6 +145,7 @@ public class PlayerInputController : MonoBehaviour
 
     void Update()
     {
+        if (activeData != null && activeData.isDead) return;
         HandleCharacterSwitching();
         HandleMove();
         HandleCameraMovement();
@@ -359,4 +365,65 @@ public class PlayerInputController : MonoBehaviour
             }
         }
     }
+    public void HandleCharacterDeath()
+    {
+        if (activeData.currentClassType == CLASSTYPE.MELEE)
+            fighterHP = 0;
+        else
+            rangerHP = 0;
+
+        // Are BOTH dead?
+        if (fighterHP <= 0 && rangerHP <= 0)
+        {
+            StartCoroutine(GameOverSequence());
+        }
+        else
+        {
+            // Force swap to whoever is still alive
+            CLASSTYPE survivingClass = (activeData.currentClassType == CLASSTYPE.MELEE) ? CLASSTYPE.RANGED : CLASSTYPE.MELEE;
+            SwitchCharacter(survivingClass);
+            Debug.Log("A character died! Forced swap to survivor.");
+        }
+    }
+
+    private IEnumerator GameOverSequence()
+    {
+        // Lock controls
+        activeData.isDead = true;
+        activeData.moveDirection = Vector2.zero;
+        activeData.isMoving = false;
+
+        if (AudioManager.instance != null) AudioManager.instance.Play("GameOver");
+
+        // Setup the camera math
+        float elapsed = 0f;
+        float transitionDuration = 3f; // 3 seconds to pan and fade
+
+        Vector3 startRot = cameraTransform.localEulerAngles;
+        Vector3 endRot = new Vector3(89f, startRot.y, 0f); // Look straight down
+
+        float startDist = cinemachineCamera.CameraDistance;
+        float endDist = 12f; // Pan out
+
+        // Cinematic Loop
+        while (elapsed < transitionDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / transitionDuration;
+
+            cameraTransform.localEulerAngles = Vector3.Lerp(startRot, endRot, t);
+            cinemachineCamera.CameraDistance = Mathf.Lerp(startDist, endDist, t);
+
+            if (fadeToBlackGroup != null)
+            {
+                fadeToBlackGroup.alpha = t;
+            }
+
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f); // Dramatic pause in the dark
+        SceneManager.LoadScene(mainMenuSceneName);
+    }
+
 }
