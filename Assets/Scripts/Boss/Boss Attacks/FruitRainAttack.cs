@@ -39,6 +39,8 @@ public class FruitRainAttack : BossAttacks
         debugTest = true;
 
         activeData.isAttacking = true;
+
+        activeDuration = defaultDuration + randomSpawnDelay;
     }
     
 

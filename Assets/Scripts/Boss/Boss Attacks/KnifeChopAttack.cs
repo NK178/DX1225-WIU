@@ -57,6 +57,7 @@ public class KnifeChopAttack : BossAttacks
 
             Vector3 knifeHitPosition = referencePosition + Vector3.right * zOffset;
 
+            activeData.activeIKType = BossActiveData.IKTYPE.IK_KNIFE;
             activeData.knifeHitPosition = knifeHitPosition; 
             activeData.BAnimState = _attack;
             activeData.isAttacking = true;

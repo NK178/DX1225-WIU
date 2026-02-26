@@ -74,6 +74,21 @@ public class BossAnimatorHelper : MonoBehaviour
         Debug.Log("TOGGLE IK: " + IKEnabled);
     }
 
+    public void TriggerChopParticles()
+    {
+        float offset = -4f;
+        Vector3 referencePosition = knifeHandTarget.position + Vector3.right * offset;
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referencePosition, Vector3.up);
+        activeData.isObjectPoolTriggered = false;
+        activeData.isObjectPoolTriggered = true;
+
+        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_WOODSPLINTER;
+        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referencePosition, Vector3.up);
+        activeData.isObjectPoolTriggered = false;
+        activeData.isObjectPoolTriggered = true;
+
+    }
 
     public void SetAnimBackIdle()
     {
