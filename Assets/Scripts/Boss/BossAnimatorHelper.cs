@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -76,7 +77,7 @@ public class BossAnimatorHelper : MonoBehaviour
 
     public void TriggerChopParticles()
     {
-        float offset = -4f;
+        float offset = -8f;
         Vector3 referencePosition = knifeHandTarget.position + Vector3.right * offset;
         activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_DUSTSPLASH;
         activeData.objectPoolSpawnData = new ObjectPoolSpawnData(referencePosition, Vector3.up);
@@ -110,6 +111,11 @@ public class BossAnimatorHelper : MonoBehaviour
     }
 
 
+    public void TriggerKnifeImpluse()
+    {
+        CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.LARGE_EARTHQUAKESHAKE);
+    }
+
     public void ToggleRightHand(int condition)
     {
         AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
@@ -119,6 +125,18 @@ public class BossAnimatorHelper : MonoBehaviour
                 atkHandler.EnableCollider("RightHandCollider");
             if (condition == 0)
                 atkHandler.DisableCollider("RightHandCollider");
+        }
+    }
+
+    public void ToggleKnifeCollider(int condition)
+    {
+        AttackHandler atkHandler = GameObject.FindWithTag("Boss").GetComponent<AttackHandler>();
+        if (atkHandler != null)
+        {
+            if (condition == 1)
+                atkHandler.EnableCollider("KnifeCollider");
+            if (condition == 0)
+                atkHandler.DisableCollider("KnifeCollider");
         }
     }
 

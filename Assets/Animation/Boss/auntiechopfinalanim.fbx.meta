@@ -62,12 +62,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: 0.4218708
+      - time: 0.41130975
         functionName: TriggerChopParticles
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
+        messageOptions: 0
+      - time: 0.42147464
+        functionName: TriggerKnifeImpluse
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
         messageOptions: 0
       - time: 0.7628305
         functionName: ToggleIK
@@ -78,6 +85,20 @@ ModelImporter:
         messageOptions: 0
       - time: 0.91561544
         functionName: SetAnimBackIdle
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.35987854
+        functionName: ToggleKnifeCollider
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.51111615
+        functionName: ToggleKnifeCollider
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

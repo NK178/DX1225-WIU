@@ -50,7 +50,7 @@ public class RollingPinAttack : BossAttacks
             activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.ROLLINGPIN;
             //calc the position 
 
-            float posOffset = 15f;
+            float posOffset = -10f;
             float yOffset = 22f;
             Vector3 referencePosition = new Vector3(player.transform.position.x,
                                                     yOffset,

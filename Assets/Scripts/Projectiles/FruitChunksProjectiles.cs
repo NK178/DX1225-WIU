@@ -40,11 +40,11 @@ public class FruitChunksProjectile : GenericProjectile
 
     void Update()
     {
-        if (isActive)
-        {
-            float velocity = disintergateSpeed * Time.deltaTime;
-            transform.position += -Vector3.up * velocity;
-        }
+        //if (isActive)
+        //{
+        //    float velocity = disintergateSpeed * Time.deltaTime;
+        //    transform.position += -Vector3.up * velocity;
+        //}
 
         Vector3 raycastPosition = transform.position + raycastOffset;
         Debug.DrawLine(raycastPosition, raycastPosition + -Vector3.up * raycastDistance, Color.red);
@@ -77,11 +77,16 @@ public class FruitChunksProjectile : GenericProjectile
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
             Debug.Log($"Hit player for {projectileDamage} damage!");
+
+            CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.SMALLSHAKE);
+
         }
 
 
         if (hitEnvironment)
         {
+            CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.SMALLSHAKE);
+
             rb.linearVelocity = Vector3.zero;
             rb.isKinematic = true;
 
