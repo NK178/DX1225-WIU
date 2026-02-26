@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float damageEffectDuration; 
     [SerializeField] private float speedEffectDuration; 
 
-
     private PlayerActiveData activeData;
     public PlayerActiveData ActiveData
     {
@@ -30,7 +29,7 @@ public class PlayerController : MonoBehaviour
     }
 
     [Header("OnHitVFX")]
-    [SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Material objectRenderer;
     [SerializeField] private Color damageColor;
 
     private Color originalColor;
@@ -54,7 +53,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        originalColor = objectRenderer.material.color;
+        originalColor = objectRenderer.GetColor("_EmissionColor");
 
         //activeParticleList = new List<ParticleData>();    
 
@@ -204,6 +203,10 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float Damage)
     {
+        //if (activeData.isDefensive)
+        //{
+        //    return;
+        //}
         activeData.currentHealth -= Damage;
         StartCoroutine(TakeDamageEffect());
         if (AudioManager.instance != null) AudioManager.instance.Play("PlayerTakeDamage");
@@ -215,18 +218,18 @@ public class PlayerController : MonoBehaviour
     private IEnumerator TakeDamageEffect()
     {
         // Set to damage color instantly
-        objectRenderer.material.color = damageColor;
+        objectRenderer.SetColor("_EmissionColor", damageColor);
         // Gradually transition back to the original color over time
         float elapsedTime = 0f;
         while (elapsedTime < damageEffectDuration)
         {
-            objectRenderer.material.color = Color.Lerp(damageColor,
-            originalColor, elapsedTime / damageEffectDuration);
+            objectRenderer.SetColor("_EmissionColor", Color.Lerp(damageColor,
+            originalColor, elapsedTime / damageEffectDuration));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         // Ensure the final color is reset to the original
-        objectRenderer.material.color = originalColor;
+        objectRenderer.SetColor("_EmissionColor", originalColor);
     }
 
 }

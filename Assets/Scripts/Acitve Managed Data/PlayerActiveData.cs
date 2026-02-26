@@ -8,6 +8,7 @@ public class PlayerActiveData : BaseActiveData
     public Vector3 jumpVel;
     public bool isJumping;
 
+    public bool isDefensive;
 
     public CLASSTYPE currentClassType;
 

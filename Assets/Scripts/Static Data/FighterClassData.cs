@@ -17,6 +17,7 @@ public class FighterClassData : BaseClassData
     public float parryTiming;
     public float blockDamageReduction;
     public float parryCD;
+    public bool isBlocking;
 
     [Header("Special Ability: Dragon Flaming Slash")]
     public float damageMultiplier;
