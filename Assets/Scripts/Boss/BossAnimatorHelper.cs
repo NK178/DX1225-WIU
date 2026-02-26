@@ -48,7 +48,7 @@ public class BossAnimatorHelper : MonoBehaviour
         else
         {
             knifeHandConstraint.weight = 0f;
-            leftHandConstraint.weight = 0f;
+            //leftHandConstraint.weight = 0f;
             //rightHandConstraint.weight = 0f;
 
         }

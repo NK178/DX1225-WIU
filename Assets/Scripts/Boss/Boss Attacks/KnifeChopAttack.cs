@@ -51,8 +51,11 @@ public class KnifeChopAttack : BossAttacks
             hasAttacked = true;
             float zOffset = 10f;
 
-            Vector3 knifeHitPosition = player.transform.position 
-                                    + Vector3.right * zOffset;
+            Vector3 referencePosition = new Vector3(player.transform.position.x,
+                                                    22.2f,
+                                                    player.transform.position.z);
+
+            Vector3 knifeHitPosition = referencePosition + Vector3.right * zOffset;
 
             activeData.knifeHitPosition = knifeHitPosition; 
             activeData.BAnimState = _attack;
