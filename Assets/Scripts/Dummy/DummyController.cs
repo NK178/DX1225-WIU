@@ -1,57 +1,56 @@
 using UnityEngine;
+using System.Collections;
 
 public class DummyController : MonoBehaviour
 {
-    private float maxHealth = 100f;
     [SerializeField] private float health;
     [SerializeField] private Animator animator;
     [SerializeField] private LayerMask enemyLayer;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("Visual Feedback")]
+    [SerializeField] private Renderer objectRenderer;
+    [SerializeField] private Color damageColor = Color.red;
+    [SerializeField] private float flashDuration = 0.15f;
+    private Color originalColor;
+    private Coroutine flashCoroutine;
+
     void Start()
     {
-        health = maxHealth;
-        ActivateRagdoll(false);
-    }
+        // We set health to a high value, but we won't let it decrease
+        health = 100f;
 
-    private void ActivateRagdoll(bool active)
-    {
-        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+        if (objectRenderer != null)
         {
-            rb.isKinematic = !active;
+            // Store the original color so we can swap back
+            originalColor = objectRenderer.material.color;
         }
     }
 
-    private void EnterRagdoll()
+    public void TakeDamage(float dmg)
     {
-        animator.enabled = false;
-        ActivateRagdoll(true);
+        // 1. Infinite Health Logic: 
+        // We show the "hit" but don't actually let health drop to 0
+        Debug.Log($"Dummy hit for {dmg} damage!");
+
+        // 2. Visual Feedback
+        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+        flashCoroutine = StartCoroutine(HitFlash());
     }
 
-    public void TakeDamage(int dmg)
+    private IEnumerator HitFlash()
     {
-        health -= dmg;
+        // Set to red
+        objectRenderer.material.color = damageColor;
 
-        if (health <= 0)
-        {
-            EnterRagdoll();
-            OnDeath();
-            return;
-        }
+        // Wait for a split second
+        yield return new WaitForSeconds(flashDuration);
+
+        // Return to normal
+        objectRenderer.material.color = originalColor;
     }
 
     public bool IsAlive()
     {
-        return health > 0;
-    }
-
-    private void OnDeath()
-    {
-        Collider[] allColliders = GetComponentsInChildren<Collider>();
-
-        foreach (Collider col in allColliders)
-        {
-            col.excludeLayers |= enemyLayer;
-        }
+        return true; // Always returns true for your EnemyController's detection
     }
 }
