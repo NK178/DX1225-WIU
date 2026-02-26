@@ -5,7 +5,9 @@ public class BossAnimatorHelper : MonoBehaviour
 {
     [SerializeField] private Transform handTip;
     [SerializeField] Transform knifeHandTarget;
-    [SerializeField] private TwoBoneIKConstraint knifeHandConstraint;
+    //[SerializeField] private TwoBoneIKConstraint knifeHandConstraint;
+
+    [SerializeField] private ChainIKConstraint knifeHandConstraint; 
     [SerializeField] private DataHolder dataHolder;
 
     private bool IKEnabled = false;

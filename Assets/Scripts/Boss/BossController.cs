@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 using Unity.VisualScripting;
-
-
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
 // Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
@@ -111,11 +108,11 @@ public class BossController : MonoBehaviour
         if (!isBossActive)
             return;
 
-
         if (shouldRandomizeAttack)
         {
             SelectAttackPhase();
-            StartCoroutine(AttackDurationCoroutine());
+            float attackTime = activeBossAttack.activeDuration;
+            StartCoroutine(AttackDurationCoroutine(attackTime));
             activeBossAttack.ExecuteAttack(activeData);
         }
 
@@ -123,23 +120,27 @@ public class BossController : MonoBehaviour
         {
             activeBossAttack.UpdateAttack(activeData);
         }
-        //if (activeData.isAttacking)
-        //{
-        //    if (shouldRandomizeAttack)
-        //    {
-        //        SelectAttackPhase();
-        //        StartCoroutine(AttackDurationCoroutine());
-        //        activeBossAttack.ExecuteAttack(activeData);
-        //    }
+        else
+        {
+            Debug.Log("NULL ATTACK");
+        }
+            //if (activeData.isAttacking)
+            //{
+            //    if (shouldRandomizeAttack)
+            //    {
+            //        SelectAttackPhase();
+            //        StartCoroutine(AttackDurationCoroutine());
+            //        activeBossAttack.ExecuteAttack(activeData);
+            //    }
 
-        //    if (activeBossAttack != null)
-        //    {
-        //        activeBossAttack.UpdateAttack(activeData);
-        //    }
-        //}
+            //    if (activeBossAttack != null)
+            //    {
+            //        activeBossAttack.UpdateAttack(activeData);
+            //    }
+            //}
 
 
-        float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+            float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
         Debug.Log("HP: " + bossHealthPercentage + "CURR: " + activeData.currentHealth + " MAX: " + bossData.maxHealth);
 
         if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage)
@@ -168,20 +169,20 @@ public class BossController : MonoBehaviour
         int randomAttackIndex = Random.Range(0, attackListCount);
         shouldRandomizeAttack = false;
 
-        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
-        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
 
-        if (debugAttackInt < attackListCount - 1)
-            debugAttackInt++;
-        else
-            debugAttackInt = 0;
+        //if (debugAttackInt < attackListCount - 1)
+        //    debugAttackInt++;
+        //else
+        //    debugAttackInt = 0;
 
     }
 
-    private IEnumerator AttackDurationCoroutine()
+    private IEnumerator AttackDurationCoroutine(float attackDuration)
     {
         //shld prob set a attack duration somewhere here 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(attackDuration);
         Debug.Log("RANDOMIZE ATTACK AGAIN");
         shouldRandomizeAttack = true;
 

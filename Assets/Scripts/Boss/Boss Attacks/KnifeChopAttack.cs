@@ -30,6 +30,8 @@ public class KnifeChopAttack : BossAttacks
         timer = 0f;
         shouldAttack = hasAttacked = false;
 
+        activeDuration = defaultDuration += attackDelayTime;
+
     }
 
     //This fuction is useless 
@@ -45,15 +47,11 @@ public class KnifeChopAttack : BossAttacks
 
         if (shouldAttack && !hasAttacked)
         {
-            Debug.Log("KNIFE ATTACK LESGO");
             hasAttacked = true;
+            float zOffset = 10f;
 
-            float yOffset = -4f;
-            float zOffset = -4f;
-
-            Vector3 knifeHitPosition = player.transform.position
-                + Vector3.up * yOffset
-                + player.transform.right * zOffset;
+            Vector3 knifeHitPosition = player.transform.position 
+                                    + Vector3.right * zOffset;
 
             activeData.knifeHitPosition = knifeHitPosition; 
             activeData.BAnimState = _attack;

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
@@ -15,6 +14,11 @@ public class BossAnimator : MonoBehaviour
     private BossActiveData activeData;
 
     [SerializeField] private AttackHandler DEBUGAttackHandler;
+
+
+    [SerializeField] private Avatar chopAvatar; 
+    [SerializeField] private Avatar handSlamAvatar; 
+
 
     private void Start()
     {
@@ -41,9 +45,15 @@ public class BossAnimator : MonoBehaviour
         else if (activeData.isAttacking)
         {
             if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
+            {
+                animator.avatar = chopAvatar;
                 animState = "BossKnifeAttack";
+            }
             else if (activeData.BAnimState == BossActiveData.BossAnimStates.HANDSLAM_ATTACK)
+            {
+                animator.avatar = handSlamAvatar;
                 animState = "BossHandSlam";
+            }
         }
         return animState;
     }
