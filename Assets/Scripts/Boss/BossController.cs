@@ -16,8 +16,11 @@ struct AttackPhaseData
     //public BossAttacks _atks;
 }
 
-//struct AttackPhaseData
+//struct AttackChanceData
 //{
+//    public float at
+//    public BossAttacks _atks
+
 //    // Phase 1 2 3
 //    // Attack Scriptable Object
 //    public float healthPercentage;
@@ -149,6 +152,26 @@ public class BossController : MonoBehaviour
         SelectAndStartAttack(); // chain the next attack from here
     }
 
+    private void SelectAttackPhase()
+    {
+        Debug.Log("SELECTED ATTACK");
+        //randomize the attack 
+        int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
+        int randomAttackIndex = Random.Range(0, attackListCount);
+        shouldRandomizeAttack = false;
+        
+
+        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
+        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
+
+        //if (debugAttackInt < attackListCount - 1)
+        //    debugAttackInt++;
+        //else
+        //    debugAttackInt = 0;
+
+    }
+
+
 
 
     //private void Update()
@@ -222,23 +245,6 @@ public class BossController : MonoBehaviour
 
     //int debugAttackInt = 0;
 
-    private void SelectAttackPhase()
-    {
-        Debug.Log("SELECTED ATTACK");
-        //randomize the attack 
-        int attackListCount = attackPhaseData[activeData.BossPhase]._atks.Count;
-        int randomAttackIndex = Random.Range(0, attackListCount);
-        shouldRandomizeAttack = false;
-
-        activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[randomAttackIndex];
-        //activeBossAttack = attackPhaseData[activeData.BossPhase]._atks[debugAttackInt];
-
-        //if (debugAttackInt < attackListCount - 1)
-        //    debugAttackInt++;
-        //else
-        //    debugAttackInt = 0;
-
-    }
 
     //private IEnumerator AttackDurationCoroutine(float attackDuration)
     //{

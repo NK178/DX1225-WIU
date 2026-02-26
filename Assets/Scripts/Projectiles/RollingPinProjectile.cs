@@ -20,7 +20,7 @@ public class RollingPinProjectile : MonoBehaviour
 
     void Update()
     {
-        transform.position += transform.forward * rollingPinMoveSpeed * Time.deltaTime;
+        transform.position += -transform.up * rollingPinMoveSpeed * Time.deltaTime;
 
         modelRotX += rollingPinRotateSpeed * Time.deltaTime;
         model.transform.localRotation = Quaternion.Euler(modelRotX, modelRotY, modelRotZ);
