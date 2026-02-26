@@ -27,8 +27,19 @@ public class EnemySpawner : MonoBehaviour
     [Header("Projectile Settings")]
     [SerializeField] private float flightTime = 1.5f;
 
+    [Header("Core Settings")]
+    [SerializeField] private GameObject coreCube;
+
+    [Header("Visual Feedback")]
+    [SerializeField] private Color damageColor = Color.red;
+    [SerializeField] private float damageEffectDuration = 0.2f;
+    private Material coreMaterial;
+    private Color originalColor;
+    private Coroutine flashCoroutine;
+
     private Vector3 startPos;
     private int maxSpawnCount = 7;
+    private bool coreDestroyed = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,6 +47,12 @@ public class EnemySpawner : MonoBehaviour
         if (spawner != null)
         {
             startPos = useLocalSpace ? spawner.transform.localPosition : spawner.transform.position;
+        }
+
+        if (coreCube != null && coreCube.TryGetComponent<Renderer>(out Renderer coreRenderer))
+        {
+            coreMaterial = coreRenderer.material;
+            originalColor = coreMaterial.color;
         }
 
         currentHealth = maxHealth;
@@ -62,7 +79,7 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnRoutine()
     {
-        while (currentSpawnCount < maxSpawnCount)
+        while ((currentSpawnCount < maxSpawnCount) && !coreDestroyed)
         {
             float waitTime = Random.Range(minSpawnTime, maxSpawnTime);
             yield return new WaitForSeconds(waitTime);
@@ -124,6 +141,24 @@ public class EnemySpawner : MonoBehaviour
         return false;
     }
 
+    public void TakeDamage(float dmg)
+    {
+        Debug.Log("current HP: " + currentHealth);   
+        if (coreDestroyed) return;
+
+        currentHealth -= dmg;
+
+        //Trigger Flash
+        if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+        flashCoroutine = StartCoroutine(PlayHitFlash());
+
+        if (currentHealth <= 0)
+        {
+            coreDestroyed = true;
+            Destroy(coreCube);
+        }
+    }
+
     private Vector3 CalculateForce(Vector3 targetPos)
     {
         Vector3 spawnPoint = firePoint.position;
@@ -165,5 +200,25 @@ public class EnemySpawner : MonoBehaviour
         // Optional: Draw a line from the spawner to the floor center
         Gizmos.color = new Color(0, 1, 1, 0.5f); // Transparent cyan
         Gizmos.DrawLine(transform.position, center);
+    }
+
+    private IEnumerator PlayHitFlash()
+    {
+        float elapsedTime = 0f;
+
+        // Set to damage color immediately
+        coreMaterial.color = damageColor;
+
+        while (elapsedTime < damageEffectDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float lerpFactor = elapsedTime / damageEffectDuration;
+
+            // Smoothly return to the original color
+            coreMaterial.color = Color.Lerp(damageColor, originalColor, lerpFactor);
+            yield return null;
+        }
+
+        coreMaterial.color = originalColor;
     }
 }

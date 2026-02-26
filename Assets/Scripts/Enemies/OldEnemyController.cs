@@ -12,7 +12,7 @@ public enum ENEMYCLASSTYPE
     RANGED,
     NUM_TYPES
 }
-public class EnemyController : MonoBehaviour
+public class OldEnemyController : MonoBehaviour
 {
     [Header("Enemy Data")]
     [SerializeField] private DataHolder dataHolder;
@@ -545,6 +545,7 @@ public class EnemyController : MonoBehaviour
 
         if (activeData.currentHealth <= 0)
         {
+            Debug.Log("ENEMY DEAD");
             StartCoroutine(HandleDeath());
         }
     }

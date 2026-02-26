@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class AnimationRelay : MonoBehaviour
 {
-    private EnemyController controller;
+    private OldEnemyController controller;
 
     void Start()
     {
-        controller = GetComponentInParent<EnemyController>();
+        controller = GetComponentInParent<OldEnemyController>();
 
         if (controller != null)
             Debug.Log("CONTROLLER ADDED");
