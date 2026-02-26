@@ -1,6 +1,4 @@
-using NUnit.Framework;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static PlayerActiveData;
 
@@ -68,6 +66,8 @@ public class PlayerController : MonoBehaviour
         DebugHandleMove();
 
 
+        Debug.Log("CURRENT HP: " + activeData.currentHealth);
+
         if (activeData.isInventoryOpen)
         {
             Cursor.lockState = CursorLockMode.None;
@@ -78,6 +78,8 @@ public class PlayerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+
+        Debug.Log("Inventory: " + activeData.isInventoryOpen);
 
         HandlePlayerParticles();
         if (UnityEngine.InputSystem.Keyboard.current.tKey.wasPressedThisFrame)
