@@ -30,7 +30,8 @@ public class KnifeChopAttack : BossAttacks
         timer = 0f;
         shouldAttack = hasAttacked = false;
 
-        activeDuration = defaultDuration += attackDelayTime;
+
+        activeDuration = defaultDuration + attackDelayTime;
 
     }
 

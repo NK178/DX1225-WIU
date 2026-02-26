@@ -108,8 +108,16 @@ public class BossController : MonoBehaviour
         if (!isBossActive)
             return;
 
+        float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+
         if (shouldRandomizeAttack)
         {
+            if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage)
+            {
+                Debug.Log("NEXT PHASE");
+                activeData.BossPhase++;
+            }
+
             SelectAttackPhase();
             float attackTime = activeBossAttack.activeDuration;
             StartCoroutine(AttackDurationCoroutine(attackTime));
@@ -140,14 +148,16 @@ public class BossController : MonoBehaviour
             //}
 
 
-            float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
-        Debug.Log("HP: " + bossHealthPercentage + "CURR: " + activeData.currentHealth + " MAX: " + bossData.maxHealth);
+        //    float bossHealthPercentage = activeData.currentHealth / bossData.maxHealth;
+        //Debug.Log("HP: " + bossHealthPercentage + "CURR: " + activeData.currentHealth + " MAX: " + bossData.maxHealth);
 
-        if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage)
-        {
-            Debug.Log("NEXT PHASE");
-            activeData.BossPhase++;
-        }
+        //Debug.Log("SHOULD RANDOMIZE: " + shouldRandomizeAttack);
+        //if (bossHealthPercentage <= attackPhaseData[activeData.BossPhase].healthPercentage && shouldRandomizeAttack)
+        //{
+        //    Debug.Log("NEXT PHASE");
+        //    activeData.BossPhase++;
+        //}
+
 
         if (activeData.currentHealth == 0)
         {
