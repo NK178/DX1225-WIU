@@ -42,8 +42,6 @@ public class BaseActiveData
     public float currentMoveSpeed;
     public float currentHealth;
     public float maxHealth;
-    public bool isInvincible;
-    public bool isRolling;
 
     //New stuff 
     public DATATYPE dataType;

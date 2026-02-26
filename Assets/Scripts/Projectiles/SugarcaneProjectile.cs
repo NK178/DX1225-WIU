@@ -55,6 +55,7 @@ public class SugarcaneProjectile : GenericProjectile
 
         if (isActive)
         {
+
             float velocity = projectileSpeed * Time.deltaTime;
             transform.position += -transform.forward * velocity; 
         }
@@ -94,13 +95,15 @@ public class SugarcaneProjectile : GenericProjectile
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
             Debug.Log($"Hit player for {projectileDamage} damage!");
+
+            CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.EARTHQUAKESHAKE);
             ReturnToPool();
         }
 
 
         if (hitEnvironment)
         {
-            //spawn particles
+            CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.CAMSHAKE);
             bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
             bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
             bossActive.isObjectPoolTriggered = true;

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2ec7dba10df9df4488219e82fa01521, type: 3}
   m_Name: FRUITRAIN
   m_EditorClassIdentifier: Assembly-CSharp::FruitRainAttack
-  _attack: 9
-  attackDuration: 10
+  _attack: 10
+  defaultDuration: 10
+  activeDuration: 11.059839
   spawnPoint: {x: 0, y: 35, z: 17.5}
   spawnDelayMin: 0.1
   spawnDelayMax: 2

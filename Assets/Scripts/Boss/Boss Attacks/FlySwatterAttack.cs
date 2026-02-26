@@ -27,6 +27,8 @@ public class FlySwatterAttack : BossAttacks
         shouldAttack = hasAttacked = false;
         activeData.BAnimState = _attack;
         activeData.isAttacking = true;
+
+        activeDuration = defaultDuration + attackDelayTime;
     }
 
     //This fuction is useless 
@@ -45,8 +47,8 @@ public class FlySwatterAttack : BossAttacks
             Debug.Log("FLY SWAT ATTACK");
             hasAttacked = true;
 
-            //activeData.BAnimState = _attack;
-            //activeData.isAttacking = true;
+            activeData.BAnimState = _attack;
+            activeData.isAttacking = true;
 
         }
 

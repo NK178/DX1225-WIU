@@ -4,6 +4,20 @@ using UnityEngine;
 public class PlayerActiveData : BaseActiveData
 {
 
+    public enum PlayersAnimStates
+    {
+        IDLE = 0,
+        WALK,
+        FIGHTER_SHEATH,
+        FIGHTER_RTL_SLASH,
+        FIGHTER_LTR_SLASH,
+        FIGHTER_THRUST,
+        FIGHTER_ABILITY,
+        FIGHTER_DEFENSIVE,
+    }
+
+    public PlayersAnimStates currentPlayerState;
+
     public Vector2 moveDirection;
     public Vector3 jumpVel;
     public bool isJumping;
@@ -12,6 +26,12 @@ public class PlayerActiveData : BaseActiveData
     public bool isInvincible;
     public bool isRolling;
     public bool isDead;
+
+    // Using this via animation events
+    public void setIsAttackStatus(bool isIt)
+    {
+        isAttacking = isIt;
+    }
 
     public CLASSTYPE currentClassType;
 

@@ -16,6 +16,9 @@ public enum EFFECT
 {
     HEAVYCAMSHAKE = 0,
     CAMSHAKE,
+    EARTHQUAKESHAKE,
+    LARGE_EARTHQUAKESHAKE,
+    SMALLSHAKE,
 }
 
 [System.Serializable]

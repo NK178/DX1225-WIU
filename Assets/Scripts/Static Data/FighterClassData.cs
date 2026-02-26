@@ -10,15 +10,15 @@ public class FighterClassData : BaseClassData
     public float moveSpeed;
 
     [Header("Main Attack: Sword")]
-    public Collider swordCollider;
     public float AtkCD;
 
     [Header("Defensive: Riposte")]
-    public float parryTiming;
+    public float parryTiming; // If I ever do it
     public float blockDamageReduction;
     public float parryCD;
     public bool isBlocking;
 
     [Header("Special Ability: Dragon Flaming Slash")]
     public float damageMultiplier;
+    public float abilityCD;
 }
