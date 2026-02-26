@@ -46,7 +46,11 @@ public class RollingPinProjectile : GenericProjectile
             //bossActive.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_SUGARCANESPLASH;
             //bossActive.objectPoolSpawnData = new ObjectPoolSpawnData(hitPoint, Vector3.up);
             //bossActive.isObjectPoolTriggered = true;
-
+            PlayerController player = other.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.TakeDamage(10);
+            }
             CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.CAMSHAKE); 
             ReturnToPool();
         }

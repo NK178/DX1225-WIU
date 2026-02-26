@@ -279,7 +279,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbProjectile
   enemies:
-  - {fileID: 2072051332501917476, guid: 75df7afe2e22b47438fe134c2ca2ab4b, type: 3}
-  - {fileID: 3784287887147908238, guid: ee9ac95244e63614892fc58079cf3ee9, type: 3}
+  - {fileID: 2107459275760244816, guid: b8774855971e76f49ab84eedc2758266, type: 3}
+  - {fileID: 2072051332501917476, guid: 65c02a0922d8d3c4d8600b46b4dc3d39, type: 3}
+  - {fileID: 6052466885295323819, guid: 5e6c7f3a311759644aaccbc2a8d98204, type: 3}
+  - {fileID: 3856600632665742711, guid: 6c315b57cba250746bee0536682c02ae, type: 3}
   spawnEffect: {fileID: 4398545745542042079, guid: 9ddbb9b232bfa044fbfd7ce29ad2d456, type: 3}
   spawner: {fileID: 587497436161497069, guid: 15eeb7635b0552c4ba45a71d4cb3ddd7, type: 3}

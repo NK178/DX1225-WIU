@@ -94,6 +94,13 @@ public class SugarcaneProjectile : GenericProjectile
 
         if (spawnerType == DataHolder.DATATYPE.BOSS_ENEMY && hitPlayer)
         {
+            PlayerController player = other.GetComponent<PlayerController>();
+
+            if (player != null)
+            {
+                player.TakeDamage(10);
+            }
+
             Debug.Log($"Hit player for {projectileDamage} damage!");
 
             CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.EARTHQUAKESHAKE);

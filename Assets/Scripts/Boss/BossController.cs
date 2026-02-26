@@ -100,7 +100,12 @@ public class BossController : MonoBehaviour
         //Debug 
         DEBUGAttackData.UpdateAttack(activeData);
         debugRunning = true;
-        activeData.currentHealth = bossData.maxHealth;
+        activeData.maxHealth = bossData.maxHealth;
+        activeData.currentHealth = activeData.maxHealth;
+        if (BattleUIManager.Instance != null)
+        {
+            BattleUIManager.Instance.UpdateBossHealthUI(activeData.currentHealth, activeData.maxHealth);
+        }
         activeData.currentAttack = bossData.damage;
 
         // Set true for now     
@@ -122,6 +127,16 @@ public class BossController : MonoBehaviour
 
     private void Update()
     {
+
+        if (activeData.currentHealth <= 0)
+        {
+            isBossActive = false;
+            activeData.isBossActive = isBossActive;
+            bossModel.gameObject.SetActive(false);
+            GameManager.Instance.OpenExitMap();
+        }
+
+
         if (!isBossActive)
             return;
 
@@ -134,6 +149,8 @@ public class BossController : MonoBehaviour
 
         if (activeBossAttack != null)
             activeBossAttack.UpdateAttack(activeData);
+
+
     }
 
     private void SelectAndStartAttack()
@@ -266,15 +283,32 @@ public class BossController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (activeData.currentHealth == 0)
-            return; 
+        if (activeData.currentHealth <= 0)
+            return;
 
         activeData.currentHealth -= damage;
+
+        if (activeData.currentHealth <= 0)
+        {
+            activeData.currentHealth = 0; // Clamp it to exactly 0
+            isBossActive = false;
+            activeData.isBossActive = isBossActive;
+
+            if (bossModel != null) bossModel.gameObject.SetActive(false);
+
+            if (BattleUIManager.Instance != null)
+            {
+                BattleUIManager.Instance.TriggerVictory();
+            }
+
+            return;
+        }
+
         StartCoroutine(TakeDamageEffect());
         if (AudioManager.instance != null) AudioManager.instance.Play("BossTakeDamage");
-        if (BattleUIManager.Instance != null && bossData != null)
+        if (BattleUIManager.Instance != null)
         {
-            BattleUIManager.Instance.bossHealthSlider.value = activeData.currentHealth / bossData.maxHealth;
+            BattleUIManager.Instance.UpdateBossHealthUI(activeData.currentHealth, activeData.maxHealth);
         }
     }
 

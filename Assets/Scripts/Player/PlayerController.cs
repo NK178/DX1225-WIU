@@ -170,8 +170,13 @@ public class PlayerController : MonoBehaviour
 
     public void SetCurrentHealth(float newHealth)
     {
-        activeData.currentHealth = newHealth;
+        activeData.currentHealth = Mathf.Clamp(newHealth, 0, activeData.maxHealth);
         Debug.Log("PLAYER CURRENT HEALTH: " + activeData.currentHealth);
+
+        if (BattleUIManager.Instance != null)
+        {
+            BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
+        }
     }
 
     public float GetCurrentHealth()
