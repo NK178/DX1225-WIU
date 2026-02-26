@@ -5,7 +5,7 @@ using UnityEngine;
 public class BossAttacks : BAttacks
 {
     [SerializeField] protected BossActiveData.BossAnimStates _attack;
-    protected float defaultDuration = 3f;
+    [SerializeField] protected float defaultDuration = 3f;
     public float activeDuration = 0f;
 
     public override void ExecuteAttack(BossActiveData activeData)

@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: HAND_SLAM
   m_EditorClassIdentifier: Assembly-CSharp::HandSlamAttack
   _attack: 4
+  activeDuration: 0
+  attackDelayMin: 2
+  attackDelayMax: 4

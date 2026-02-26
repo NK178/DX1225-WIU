@@ -5,9 +5,14 @@ public class BossAnimatorHelper : MonoBehaviour
 {
     [SerializeField] private Transform handTip;
     [SerializeField] Transform knifeHandTarget;
-    //[SerializeField] private TwoBoneIKConstraint knifeHandConstraint;
+    [SerializeField] Transform leftHandTarget;
+    [SerializeField] Transform rightHandTarget;
 
-    [SerializeField] private ChainIKConstraint knifeHandConstraint; 
+    [SerializeField] private ChainIKConstraint knifeHandConstraint;
+
+    [SerializeField] private TwoBoneIKConstraint leftHandConstraint;
+    [SerializeField] private TwoBoneIKConstraint rightHandConstraint;
+
     [SerializeField] private DataHolder dataHolder;
 
     private bool IKEnabled = false;
@@ -19,7 +24,6 @@ public class BossAnimatorHelper : MonoBehaviour
     void Start()
     {
         activeData = (BossActiveData)dataHolder.activeData;
-
     }
 
     // Update is called once per frame
@@ -27,14 +31,26 @@ public class BossAnimatorHelper : MonoBehaviour
     {
         if (IKEnabled)
         {
-            knifeHandConstraint.weight = 1f;
-            knifeHandTarget.position = activeData.knifeHitPosition; 
-            Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
-
+            if (activeData.activeIKType == BossActiveData.IKTYPE.IK_KNIFE)
+            {
+                knifeHandConstraint.weight = 1f;
+                knifeHandTarget.position = activeData.knifeHitPosition;
+                Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
+            }
+            else if (activeData.activeIKType == BossActiveData.IKTYPE.IK_HANDSLAMS)
+            {
+                leftHandConstraint.weight = 1f;
+                //rightHandConstraint.weight = 1f;
+                leftHandTarget.position = activeData.leftHitPosition;
+                //rightHandTarget.position = activeData.rightHitPosition;
+            }
         }
         else
         {
             knifeHandConstraint.weight = 0f;
+            leftHandConstraint.weight = 0f;
+            //rightHandConstraint.weight = 0f;
+
         }
     }
 
