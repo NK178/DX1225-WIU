@@ -8,9 +8,14 @@ public class RangerAnimationRelay : MonoBehaviour
     {
         mechanics = GetComponentInParent<RangerMechanics>();
     }
-    public void AE_ShootSeed()
+    public void AE_ShootSeedLeft()
     {
-        if (mechanics != null) mechanics.AE_ShootSeed();
+        if (mechanics != null) mechanics.AE_ShootSeedLeft();
+    }
+
+    public void AE_ShootSeedRight()
+    {
+        if (mechanics != null) mechanics.AE_ShootSeedRight();
     }
 
     public void AE_PlayFootstep()

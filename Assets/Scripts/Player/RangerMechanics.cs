@@ -4,7 +4,9 @@ using UnityEngine;
 public class RangerMechanics : BaseClassMechanics
 {
     [Header("References")]
-    [SerializeField] private Transform firePoint;
+    [SerializeField] private Transform leftGunFirePoint; 
+    [SerializeField] private Transform rightGunFirePoint;
+    [SerializeField] private Transform laserFirePoint;
     [SerializeField] private GameObject laserPrefab;
     [SerializeField] private TargetingSystem targetingSystem;
     public RangerClassData rangerData;
@@ -58,20 +60,25 @@ public class RangerMechanics : BaseClassMechanics
 
     private void LateUpdate()
     {
-        if (isFiringLaser && laserPrefab != null && firePoint != null && rangerData != null)
+       
+        if (isFiringLaser && laserPrefab != null && laserFirePoint != null && rangerData != null)
         {
-            Vector3 fireDirection = firePoint.forward;
+            
+            Vector3 fireDirection = laserFirePoint.forward;
 
             if (targetingSystem != null && targetingSystem.currentTarget != null)
             {
-                fireDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
+               
+                fireDirection = (targetingSystem.currentTarget.position - laserFirePoint.position).normalized;
             }
 
-            laserPrefab.transform.position = firePoint.position;
+          
+            laserPrefab.transform.position = laserFirePoint.position;
             laserPrefab.transform.rotation = Quaternion.LookRotation(fireDirection);
 
             float hitDistance = rangerData.laserRange;
-            Ray ray = new Ray(firePoint.position, fireDirection);
+           
+            Ray ray = new Ray(laserFirePoint.position, fireDirection);
 
             if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
             {
@@ -81,7 +88,7 @@ public class RangerMechanics : BaseClassMechanics
                 {
                     Collider other = hit.collider;
 
-                    // Look for the controllers just like GenericProjectile does
+                   
                     BossController boss = other.GetComponentInParent<BossController>();
                     EnemyController enemy = other.GetComponentInParent<EnemyController>();
 
@@ -98,13 +105,13 @@ public class RangerMechanics : BaseClassMechanics
                         enemy.TakeDamage(damageToDeal);
                         dealtDamage = true;
                     }
-                   
+
                     if (dealtDamage && BattleUIManager.Instance != null && activeData is PlayerActiveData playerData)
                     {
                         BattleUIManager.Instance.AddDamage(playerData.currentClassType, damageToDeal);
                     }
 
-                    // Reset the timer so it waits 0.2 seconds before hitting again
+  
                     nextLaserDamageTime = Time.time + laserDamageTickRate;
                 }
             }
@@ -181,9 +188,14 @@ public class RangerMechanics : BaseClassMechanics
         }
     }
 
-    public void AE_ShootSeed()
+    public void AE_ShootSeedLeft()
     {
-        ShootSeed();
+        ShootSeed(leftGunFirePoint);
+    }
+
+    public void AE_ShootSeedRight()
+    {
+        ShootSeed(rightGunFirePoint);
     }
 
     public void AE_PlayFootstep()
@@ -196,29 +208,33 @@ public class RangerMechanics : BaseClassMechanics
         if (laserPrefab != null) laserPrefab.SetActive(true);
     }
 
-    private void ShootSeed()
+    private void ShootSeed(Transform activeBarrel)
     {
-        if (rangerData == null || firePoint == null) return;
+        if (rangerData == null || activeBarrel == null) return;
 
         if (targetingSystem != null && targetingSystem.currentTarget != null)
         {
-            Vector3 aimDirection = (targetingSystem.currentTarget.position - firePoint.position).normalized;
-            firePoint.rotation = Quaternion.LookRotation(aimDirection);
+            Vector3 aimDirection = (targetingSystem.currentTarget.position - activeBarrel.position).normalized;
+            activeBarrel.rotation = Quaternion.LookRotation(aimDirection);
         }
         else
         {
-            firePoint.localRotation = Quaternion.identity;
+            activeBarrel.localRotation = Quaternion.identity;
         }
 
-        activeData.objectPoolSpawnData = new ObjectPoolSpawnData(
-            firePoint.position,
-            firePoint.forward,
-            rangerData.damage * activeData.currentDamageMultiplier,
-            rangerData.seedLaunchForce
-        );
+        if (activeData is PlayerActiveData playerData)
+        {
+            playerData.objectPoolSpawnData = new ObjectPoolSpawnData(
+                activeBarrel.position,
+                activeBarrel.forward,
+                rangerData.damage * playerData.currentDamageMultiplier,
+                rangerData.seedLaunchForce
+            );
 
-        activeData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RANGER_SEED;
-        activeData.isObjectPoolTriggered = true;
+            playerData.spawnableType = ObjectPoolManager.SPAWNABLE_TYPES.RANGER_SEED;
+            playerData.isObjectPoolTriggered = true;
+        }
+
         if (AudioManager.instance != null) AudioManager.instance.Play("RangerShoot");
     }
 
@@ -237,45 +253,41 @@ public class RangerMechanics : BaseClassMechanics
         isRolling = true;
         float originalSpeed = rangerData.moveSpeed;
 
-        if (activeData != null)
+        if (activeData is PlayerActiveData playerData)
         {
-            activeData.isInvincible = true;
-            activeData.isRolling = true;
+            playerData.isInvincible = true;
+            playerData.isRolling = true;
 
-            // Determine roll direction (Current input, or straight forward if standing still)
-            Vector2 rollDir = activeData.moveDirection;
+            Vector2 rollDir = playerData.moveDirection;
             if (rollDir.magnitude < 0.1f)
             {
                 rollDir = new Vector2(0, 1);
             }
 
-            // Force the capsule to move in this direction
-            activeData.moveDirection = rollDir.normalized;
-            activeData.isMoving = true;
+            playerData.moveDirection = rollDir.normalized;
+            playerData.isMoving = true;
         }
 
         SwapToUnarmed("stand to roll");
 
-        // Apply the speed boost
         activeData.currentMoveSpeed = originalSpeed * rangerData.rollSpeedMultiplier;
 
-        // Wait for the animation to finish
         yield return new WaitForSeconds(rangerData.rollDuration);
 
-        // Reset speed and visuals
         activeData.currentMoveSpeed = originalSpeed;
         if (characterMesh != null) characterMesh.localRotation = Quaternion.identity;
 
         SwapToArmed(true);
 
-        if (activeData != null)
+        if (activeData is PlayerActiveData pData)
         {
-            activeData.isInvincible = false;
-            activeData.isRolling = false;
+            pData.isInvincible = false;
+            pData.isRolling = false;
         }
 
         isRolling = false;
     }
+
     public override void HandleAbility()
     {
         if (Time.time >= nextLaserTime && !isFiringLaser && !isRolling && rangerData != null)
