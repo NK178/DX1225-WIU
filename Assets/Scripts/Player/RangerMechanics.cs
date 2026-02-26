@@ -131,6 +131,7 @@ public class RangerMechanics : BaseClassMechanics
         {
             activeData.currentMoveSpeed = rangerData.moveSpeed;
             activeData.currentClassType = rangerData.classType;
+            activeData.isDefensive = false; // In case somehow the defensive went through - Klaus
 
             SwapToArmed(true);
         }

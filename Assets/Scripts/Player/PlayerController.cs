@@ -203,10 +203,10 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float Damage)
     {
-        //if (activeData.isDefensive)
-        //{
-        //    return;
-        //}
+        if (activeData.isDefensive)
+        {
+            return;
+        }
         activeData.currentHealth -= Damage;
         StartCoroutine(TakeDamageEffect());
         if (AudioManager.instance != null) AudioManager.instance.Play("PlayerTakeDamage");
