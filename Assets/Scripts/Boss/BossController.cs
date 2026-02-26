@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using Unity.VisualScripting;
 
 // Klaus Phase 1: Mechanical Knife Attack & Hand Swipe Attack
 // Ainsley Phase 2: Hand Slam, Fly Swatter Attack, Claw Grab, Sugarcane Missiles and Fruit Air Strike
@@ -70,7 +71,7 @@ public class BossController : MonoBehaviour
 
     private BossAttacks activeBossAttack;
 
-    private bool shouldTriggerActive = true;
+    private bool shouldTriggerActive = false;
 
     private void Start()
     {
@@ -109,6 +110,8 @@ public class BossController : MonoBehaviour
 
         activeData.isBossActive = isBossActive;
 
+        bossModel.gameObject.SetActive(false);
+
         //if (isBossActive)
         //    SelectAndStartAttack(); 
 
@@ -119,6 +122,7 @@ public class BossController : MonoBehaviour
     {
         if (!isBossActive)
             return;
+
 
         if (shouldTriggerActive)
         {
@@ -321,5 +325,11 @@ public class BossController : MonoBehaviour
                 break;
 
         }
+    }
+
+    public void TriggerBossStart()
+    {
+        bossModel.gameObject.SetActive(true);
+        shouldTriggerActive = true;
     }
 }

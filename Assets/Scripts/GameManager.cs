@@ -3,7 +3,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
+
+    [SerializeField] private BossController boss;
+
     [SerializeField] private GameObject endGameColldier; 
+    [SerializeField] private GameObject startBossCollider; 
 
     public static GameManager Instance; 
 
@@ -29,4 +33,15 @@ public class GameManager : MonoBehaviour
         endGameColldier.SetActive(false);
     }
     
+
+    public void StartBoss()
+    {
+        startBossCollider.SetActive(false);
+        //BossController boss = GameObject.FindWithTag("Boss").GetComponent<BossController>();
+        if (boss != null)
+        {
+            //boss.gameObject.SetActive(true);
+            boss.TriggerBossStart();
+        }
+    }
 }
