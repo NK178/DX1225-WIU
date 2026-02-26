@@ -139,18 +139,18 @@ public class BossController : MonoBehaviour
                 activeData.BossPhase++;
             }
 
-            if (IKEnabled)
-            {
-                knifeHandConstraint.weight = 1f;
-                knifeHandTarget.position = activeData.knifeHitPosition;
+            //if (IKEnabled)
+            //{
+            //    knifeHandConstraint.weight = 1f;
+            //    knifeHandTarget.position = activeData.knifeHitPosition;
 
-                //var knifeHand =
-                ////knifeHand.target.position = activeData.knifeHitPosition;
-                //knifeHandConstraint.data.target.position = activeData.knifeHitPosition;
+            //    //var knifeHand =
+            //    ////knifeHand.target.position = activeData.knifeHitPosition;
+            //    //knifeHandConstraint.data.target.position = activeData.knifeHitPosition;
 
-                Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
+            //    Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
 
-            }
+            //}
             //else
             //{
             //    knifeHandConstraint.weight = 0f;
@@ -262,6 +262,12 @@ public class BossController : MonoBehaviour
             originalColor, elapsedTime / damageEffectDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
+
+            //Color lerpDamageColor = Color.Lerp(damageColor,
+            //originalColor, elapsedTime / damageEffectDuration);
+            //elapsedTime += Time.deltaTime;
+
+            //objectRenderer.material.SetColor("_BaseColor", lerpDamageColor);
         }
         // Ensure the final color is reset to the original
         objectRenderer.material.color = originalColor;
@@ -297,14 +303,14 @@ public class BossController : MonoBehaviour
 
 
 
-    public void ToggleIK(int condition)
-    {
-        if (condition == 1)
-            IKEnabled = true;
-        else if (condition == 0)
-            IKEnabled = false;
-        Debug.Log("TOGGLE IK: " + IKEnabled);
-    }
+    //public void ToggleIK(int condition)
+    //{
+    //    if (condition == 1)
+    //        IKEnabled = true;
+    //    else if (condition == 0)
+    //        IKEnabled = false;
+    //    Debug.Log("TOGGLE IK: " + IKEnabled);
+    //}
 
     void LateUpdate()
     {

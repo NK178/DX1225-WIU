@@ -48,9 +48,13 @@ public class KnifeChopAttack : BossAttacks
             Debug.Log("KNIFE ATTACK LESGO");
             hasAttacked = true;
 
-            Vector3 knifeHitPosition = new Vector3(player.transform.position.x,
-                                                   player.transform.position.y,
-                                                   player.transform.position.z);
+            float yOffset = -4f;
+            float zOffset = -4f;
+
+            Vector3 knifeHitPosition = player.transform.position
+                + Vector3.up * yOffset
+                + player.transform.right * zOffset;
+
             activeData.knifeHitPosition = knifeHitPosition; 
             activeData.BAnimState = _attack;
             activeData.isAttacking = true;
