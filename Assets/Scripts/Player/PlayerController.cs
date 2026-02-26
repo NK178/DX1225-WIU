@@ -207,20 +207,29 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float Damage)
     {
-        if (activeData.isInvincible)
-        {
-            Debug.Log("Dodged the attack!");
-            return;
-        }
+       
+        if (activeData.isDead || activeData.isInvincible) return;
 
         activeData.currentHealth -= Damage;
 
+      
         if (activeData.currentHealth <= 0)
         {
-            PlayerInputController inputController = GetComponent<PlayerInputController>();
+            PlayerInputController inputController = GetComponentInParent<PlayerInputController>();
+
+            if (inputController == null)
+            {
+                inputController = FindFirstObjectByType<PlayerInputController>();
+            }
+
             if (inputController != null)
             {
+                Debug.LogWarning("DEATH SIGNAL SENT!");
                 inputController.HandleCharacterDeath();
+            }
+            else
+            {
+                Debug.LogError("CRITICAL ERROR: Could not find PlayerInputController!");
             }
         }
 
@@ -232,7 +241,6 @@ public class PlayerController : MonoBehaviour
         {
             BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
         }
-
     }
     private IEnumerator TakeDamageEffect()
     {

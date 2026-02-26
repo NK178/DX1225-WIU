@@ -150,7 +150,7 @@ public class PlayerInputController : MonoBehaviour
         HandleMove();
         HandleCameraMovement();
         HandleCombat();
-
+        //HandleCharacterDeath();
         if (inventoryAction.WasPressedThisFrame())
         {
             activeData.isInventoryOpen = !activeData.isInventoryOpen;
@@ -182,12 +182,18 @@ public class PlayerInputController : MonoBehaviour
     {
         if (switchFighterAction != null && switchFighterAction.WasPressedThisFrame())
         {
-            SwitchCharacter(CLASSTYPE.MELEE);
+            if (fighterHP > 0)
+                SwitchCharacter(CLASSTYPE.MELEE);
+            else
+                Debug.Log("Cannot swap to DragonFruit, he is dead!");
         }
 
         if (switchRangerAction != null && switchRangerAction.WasPressedThisFrame())
         {
-            SwitchCharacter(CLASSTYPE.RANGED);
+            if (rangerHP > 0)
+                SwitchCharacter(CLASSTYPE.RANGED);
+            else
+                Debug.Log("Cannot swap to Mandarin, he is dead!");
         }
     }
 
