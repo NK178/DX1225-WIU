@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using static PlayerActiveData;
 
-//can be reused with player as well
 [System.Serializable]
 public enum CLASSTYPE
 {
@@ -18,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float damageEffectDuration;
     [SerializeField] private float damageAbilityDuration;
-    [SerializeField] private float speedEffectDuration; 
+    [SerializeField] private float speedEffectDuration;
 
     private PlayerActiveData activeData;
     public PlayerActiveData ActiveData
@@ -38,10 +37,6 @@ public class PlayerController : MonoBehaviour
     private float particleOffset = 1f;
     private GameObject activePlayerParticle = null;
 
-
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         activeData = (PlayerActiveData)dataHolder.activeData;
@@ -51,13 +46,12 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PLAYER DATA NOT FOUND");
             return;
         }
+
         MorR = 0;
         objectRenderer[0].SetColor("_EmissionColor", new Color(0, 0, 0));
         objectRenderer[1].SetColor("_EmissionColor", new Color(0, 0, 0));
 
         originalColor = objectRenderer[0].GetColor("_EmissionColor");
-
-        //activeParticleList = new List<ParticleData>();    
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -65,12 +59,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // PlayerController no longer forces the speed variable every frame,
-        // It just executes the movement based on whatever the active data currently says
         DebugHandleMove();
-
-
-        Debug.Log("CURRENT HP: " + activeData.currentHealth);
 
         if (activeData.isInventoryOpen)
         {
@@ -83,10 +72,10 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = false;
         }
 
-        Debug.Log("Inventory: " + activeData.isInventoryOpen);
-
         HandlePlayerParticles();
-        if (UnityEngine.InputSystem.Keyboard.current.tKey.wasPressedThisFrame)
+
+        // --- THE DEBUG KEYBIND ---
+        if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.tKey.wasPressedThisFrame)
         {
             Debug.LogWarning("DEBUG: Ouch! Taking 25 damage!");
             TakeDamage(25f);
@@ -98,7 +87,6 @@ public class PlayerController : MonoBehaviour
             MorR = 1;
     }
 
-
     private void HandlePlayerParticles()
     {
         if (activeData.activeParticleList.Count == 0)
@@ -108,9 +96,9 @@ public class PlayerController : MonoBehaviour
 
         foreach (ParticleData data in activeData.activeParticleList)
         {
-            ObjectPoolManager.SPAWNABLE_TYPES particleType = data.particleType; 
+            ObjectPoolManager.SPAWNABLE_TYPES particleType = data.particleType;
 
-            switch(particleType)
+            switch (particleType)
             {
                 case ObjectPoolManager.SPAWNABLE_TYPES.PARTICLE_HEALINGEFFECT:
                     data.activeParticle.transform.position = transform.position + Vector3.up * -particleOffset;
@@ -123,14 +111,13 @@ public class PlayerController : MonoBehaviour
                     data.activeParticle.transform.rotation = Quaternion.LookRotation(transform.forward);
                     break;
             }
-        }  
+        }
     }
 
-    //Testing function since no animation move
     void DebugHandleMove()
     {
-        if (activeData == null)
-            return;
+        if (activeData == null) return;
+
         if (!characterController.isGrounded)
         {
             activeData.isMoving = true;
@@ -140,34 +127,28 @@ public class PlayerController : MonoBehaviour
         {
             activeData.jumpVel.y = 0;
         }
+
         activeData.isJumping = !characterController.isGrounded;
 
-        if (!activeData.isMoving)
-            return;
+        if (!activeData.isMoving) return;
 
-        // reads whatever speed the active class (or a dodge roll) has set
         float moveSpeed = activeData.currentMoveSpeed * activeData.currentSpeedMultiplier;
-
-        // Movement changed a bit to fit
         Vector3 moveDirection = activeData.moveDirection.y * transform.forward + activeData.moveDirection.x * transform.right;
-        //Vector3 moveDirection = new Vector3(activeData.moveDirection.x, 0, activeData.moveDirection.y);
-        //if (characterController.isGrounded)
 
         if (activeData.currentPlayerState >= PlayersAnimStates.FIGHTER_RTL_SLASH)
         {
             return;
         }
-        else if (moveDirection != new Vector3(0,0,0))
+        else if (moveDirection != new Vector3(0, 0, 0))
         {
             activeData.currentPlayerState = PlayersAnimStates.WALK;
         }
 
         Vector3 velocity = (moveDirection.normalized * moveSpeed + activeData.jumpVel) * Time.deltaTime;
-
         characterController.Move(velocity);
-        //Debug.Log(velocity);
     }
 
+    // --- HEALING UI FIX ---
     public void SetCurrentHealth(float newHealth)
     {
         activeData.currentHealth = Mathf.Clamp(newHealth, 0, activeData.maxHealth);
@@ -214,7 +195,6 @@ public class PlayerController : MonoBehaviour
         activeData.isObjectPoolTriggered = true;
         enablePlayerEffect = true;
         ObjectPoolManager.Instance.HandleSpawnRequest(activeData);
-        Debug.Log("PLAYER SPEED MULTI: " + activeData.currentMoveSpeed);
     }
 
     private IEnumerator DamageEffectCoroutine()
@@ -229,21 +209,26 @@ public class PlayerController : MonoBehaviour
         activeData.currentSpeedMultiplier = 1f;
     }
 
+    // --- DAMAGE & DEATH SEQUENCE FIX ---
     public void TakeDamage(float Damage)
     {
+        // 1. Check for defensive states first!
         if (activeData.isDefensive)
         {
             activeData.isDefensive = false;
             return;
         }
-       
+
+        // 2. Check for I-Frames or if already dead
         if (activeData.isDead || activeData.isInvincible) return;
 
         activeData.currentHealth -= Damage;
 
-      
+        // 3. The Death Check!
         if (activeData.currentHealth <= 0)
         {
+            activeData.currentHealth = 0; // Clamped to 0 so the UI doesn't break!
+
             PlayerInputController inputController = GetComponentInParent<PlayerInputController>();
 
             if (inputController == null)
@@ -262,6 +247,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // 4. Update the visual effects & UI
         StartCoroutine(TakeDamageEffect());
 
         if (AudioManager.instance != null) AudioManager.instance.Play("PlayerTakeDamage");
@@ -271,21 +257,17 @@ public class PlayerController : MonoBehaviour
             BattleUIManager.Instance.UpdatePlayerHealthUI(activeData.currentHealth, activeData.maxHealth, activeData.currentClassType);
         }
     }
+
     private IEnumerator TakeDamageEffect()
     {
-        // Set to damage color instantly
         objectRenderer[MorR].SetColor("_EmissionColor", damageColor);
-        // Gradually transition back to the original color over time
         float elapsedTime = 0f;
         while (elapsedTime < damageEffectDuration)
         {
-            objectRenderer[MorR].SetColor("_EmissionColor", Color.Lerp(damageColor,
-            originalColor, elapsedTime / damageEffectDuration));
+            objectRenderer[MorR].SetColor("_EmissionColor", Color.Lerp(damageColor, originalColor, elapsedTime / damageEffectDuration));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        // Ensure the final color is reset to the original
         objectRenderer[MorR].SetColor("_EmissionColor", originalColor);
     }
-
 }

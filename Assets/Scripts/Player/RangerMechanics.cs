@@ -4,7 +4,7 @@ using UnityEngine;
 public class RangerMechanics : BaseClassMechanics
 {
     [Header("References")]
-    [SerializeField] private Transform leftGunFirePoint; 
+    [SerializeField] private Transform leftGunFirePoint;
     [SerializeField] private Transform rightGunFirePoint;
     [SerializeField] private Transform laserFirePoint;
     [SerializeField] private GameObject laserPrefab;
@@ -37,7 +37,7 @@ public class RangerMechanics : BaseClassMechanics
     private void Start()
     {
         if (laserPrefab != null) laserPrefab.SetActive(false);
-        SwapToArmed(false); // Start the game with guns out
+        SwapToArmed(false);
     }
 
     private void Update()
@@ -51,7 +51,6 @@ public class RangerMechanics : BaseClassMechanics
             BattleUIManager.Instance.UpdateCooldownUI(BattleUIManager.Instance.rollCooldownImage, rollRemaining, rollCooldown);
         }
 
-        // Continuously send the movement speed to whichever Animator is active
         if (currentAnimator != null && activeData != null)
         {
             currentAnimator.SetFloat("Speed", activeData.moveDirection.magnitude);
@@ -60,40 +59,59 @@ public class RangerMechanics : BaseClassMechanics
 
     private void LateUpdate()
     {
-       
         if (isFiringLaser && laserPrefab != null && laserFirePoint != null && rangerData != null)
         {
-            
             Vector3 fireDirection = laserFirePoint.forward;
 
             if (targetingSystem != null && targetingSystem.currentTarget != null)
             {
-               
                 fireDirection = (targetingSystem.currentTarget.position - laserFirePoint.position).normalized;
             }
 
-          
             laserPrefab.transform.position = laserFirePoint.position;
             laserPrefab.transform.rotation = Quaternion.LookRotation(fireDirection);
 
             float hitDistance = rangerData.laserRange;
-           
             Ray ray = new Ray(laserFirePoint.position, fireDirection);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, rangerData.laserRange, rangerData.hitMask))
-            {
-                hitDistance = hit.distance;
+            // FIXED: Using RaycastAll without masks guarantees we don't get blocked by weird physics layers!
+            RaycastHit[] hits = Physics.RaycastAll(ray, rangerData.laserRange);
 
-                if (Time.time >= nextLaserDamageTime)
+            bool hitWall = false;
+            float closestWallDistance = rangerData.laserRange;
+
+            // Check for walls to stop the visual laser beam from going through buildings
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.CompareTag("Environment") || hit.collider.CompareTag("Floor"))
                 {
+                    if (hit.distance < closestWallDistance)
+                    {
+                        closestWallDistance = hit.distance;
+                        hitWall = true;
+                    }
+                }
+            }
+
+            hitDistance = closestWallDistance;
+
+            if (Time.time >= nextLaserDamageTime)
+            {
+                bool dealtDamage = false;
+
+                foreach (RaycastHit hit in hits)
+                {
+                    // Ignore enemies that are hiding behind a wall
+                    if (hitWall && hit.distance > closestWallDistance) continue;
+
                     Collider other = hit.collider;
 
-                   
                     BossController boss = other.GetComponentInParent<BossController>();
                     EnemyController enemy = other.GetComponentInParent<EnemyController>();
+                    DummyController dummy = other.GetComponentInParent<DummyController>();
+                    EnemySpawner spawner = other.GetComponentInParent<EnemySpawner>();
 
                     float damageToDeal = rangerData.damage * activeData.currentDamageMultiplier;
-                    bool dealtDamage = false;
 
                     if (boss != null)
                     {
@@ -105,18 +123,28 @@ public class RangerMechanics : BaseClassMechanics
                         enemy.TakeDamage(damageToDeal);
                         dealtDamage = true;
                     }
-
-                    if (dealtDamage && BattleUIManager.Instance != null && activeData is PlayerActiveData playerData)
+                    if (dummy != null)
                     {
-                        BattleUIManager.Instance.AddDamage(playerData.currentClassType, damageToDeal);
+                        dummy.TakeDamage(damageToDeal);
+                        dealtDamage = true;
                     }
+                    if (spawner != null)
+                    {
+                        spawner.TakeDamage(damageToDeal);
+                        dealtDamage = true;
+                    }
+                }
 
-  
+                if (dealtDamage)
+                {
+                    if (BattleUIManager.Instance != null && activeData is PlayerActiveData playerData)
+                    {
+                        BattleUIManager.Instance.AddDamage(playerData.currentClassType, rangerData.damage * activeData.currentDamageMultiplier);
+                    }
                     nextLaserDamageTime = Time.time + laserDamageTickRate;
                 }
             }
 
-            // Stretch the prefab to the hit distance
             laserPrefab.transform.localScale = new Vector3(
                 laserPrefab.transform.localScale.x,
                 laserPrefab.transform.localScale.y,
@@ -131,15 +159,10 @@ public class RangerMechanics : BaseClassMechanics
         {
             activeData.currentMoveSpeed = rangerData.moveSpeed;
             activeData.currentClassType = rangerData.classType;
-            activeData.isDefensive = false; // In case somehow the defensive went through - Klaus
 
             SwapToArmed(true);
         }
     }
-
-    // ==========================================
-    // AVATAR SWAPPING 
-    // ==========================================
 
     private void SwapToUnarmed(string animationToPlay)
     {
@@ -163,10 +186,6 @@ public class RangerMechanics : BaseClassMechanics
             currentAnimator.Play("BringUpGun", 0, 0f);
         }
     }
-
-    // ==========================================
-    // COMBAT & ABILITIES
-    // ==========================================
 
     public override void HandleAttack()
     {
@@ -207,6 +226,13 @@ public class RangerMechanics : BaseClassMechanics
     public void AE_EnableLaser()
     {
         if (laserPrefab != null) laserPrefab.SetActive(true);
+        isFiringLaser = true;
+    }
+
+    public void AE_DisableLaser()
+    {
+        if (laserPrefab != null) laserPrefab.SetActive(false);
+        isFiringLaser = false;
     }
 
     private void ShootSeed(Transform activeBarrel)
