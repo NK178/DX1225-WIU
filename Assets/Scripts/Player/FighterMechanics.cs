@@ -17,7 +17,6 @@ public class FighterMechanics : BaseClassMechanics
     private bool isWalkLooping;
 
     private List<IEnumerator> _attackQueue = new List<IEnumerator>();
-    [SerializeField] private List<String> Atks;
 
     private void Start()
     {

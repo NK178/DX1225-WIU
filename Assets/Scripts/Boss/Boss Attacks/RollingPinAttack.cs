@@ -31,9 +31,6 @@ public class RollingPinAttack : BossAttacks
     //This fuction is useless 
     public override void UpdateAttack(BossActiveData activeData)
     {
-        Debug.Log("ROLLING PIN UPDATE ATTACK: " + timer);
-
-
         timer += Time.deltaTime;
 
         if (timer > attackDelayTime)    
