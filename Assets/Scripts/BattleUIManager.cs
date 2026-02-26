@@ -134,4 +134,14 @@ public class BattleUIManager : MonoBehaviour
         // Load the winning scene
         SceneManager.LoadScene("WinScene");
     }
+
+    public void UpdateBossHealthUI(float currentHP, float maxHP)
+    {
+        if (bossHealthSlider != null)
+        {
+          
+            bossHealthSlider.maxValue = maxHP;
+            bossHealthSlider.value = currentHP;
+        }
+    }
 }
