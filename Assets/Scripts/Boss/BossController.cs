@@ -283,17 +283,17 @@ public class BossController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (activeData.currentHealth <= 0)
-            return;
+        if (activeData.currentHealth <= 0) return;
 
         activeData.currentHealth -= damage;
 
         if (activeData.currentHealth <= 0)
         {
-            activeData.currentHealth = 0; // Clamp it to exactly 0
+            activeData.currentHealth = 0; // Clamp it cleanly to 0
             isBossActive = false;
             activeData.isBossActive = isBossActive;
 
+            // Hide the boss
             if (bossModel != null) bossModel.gameObject.SetActive(false);
 
             if (BattleUIManager.Instance != null)
@@ -304,6 +304,7 @@ public class BossController : MonoBehaviour
             return;
         }
 
+        // Normal Damage Effects (Only plays if still alive)
         StartCoroutine(TakeDamageEffect());
         if (AudioManager.instance != null) AudioManager.instance.Play("BossTakeDamage");
         if (BattleUIManager.Instance != null)

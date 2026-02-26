@@ -19,7 +19,6 @@ public class FighterMechanics : BaseClassMechanics
     private List<IEnumerator> _attackQueue = new List<IEnumerator>();
     private bool isSheathing;
 
-
     [SerializeField] private PlayerActiveData.PlayersAnimStates StateChecker;
 
     private void Start()
@@ -31,7 +30,6 @@ public class FighterMechanics : BaseClassMechanics
         //}
         isWalkLooping = false;
         isSheathing = false;
-        
     }
 
     private void Update()
@@ -48,7 +46,7 @@ public class FighterMechanics : BaseClassMechanics
         }
 
         // Weird way of doing things (Prevent a constant call of moving)
-        if(activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.WALK || activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.IDLE)
+        if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.WALK || activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.IDLE)
         {
             activeData.isAttacking = false;
             activeData.isDefensive = false;
@@ -74,10 +72,8 @@ public class FighterMechanics : BaseClassMechanics
         if (activeData.currentPlayerState == PlayerActiveData.PlayersAnimStates.FIGHTER_SHEATH && !isSheathing)
         {
             animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
-            //activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.IDLE;
             activeData.isAttacking = false;
             activeData.isDefensive = false;
-            //isWalkLooping = true;
             isSheathing = true;
         }
 
@@ -99,29 +95,53 @@ public class FighterMechanics : BaseClassMechanics
         AtkCDTimer = Time.time + fighterClassData.AtkCD;
 
         if (animator != null) StartCoroutine(PerformAttack());
-        //SwordHandler.EnableCollider("Sword");
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterAttack");
     }
 
     public override void HandleDefense()
     {
         if (Time.time < ParryCDTimer) return;
+        ParryCDTimer = Time.time + fighterClassData.parryCD;
+        Debug.Log("Parry Executed!");
+        StartCoroutine(DefenseRoutine());
+    }
+
+    private IEnumerator DefenseRoutine()
+    {
         activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_DEFENSIVE;
         activeData.isDefensive = true;
+
         if (animator != null) animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
-        //if (animator != null) animator.CrossFadeInFixedTime("Fighter_Block", 0.2f);
-        ParryCDTimer = Time.time + fighterClassData.parryCD;
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterParry");
-        Debug.Log("Parry Executed!");
+
+        // Freezes the player for exactly 0.5 seconds for the parry, then unlocks movement
+        yield return new WaitForSeconds(0.5f);
+
+        activeData.isDefensive = false;
+        activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.IDLE;
     }
 
     public override void HandleAbility()
     {
-        // Slash logic
+        StartCoroutine(AbilityRoutine());
+    }
+
+    private IEnumerator AbilityRoutine()
+    {
         activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_ABILITY;
+
         if (animator != null) animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
-        //if (animator != null) animator.CrossFadeInFixedTime("Fighter_Ability", 0.2f);
         if (AudioManager.instance != null) AudioManager.instance.Play("FighterAbility");
+
+        yield return new WaitForSeconds(0.2f); // Give animator time to transition into the state
+
+        // Wait until the ability animation finishes, then unlock movement
+        while (!IsCurrentAnimationReadyForNextStep((activeData.currentPlayerState).ToString()))
+        {
+            yield return null;
+        }
+
+        activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.IDLE;
     }
 
     private IEnumerator PerformAttack()
@@ -133,43 +153,42 @@ public class FighterMechanics : BaseClassMechanics
             case 0:
                 activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_RTL_SLASH;
                 animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
-                //combo++;
                 break;
             case 1:
                 activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_LTR_SLASH;
                 animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
-                //combo++;
                 break;
             case 2:
                 activeData.currentPlayerState = PlayerActiveData.PlayersAnimStates.FIGHTER_THRUST;
                 animator.CrossFadeInFixedTime(activeData.currentPlayerState.ToString(), 0.2f);
-                //combo = 0;
                 break;
         }
+
         activeData.isAttacking = true;
         combo++;
+
         while (!IsCurrentAnimationReadyForNextStep((activeData.currentPlayerState).ToString()))
         {
             yield return null;
         }
+
         if (combo >= _attackQueue.Count || combo >= 3)
         {
             ResetCombo();
         }
         else
         {
-            //ChangeState
             StartCoroutine(_attackQueue[combo]);
         }
     }
+
     private bool IsCurrentAnimationReadyForNextStep(string name)
     {
         // Check if the current animation has played enough to transition
-        AnimatorStateInfo stateInfo =
-        animator.GetCurrentAnimatorStateInfo(0);
-        return stateInfo.normalizedTime >= 1f &&
-        stateInfo.IsName(name); // Adjust based on when you want to allow transitions
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        return stateInfo.normalizedTime >= 1f && stateInfo.IsName(name);
     }
+
     private void ResetCombo()
     {
         _attackQueue.Clear();
@@ -177,10 +196,4 @@ public class FighterMechanics : BaseClassMechanics
         combo = 0;
         activeData.isAttacking = false;
     }
-
-    // No time
-    //public void SetIsAttacking(bool isIt)
-    //{
-    //    activeData.isAttacking = isIt;
-    //}
 }
