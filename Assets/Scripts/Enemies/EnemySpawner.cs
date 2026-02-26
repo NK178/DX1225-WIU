@@ -4,6 +4,9 @@ using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("Health Settings")]
+    private float maxHealth = 50f;
+    [SerializeField] private float currentHealth;
 
     [Header("Spawner Settings")]
     [SerializeField] private GameObject spawnerOrb;
@@ -34,6 +37,8 @@ public class EnemySpawner : MonoBehaviour
         {
             startPos = useLocalSpace ? spawner.transform.localPosition : spawner.transform.position;
         }
+
+        currentHealth = maxHealth;
 
         StartCoroutine(SpawnRoutine());
     }
