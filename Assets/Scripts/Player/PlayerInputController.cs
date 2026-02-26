@@ -243,13 +243,14 @@ public class PlayerInputController : MonoBehaviour
 
         if (direction.magnitude > 0)
         {
+            if (activeData.isAttacking && currentMechanics == fighterMechanics)
+                return;
             if (camtype == CAMTYPE.FREE_LOOK)
             {
-                // Modify the move direction according to where the camera is facing
-                direction = Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, Vector3.up) * direction;
-                // Rotate the character facing towards the move direction
-                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-                transform.parent.localRotation = Quaternion.RotateTowards(transform.parent.localRotation, targetRotation, 2f);
+                // REALLY BOOTLEG VER (6 directional only)
+                float tempDirection = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+                direction = new Vector2(0, 1);
+                transform.parent.localEulerAngles = new Vector3(0, Camera.main.transform.localEulerAngles.y + tempDirection, 0);
             }
             activeData.moveDirection = direction;
             activeData.isMoving = true;
@@ -269,7 +270,7 @@ public class PlayerInputController : MonoBehaviour
             activeData.isJumping = true;
         }
     }
-    
+
     // Klaus
     /// <summary>
     /// Player can turn the character left and right but not up and down.
@@ -297,11 +298,10 @@ public class PlayerInputController : MonoBehaviour
                 else
                     tempCameraY = downCamLimit;
             }
-            cameraTransform.localEulerAngles = new Vector3(tempCameraY,cameraTransform.localEulerAngles.y,cameraTransform.localEulerAngles.z);
+            cameraTransform.localEulerAngles = new Vector3(tempCameraY, cameraTransform.localEulerAngles.y, cameraTransform.localEulerAngles.z);
             playerTransform.eulerAngles += new Vector3(0, dir.x) * 0.1f;
         }
     }
-
     // Klaus
     /// <summary>
     /// Player Can Zoom in and out with scroll wheel

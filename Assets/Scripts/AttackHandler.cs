@@ -121,9 +121,9 @@ public class AttackHandler : MonoBehaviour
                     Debug.Log(detectors.name + " HIT BOSS");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
                         Boss.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
+                    else Debug.LogError("A Fake Player hit Boss?");
                     if (BattleUIManager.Instance != null)
                         BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
-                    else Debug.LogError("A Fake Player hit Boss?");
                     DisableCollider(detectors.name);
                     CineMachineImpulseMan.Instance.GenerateEffect(EFFECT.CAMSHAKE);
                     Debug.Log("Hit Shake Screen");
@@ -134,9 +134,9 @@ public class AttackHandler : MonoBehaviour
                     Debug.Log(detectors.name + " HIT ENEMY");
                     if (detectors.transform.parent.TryGetComponent<PlayerController>(out var tempPlayer))
                         Enemy.TakeDamage(tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
+                    else Debug.LogError("A Fake Player hit Enemy?");
                     if (BattleUIManager.Instance != null)
                         BattleUIManager.Instance.AddDamage(tempPlayer.ActiveData.currentClassType, tempPlayer.ActiveData.currentAttack * tempPlayer.ActiveData.currentDamageMultiplier);
-                    else Debug.LogError("A Fake Player hit Enemy?");
                     DisableCollider(detectors.name);
                     continue;
                 }
