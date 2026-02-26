@@ -47,7 +47,7 @@ public class BossController : MonoBehaviour
     [SerializeField] private float damageEffectDuration;
     private Color originalColor;
 
-
+    [SerializeField] Transform knifeHandTarget;
     [SerializeField] private TwoBoneIKConstraint knifeHandConstraint;
 
 
@@ -142,14 +142,19 @@ public class BossController : MonoBehaviour
             if (IKEnabled)
             {
                 knifeHandConstraint.weight = 1f;
+                knifeHandTarget.position = activeData.knifeHitPosition;
 
-                var knifeHand = knifeHandConstraint.data;
-                knifeHand.target.position = activeData.knifeHitPosition;
+                //var knifeHand =
+                ////knifeHand.target.position = activeData.knifeHitPosition;
+                //knifeHandConstraint.data.target.position = activeData.knifeHitPosition;
+
+                Debug.Log("DATA POS: " + knifeHandTarget.position + " ACTUAL: " + knifeHandConstraint.data.target.position);
+
             }
-            else
-            {
-                knifeHandConstraint.weight = 0f;
-            }
+            //else
+            //{
+            //    knifeHandConstraint.weight = 0f;
+            //}
         }
     }
 

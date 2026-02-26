@@ -40,8 +40,8 @@ public class BossAnimator : MonoBehaviour
         }
         else if (activeData.isAttacking)
         {
-            if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
-                animState = "BossKnifeAttack";
+            //if (activeData.BAnimState == BossActiveData.BossAnimStates.KNIFE_ATTACK)
+                //animState = "BossKnifeAttack";
         }
         return animState;
     }
